@@ -20,6 +20,46 @@ const defaultSettings = {
 	weight       : '',
 }
 
+// Program tester
+export function test(program) {
+
+	const context = Object.freeze({
+		cycle  : 0,
+		frame  : 0,
+		time   : 0,
+		fps    : 0,
+		cols   : program.settings || 5,
+		rows   : program.settings || 5,
+		width  : 100,
+		height : 100,
+		aspect : 0.666
+	})
+
+	const cursor = Object.freeze({
+		x       : 0,
+		y       : 0,
+		pressed : false
+	})
+
+	const buffers = {
+		state : [],
+		data  : []  // user data
+	}
+
+	try {
+		console.log("testing")
+		if (typeof program.pre == 'function')  program.pre(context, cursor, buffers)
+		if (typeof program.main == 'function') program.main({x:0, y:0, index:0}, context, cursor, buffers)
+		if (typeof program.post == 'function') program.post(context, cursor, buffers)
+	} catch (err){
+		console.warn("-- error in test")
+		console.error(err.message)
+		return false
+	}
+
+	return true
+}
+
 // Program runner
 // Takes a program object (usually an imported module),
 // an Element object (usually a <pre> element) as rendering target
@@ -205,7 +245,7 @@ export function run(program, element, runSettings = {}) {
 				program.pre(context, cursor, buffers)
 			}
 		} catch (err){
-			console.warn("------ error in pre() ------")
+			console.warn("-- error in pre()")
 			console.error(err.message)
 			// Something went wrong... stop the loop (and console flood)
 			cancelAnimationFrame(af)
@@ -237,7 +277,7 @@ export function run(program, element, runSettings = {}) {
 				}
 			}
 		} catch (err){
-			console.warn("------ error in main() ------")
+			console.warn("-- error in main()")
 			console.error(err.message)
 			// Something went wrong... stop the loop (and console flood)
 			cancelAnimationFrame(af)
@@ -251,7 +291,7 @@ export function run(program, element, runSettings = {}) {
 				program.post(context, cursor, buffers)
 			}
 		} catch (err){
-			console.warn("------ error in post() ------")
+			console.warn("-- error in post()")
 			console.error(err.message)
 			// Something went wrong... stop the loop (and console flood)
 			cancelAnimationFrame(af)
@@ -325,7 +365,7 @@ export function run(program, element, runSettings = {}) {
 				}
 			}
 		} catch (err){
-			console.warn("------ error in the render loop ------")
+			console.warn("-- error in the render loop")
 			console.error(err.message)
 			cancelAnimationFrame(af)
 			return
