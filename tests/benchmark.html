@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+	<meta charset="utf-8">
+	<title>Test single</title>
+	<link rel="stylesheet" type="text/css" href="/css/simple_console.css">
+	<style type="text/css" media="screen">
+		body {
+			padding: 0;
+			margin: 2em;
+			font-size: 1em;
+			line-height: 1.2;
+			font-family: 'Simple Console', monospace;
+		}
+		pre {
+			font-family: inherit;
+			margin:0 0 2em 0;
+		}
+	</style>
+</head>
+<body>
+	<pre></pre>
+	<pre></pre>
+	<script type="module">
+
+		const cols = 100
+		const rows = 40
+		const chars = 'ABCDEFG0123456789. '.split('')
+		const colors = ['red', 'blue']
+		const NUM_FRAMES = 100
+
+		const target = document.querySelectorAll('pre')[0]
+		const output = document.querySelectorAll('pre')[1]
+		//const functions = [baseline, a, b, c, d]
+		const functions = [c, d]
+
+		let frame = 0
+		let step = 0
+		let t0
+		let fun
+
+		fun = functions[step]
+
+		function loop(t){
+
+			const af = requestAnimationFrame(loop)
+
+			if (frame == 0) t0 = performance.now();
+
+			fun(target, frame)
+			frame++
+
+			if (frame == NUM_FRAMES) {
+				const elapsed = performance.now() - t0
+				let out = []
+				out.push('-----------------------------------')
+				out.push('step:     ' + (step+1) + '/' + functions.length)
+				out.push('function: ' + fun.name)
+				out.push('elapsed:  ' + elapsed)
+				out.push('avg:      ' +  (elapsed / NUM_FRAMES))
+				out.push('')
+				output.innerHTML += out.join('<br>')
+
+
+				frame = 0
+				step++
+				if (step < functions.length) {
+					fun = functions[step]
+				} else {
+					cancelAnimationFrame(af)
+				}
+			}
+		}
+
+		requestAnimationFrame(loop)
+
+		// Unstyled; should run at 60fps
+		// Direct write to innerHTML
+		function baseline(target, frame) {
+			let html = ''
+			for (let j=0; j<rows; j++){
+				for (let i=0; i<cols; i++){
+					const idx = (i + j * rows + frame) % chars.length
+					html += chars[idx]
+				}
+				html += '<br>'
+			}
+			target.innerHTML = html
+		}
+
+		// Every char is wrapped in a span, same style
+		// Direct write to innerHTML
+		function a(target, frame) {
+			let html = ''
+			for (let j=0; j<rows; j++){
+				for (let i=0; i<cols; i++){
+					const idx = (i + j * rows + frame) % chars.length
+					html += `<span>${chars[idx % chars.length]}</span>`
+				}
+				html += '<br>'
+			}
+			target.innerHTML = html
+		}
+
+		// Every char is wrapped in a span, foreground and background change
+		// Direct write to innerHTML
+		function b(target, frame) {
+			let html = ''
+			for (let j=0; j<rows; j++){
+				for (let i=0; i<cols; i++){
+					const idx = (i + j * rows + frame)
+					const style = `color:${colors[idx % colors.length]};background-color:${colors[(idx+1) % colors.length]};`
+					html += `<span style="${style}">${chars[idx % chars.length]}</span>`
+				}
+				html += '<br>'
+			}
+			target.innerHTML = html
+		}
+
+		// Direct write to innerHTML of each span
+		// Re-use of <spans>
+		const r = new Array(rows).fill(null).map(function(e){
+			const span = document.createElement('span')
+			span.style.display = 'block'
+			return span
+		})
+		function c(target, frame) {
+			if (frame == 0) {
+				target.innerHTML = ''
+				for (let j=0; j<rows; j++){
+					target.appendChild(r[j])
+				}
+			}
+			// for (let j=0; j<rows; j++){
+			// 	r[j].style.display = 'none'
+			// }
+			for (let j=0; j<rows; j++){
+				let html = ''
+				for (let i=0; i<cols; i++){
+					const idx = (i + j * rows + frame)
+					const style = `color:${colors[idx % colors.length]};background-color:${colors[(idx+1) % colors.length]};`
+					html += `<span style="${style}">${chars[idx % chars.length]}</span>`
+				}
+				r[j].innerHTML = html
+			}
+			// for (let j=0; j<rows; j++){
+			// 	r[j].style.display = 'block'
+			// }
+		}
+
+		// Direct write to innerHTML of each span
+		const fragment = new DocumentFragment()
+		const p = document.createElement("pre")
+		fragment.appendChild(p)
+		function d(target, frame) {
+			p.innerHTML = ""
+			for (let j=0; j<rows; j++){
+			//	let html = ''
+				for (let i=0; i<cols; i++){
+					const idx = (i + j * rows + frame)
+					const style = `color:${colors[idx % colors.length]};background-color:${colors[(idx+1) % colors.length]};`
+					p.innerHTML += `<span style="${style}">${chars[idx % chars.length]}</span>`
+				}
+				// r[j].innerHTML = html
+				// fragment.appendChild(r[j])
+			}
+			target.innerHTML = ''
+			target.appendChild(fragment)
+			// for (let j=0; j<rows; j++){
+			// 	r[j].style.display = 'block'
+			// }
+		}
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+	<meta charset="utf-8">
+	<title>Test multi</title>
+	<link rel="stylesheet" type="text/css" href="/css/simple_console.css">
+	<style type="text/css" media="screen">
+		pre {
+			margin: 2em 4em;
+			width: 40em;
+			height: 20em;
+			display: block;
+			font-size: 1em;
+			line-height: 1.2;
+			font-family: 'Simple Console', monospace;
+		}
+
+	</style>
+</head>
+<body>
+	<pre></pre>
+	<pre></pre>
+	<pre></pre>
+	<script type="module">
+		import    { run } from '/src/run.js'
+		import * as prog0 from '/src/programs/sinsin.js'
+		import * as prog1 from '/src/programs/cursor.js'
+		import * as prog2 from '/src/programs/balls.js'
+
+		const pre = document.querySelectorAll('pre')
+
+		run(prog0, pre[0], true)
+		run(prog1, pre[1], true)
+		run(prog2, pre[2], true)
+	</script>
+</body>
+</html>

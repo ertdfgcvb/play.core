@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+	<meta charset="utf-8">
+	<title>Test font</title>
+	<link rel="stylesheet" type="text/css" href="/css/simple_console.css">
+	<style type="text/css" media="screen">
+		pre {
+			margin: 2em;
+			font-size: 1em;
+			line-height: 1.2;
+			font-family: 'Simple Console', monospace;
+			font-variant-ligatures: none;
+		}
+		pre .test{
+			background-color: rgb(240, 240, 240);
+			padding: 1em;
+			display: inline-block;
+		}
+	</style>
+</head>
+<body>
+<template>
+!"#$%&'()*+,-./0123456789:;<=>?@
+ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_
+abcdefghijklmnopqrstuvwxyz{|}~ ¡
+
+▁▂▃▄▅▆▇█ ▖▗▘▙▚▛▜▝▞▟
+
+XXX-XXX-XXX-XXX-XXX-XXX-XXX
+XX-XXX-XXX-XXX-XXX-XXX-XXX-
+X-XXX-XXX-XXX-XXX-XXX-XXX-X
+-XXX-XXX-XXX-XXX-XXX-XXX-XX
+
+╔══╦══╗ ┌──┬──┐ ╭──┬──╮ ┏━━┳━━┓
+║┌─╨─┐║ │╔═╧═╗│ │╒═╪═╕│ ┃┌─╂─┐┃
+║│╲ ╱│║ │║╲╲╲║│ ││ │ ││ ┃│ ╿ │┃
+╠╡ ╳ ╞╣ ├╢╱╱╱╟┤ ├┼─┼─┼┤ ┣┿╾┼╼┿┫
+║│╱ ╲│║ │║╲╲╲║│ ││ │ ││ ┃│ ╽ │┃
+║└─╥─┘║ │╚═╤═╝│ │╘═╪═╛│ ┃└─╂─┘┃
+╚══╩══╝ └──┴──┘ ╰──┴──╯ ┗━━┻━━┛
+
+░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░
+▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░
+▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒
+█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓
+▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█
+▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓
+░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒
+░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░
+
+  ╱╲╱╲╱╲╳╳
+ ╱  ╲╱╲╱╳╳
+ ╲  ╱╲╱╲╳╳
+  ╲╱╲╱╲╱╳╳
+</template>
+
+<pre></pre>
+
+<script type="module">
+
+	import { calcMetrics } from "/src/run.js"
+
+	const pattern = document.querySelector('template').innerHTML;
+
+	const p = document.querySelector("pre")
+	const weights = [300, 400, 700]
+	const s1 = getComputedStyle(p)
+
+	document.fonts.ready.then((e) => {
+
+		const s2 = getComputedStyle(p)
+		const m = calcMetrics(p)
+		const s = document.createElement("span")
+		s.style.display="block"
+		s.innerHTML =  JSON.stringify(m, null, 4)
+		p.appendChild(s)
+		for (let w of weights) {
+			const s = document.createElement("span")
+			s.classList.add("test")
+			s.innerHTML = 'weight: ' + w + '\n' + pattern
+			s.style.fontWeight = w
+			p.appendChild(s)
+		}
+
+	})
+
+</script>
+
+</body>
+</html>
