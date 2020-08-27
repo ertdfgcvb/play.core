@@ -20,357 +20,310 @@ const defaultSettings = {
 	weight       : '',
 }
 
-// Program tester
-export function test(program) {
-
-	const context = Object.freeze({
-		cycle  : 0,
-		frame  : 0,
-		time   : 0,
-		fps    : 0,
-		cols   : program.settings || 5,
-		rows   : program.settings || 5,
-		width  : 100,
-		height : 100,
-		aspect : 0.666
-	})
-
-	const cursor = Object.freeze({
-		x       : 0,
-		y       : 0,
-		pressed : false
-	})
-
-	const buffers = {
-		state : [],
-		data  : []  // user data
-	}
-
-	try {
-		console.log("testing")
-		if (typeof program.pre == 'function')  program.pre(context, cursor, buffers)
-		if (typeof program.main == 'function') program.main({x:0, y:0, index:0}, context, cursor, buffers)
-		if (typeof program.post == 'function') program.post(context, cursor, buffers)
-	} catch (err){
-		console.warn("-- error in test")
-		console.error(err.message)
-		return false
-	}
-
-	return true
-}
-
 // Program runner
 // Takes a program object (usually an imported module),
 // an Element object (usually a <pre> element) as rendering target
 // and some settings (see above) as arguments.
 // The program object should contain at least a main(), pre() or post() function.
 export function run(program, element, runSettings = {}) {
+	return new Promise(function(resolve, reject) {
+		// Merge of user- and default settings
+		const settings = {...defaultSettings, ...runSettings, ...program.settings}
 
-	// Merge of user- and default settings
-	const settings = {...defaultSettings, ...runSettings, ...program.settings}
-
-	// State is stored in local storage and will loaded on program launch
-	// if settings.restoreState == true.
-	// The purpose of this is to live edit the code without resetting
-	// time and the frame counter.
-	const state = {
-		time  : 0, // The time in ms
-		frame : 0, // The frame number (int)
-		cycle : 0  // An cycle count for debugging purposes
-	}
-
-	// Name of local storage key
-	const LOCAL_STORAGE_KEY_STATE = 'currentState'
-
-	if (settings.restoreState) {
-		storage.restore(LOCAL_STORAGE_KEY_STATE, state)
-		state.cycle++ // Keep track of the cycle count for debugging purposes
-	}
-
-	// Input pointer updated by DOM evenets
-	const pointer = {
-		x       : 0,
-		y       : 0,
-		px      : 0,
-		py      : 0,
-		pressed : false
-	}
-
-	element.addEventListener('pointermove', e => {
-		const rect = element.getBoundingClientRect()
-		pointer.px = pointer.x
-		pointer.py = pointer.y
-		pointer.x = e.clientX - rect.left
-		pointer.y = e.clientY - rect.top
-	})
-
-	element.addEventListener('pointerdown', e => {
-		pointer.pressed = true
-	})
-
-	element.addEventListener('pointerup', e => {
-		pointer.pressed = false
-	})
-
-	// A few CSS fixes
-	element.style.fontVariantLigatures = 'none'
-	element.style.fontOpticalSizing = 'none'
-	element.style.fontSynthesis = 'none'
-	element.style.fontStrech = 'normal'
-	disableSelect(element)
-
-	// Variable which holds some font metrics informations.
-	// It'll be populated after all the fonts are loaded.
-	// See additional notes below.
-	let metrics
-
-	// Method to load a font via the FontFace object.
-	// The load promise works 100% of the times.
-	// But a definition of the font via CSS is preferable and more flexible.
-	/*
-	var font = new FontFace('Simple Console', 'url(/css/fonts/simple/SimpleConsole-Light.woff)', { style: 'normal', weight: 400 })
-	font.load().then(function(f){
-		document.fonts.add(f)
-	  	element.style.fontFamily = font.family
-	  	element.fontVariantLigatures = 'none'
-		const ci = CSSinfo(element)
-		console.log(`Using font faimily: ${ci.fontFamily} @ ${ci.fontSize}/${ci.lineHeight}`)
-
-		metrics = calcMetrics(element)
-		element.style.lineHeight = Math.ceil(metrics.lineHeightf) + 'px'
-		console.log(`Metrics: cellWidth: ${metrics.cellWidth}, lineHeightf: ${metrics.lineHeightf}`)
-
-		requestAnimationFrame(loop)
-	})
-	*/
-
-	// The font may STILL not be loaded yet.
-	// The first run on Safari 13.1.1 never works.
-	// It is good after reload (cache related?)!
-	document.fonts.ready.then((e) => {
-		const ci = CSSinfo(element)
-		console.log(`Using font faimily: ${ci.fontFamily} @ ${ci.fontSize}/${ci.lineHeight}`)
-
-		// Metrics
-		metrics = calcMetrics(element)
-
-		// element.style.lineHeight = Math.ceil(metrics.lineHeightf) + 'px'
-		console.log(`Metrics: cellWidth: ${metrics.cellWidth}, lineHeightf: ${metrics.lineHeightf}`)
-
-		requestAnimationFrame(loop)
-	})
-
-	// Time sample to calculate precise offset
-	let timeSample = 0
-	// Previous time step to increment state.time (with state.time initial offset)
-	let ptime = 0
-	const interval   = 1000 / settings.fps
-	const timeOffset = state.time
-
-	// FPS object (keeps some state for a precise FPS measure)
-	const fps = new FPS()
-
-	// no value cell is just a space
-	const EMPTY_CELL = ' '
-
-	// Buffers needed for the final DOM rendering,
-	// each array entry represents a cell.
-	// An extra data buffer for 'user data' is provided and can be modified
-	// in runtime.
-	// NOTE: extra size infos will be attached at each frame update.
-	const buffers = {
-		state : [],
-		data  : []  // user data
-	}
-
-	// Main program loop
-	function loop(t) {
-
-		// Run once or many times depending on settings.once
-		const af = settings.once ? null : requestAnimationFrame(loop)
-
-		// Timing
-		const delta = t - timeSample
-		if (delta > interval) {
-			timeSample = t - delta % interval   // adjust timeSample
-			state.time = t + timeOffset         // increment time + initial offs
-			state.frame++                       // increment frame counter
-			storage.store(LOCAL_STORAGE_KEY_STATE, state)  // store state
-		} else {
-			return
+		// State is stored in local storage and will loaded on program launch
+		// if settings.restoreState == true.
+		// The purpose of this is to live edit the code without resetting
+		// time and the frame counter.
+		const state = {
+			time  : 0, // The time in ms
+			frame : 0, // The frame number (int)
+			cycle : 0  // An cycle count for debugging purposes
 		}
 
-		// Context data
-		const rect  = element.getBoundingClientRect()
-		const cols = settings.cols || Math.floor(rect.width / metrics.cellWidth)
-		const rows = settings.rows || Math.floor(rect.height / metrics.lineHeight)
-		const context = Object.freeze({
-			cycle  : state.cycle,
-			frame  : state.frame,
-			time   : state.time,
-			fps    : fps.update(t),
-			cols   : cols,
-			rows   : rows,
-			width  : rect.width,
-			height : rect.height,
-			aspect : metrics.aspect
-		})
+		// Name of local storage key
+		const LOCAL_STORAGE_KEY_STATE = 'currentState'
 
-		// Cursor update
-		const cursor = Object.freeze({
-			x       : pointer.x / metrics.cellWidth,  // Not floored,
-			y       : pointer.y / metrics.lineHeight, // for better precision.
-			pressed : pointer.pressed,
-		})
-
-		// Update buffer attributes
-		buffers.cols = cols
-		buffers.rows = rows
-		buffers.length = cols * rows
-
-		// Default cell inserted in case of undefined / null
-		const defaultCell = Object.freeze({
-			color      : settings.color,
-			background : settings.background,
-			weight     : settings.weight,
-		})
-
-		let error = 0
-
-		// 1. ------------------------------------------------------------------
-		// Call pre(), if defined
-		try {
-			if (typeof program.pre == 'function') {
-				program.pre(context, cursor, buffers)
-			}
-		} catch (err){
-			console.warn("-- error in pre()")
-			console.error(err.message)
-			// Something went wrong... stop the loop (and console flood)
-			cancelAnimationFrame(af)
-			return
+		if (settings.restoreState) {
+			storage.restore(LOCAL_STORAGE_KEY_STATE, state)
+			state.cycle++ // Keep track of the cycle count for debugging purposes
 		}
 
-		// Count the most frequent colors, they will be assigned
-		// to the container.
-		// This is probably an useless micro-optimization.
+		// Input pointer updated by DOM evenets
+		const pointer = {
+			x       : 0,
+			y       : 0,
+			px      : 0,
+			py      : 0,
+			pressed : false
+		}
+
+		element.addEventListener('pointermove', e => {
+			const rect = element.getBoundingClientRect()
+			pointer.px = pointer.x
+			pointer.py = pointer.y
+			pointer.x = e.clientX - rect.left
+			pointer.y = e.clientY - rect.top
+		})
+
+		element.addEventListener('pointerdown', e => {
+			pointer.pressed = true
+		})
+
+		element.addEventListener('pointerup', e => {
+			pointer.pressed = false
+		})
+
+		// A few CSS fixes
+		element.style.fontVariantLigatures = 'none'
+		element.style.fontOpticalSizing = 'none'
+		element.style.fontSynthesis = 'none'
+		element.style.fontStrech = 'normal'
+		disableSelect(element)
+
+		// Variable which holds some font metrics informations.
+		// It'll be populated after all the fonts are loaded.
+		// See additional notes below.
+		let metrics
+
+		// Method to load a font via the FontFace object.
+		// The load promise works 100% of the times.
+		// But a definition of the font via CSS is preferable and more flexible.
 		/*
-		let colorMap      = { count : {}, max : 0, val : settings.color }
-		let backgroundMap = { count : {}, max : 0, val : settings.background }
-		let weightMap     = { count : {}, max : 0, val : settings.weight }
+		var font = new FontFace('Simple Console', 'url(/css/fonts/simple/SimpleConsole-Light.woff)', { style: 'normal', weight: 400 })
+		font.load().then(function(f){
+			document.fonts.add(f)
+		  	element.style.fontFamily = font.family
+		  	element.fontVariantLigatures = 'none'
+			const ci = CSSinfo(element)
+			console.log(`Using font faimily: ${ci.fontFamily} @ ${ci.fontSize}/${ci.lineHeight}`)
+
+			metrics = calcMetrics(element)
+			element.style.lineHeight = Math.ceil(metrics.lineHeightf) + 'px'
+			console.log(`Metrics: cellWidth: ${metrics.cellWidth}, lineHeightf: ${metrics.lineHeightf}`)
+
+			requestAnimationFrame(loop)
+		})
 		*/
 
-		// 2. ------------------------------------------------------------------
-		// Call main(), if defined
-		try {
-			if (typeof program.main == 'function') {
+		// The font may STILL not be loaded yet.
+		// The first run on Safari 13.1.1 never works.
+		// It is good after reload (cache related?)!
+		document.fonts.ready.then((e) => {
+			const ci = CSSinfo(element)
+			// console.log(`Using font faimily: ${ci.fontFamily} @ ${ci.fontSize}/${ci.lineHeight}`)
+
+			// Metrics
+			metrics = calcMetrics(element)
+
+			// element.style.lineHeight = Math.ceil(metrics.lineHeightf) + 'px'
+			// console.log(`Metrics: cellWidth: ${metrics.cellWidth}, lineHeightf: ${metrics.lineHeightf}`)
+
+			requestAnimationFrame(loop)
+		})
+
+		// Time sample to calculate precise offset
+		let timeSample = 0
+		// Previous time step to increment state.time (with state.time initial offset)
+		let ptime = 0
+		const interval   = 1000 / settings.fps
+		const timeOffset = state.time
+
+		// FPS object (keeps some state for a precise FPS measure)
+		const fps = new FPS()
+
+		// no value cell is just a space
+		const EMPTY_CELL = ' '
+
+		// Buffers needed for the final DOM rendering,
+		// each array entry represents a cell.
+		// An extra data buffer for 'user data' is provided and can be modified
+		// in runtime.
+		// NOTE: extra size infos will be attached at each frame update.
+		const buffers = {
+			state : [],
+			data  : []  // user data
+		}
+
+		// Main program loop
+		function loop(t) {
+
+			// Run once or many times depending on settings.once
+			const af = settings.once ? null : requestAnimationFrame(loop)
+
+			// Timing
+			const delta = t - timeSample
+			if (delta > interval) {
+				timeSample = t - delta % interval   // adjust timeSample
+				state.time = t + timeOffset         // increment time + initial offs
+				state.frame++                       // increment frame counter
+				storage.store(LOCAL_STORAGE_KEY_STATE, state)  // store state
+			} else {
+				return
+			}
+
+			// Context data
+			const rect  = element.getBoundingClientRect()
+			const cols = settings.cols || Math.floor(rect.width / metrics.cellWidth)
+			const rows = settings.rows || Math.floor(rect.height / metrics.lineHeight)
+			const context = Object.freeze({
+				cycle  : state.cycle,
+				frame  : state.frame,
+				time   : state.time,
+				fps    : fps.update(t),
+				cols   : cols,
+				rows   : rows,
+				width  : rect.width,
+				height : rect.height,
+				aspect : metrics.aspect
+			})
+
+			// Cursor update
+			const cursor = Object.freeze({
+				x       : pointer.x / metrics.cellWidth,  // Not floored,
+				y       : pointer.y / metrics.lineHeight, // for better precision.
+				pressed : pointer.pressed,
+			})
+
+			// Update buffer attributes
+			buffers.cols = cols
+			buffers.rows = rows
+			buffers.length = cols * rows
+
+			// Default cell inserted in case of undefined / null
+			const defaultCell = Object.freeze({
+				color      : settings.color,
+				background : settings.background,
+				weight     : settings.weight,
+			})
+
+			let error = 0
+
+			// 1. ------------------------------------------------------------------
+			// Call pre(), if defined
+			try {
+				if (typeof program.pre == 'function') {
+					program.pre(context, cursor, buffers)
+				}
+			} catch (error){
+				cancelAnimationFrame(af)
+				reject({ message : '---- Error in pre()', error })
+			}
+
+			// Count the most frequent colors, they will be assigned
+			// to the container.
+			// This is probably an useless micro-optimization.
+			/*
+			let colorMap      = { count : {}, max : 0, val : settings.color }
+			let backgroundMap = { count : {}, max : 0, val : settings.background }
+			let weightMap     = { count : {}, max : 0, val : settings.weight }
+			*/
+
+			// 2. ------------------------------------------------------------------
+			// Call main(), if defined
+			try {
+				if (typeof program.main == 'function') {
+					for (let j=0; j<rows; j++) {
+						const offs = j * cols
+						for (let i=0; i<cols; i++) {
+							const idx = i + offs
+							const out = program.main({x:i, y:j, index:idx}, context, cursor, buffers)
+							const cell = typeof out == 'object' ? {...defaultCell, ...out} : {...defaultCell, char : out}
+							cell.char = cell.char || EMPTY_CELL // Make sure that char is set
+							buffers.state[idx] = cell
+						}
+					}
+				}
+			} catch (error){
+				cancelAnimationFrame(af)
+				reject({ message : '---- Error in main()', error })
+			}
+
+			// 3. ------------------------------------------------------------------
+			// Call post(), if defined
+			try {
+				if (typeof program.post == 'function') {
+					program.post(context, cursor, buffers)
+				}
+			} catch (error){
+				cancelAnimationFrame(af)
+				reject({ message : '---- Error in post()', error })
+			}
+
+			// DOM rows update: expand lines if necessary
+			// TODO: also benchmark a complete 'innerHTML' rewrite, could be faster?
+			while(element.childElementCount < rows) {
+				const span = document.createElement('span')
+				span.style.display = 'block'
+				element.appendChild(span)
+			}
+
+			// DOM rows update: shorten lines if necessary
+			// https://jsperf.com/innerhtml-vs-removechild/15
+			while(element.childElementCount > rows) {
+				element.removeChild(element.lastChild)
+			}
+
+			// Set the most used styles to the container
+			element.style.backgroundColor = settings.background
+			element.style.color = settings.color
+			element.style.fontWeight = settings.weight
+
+			// A bit of a cumbersome render-loop…
+			// A few notes: the fastest way I found to render the image
+			// is by manually write the markup into the parent node via .innerHTML;
+			// creating a node via .createElement and then popluate it resulted
+			// remarkably slower (even if more elegant for the CSS handling below).
+			try {
 				for (let j=0; j<rows; j++) {
+					let html = '' // Accumulates the markup
+					let prevCell = defaultCell
+					let tagIsOpen = false
 					const offs = j * cols
 					for (let i=0; i<cols; i++) {
-						const idx = i + offs
-						const out = program.main({x:i, y:j, index:idx}, context, cursor, buffers)
-						const cell = typeof out == 'object' ? {...defaultCell, ...out} : {...defaultCell, char : out}
-						cell.char = cell.char || EMPTY_CELL // Make sure that char is set
-						buffers.state[idx] = cell
+
+						const currCell = buffers.state[i + offs]
+
+						// If there is a change in style a new span has to be inserted
+						if (!isSameCellStyle(currCell, prevCell)) {
+							// Close the previous tag
+							if (tagIsOpen) html += '</span>'
+
+							const c = currCell.color === settings.color ? null : currCell.color
+							const b = currCell.background === settings.background ? null : currCell.background
+							const w = currCell.weight === settings.weight ? null : currCell.weight
+
+							// Accumulate the CSS inline attribute.
+							// Beginning space and double quotes are important (for string compare below):
+							let css = ''
+							if (c) css += 'color:' + c + ';'
+							if (b) css += 'background:' + b + ';'
+							if (w) css += 'font-weight:' + w + ';'
+							if (css) css = ' style="' + css + '"'
+							html += '<span' + css + '>'
+							tagIsOpen = true
+						}
+						html += currCell.char
+						prevCell = currCell
+					}
+					if (tagIsOpen) html += "</span>"
+					// String comparison: faster than a DOM reflow
+					// in case of small changes in the doc or a static image.
+					// NOTE: Check at buffer level? Probably faster & more accurate,
+					//       but difficult to perform because user can manipulate it
+					//       oustide the main loop? Maybe try double buffering + compare?
+					if (html != element.childNodes[j].innerHTML) {
+						element.childNodes[j].innerHTML = html
 					}
 				}
+			} catch (error){
+				cancelAnimationFrame(af)
+				reject({ message : '---- Error in renderloop', error })
 			}
-		} catch (err){
-			console.warn("-- error in main()")
-			console.error(err.message)
-			// Something went wrong... stop the loop (and console flood)
-			cancelAnimationFrame(af)
-			return
+
+			// When we reach the end of the first draw call we can resolve the promise
+			resolve(true)
 		}
-
-		// 3. ------------------------------------------------------------------
-		// Call post(), if defined
-		try {
-			if (typeof program.post == 'function') {
-				program.post(context, cursor, buffers)
-			}
-		} catch (err){
-			console.warn("-- error in post()")
-			console.error(err.message)
-			// Something went wrong... stop the loop (and console flood)
-			cancelAnimationFrame(af)
-			return
-		}
-
-		// DOM rows update: expand lines if necessary
-		// TODO: also benchmark a complete 'innerHTML' rewrite, could be faster?
-		while(element.childElementCount < rows) {
-			const span = document.createElement('span')
-			span.style.display = 'block'
-			element.appendChild(span)
-		}
-
-		// DOM rows update: shorten lines if necessary
-		// https://jsperf.com/innerhtml-vs-removechild/15
-		while(element.childElementCount > rows) {
-			element.removeChild(element.lastChild)
-		}
-
-		// Set the most used styles to the container
-		element.style.backgroundColor = settings.background
-		element.style.color = settings.color
-		element.style.fontWeight = settings.weight
-
-		// A bit of a cumbersome render-loop…
-		// A few notes: the fastest way I found to render the image
-		// is by manually write the markup into the parent node via .innerHTML;
-		// creating a node via .createElement and then popluate it resulted
-		// remarkably slower (even if more elegant for the CSS handling below).
-		try {
-			for (let j=0; j<rows; j++) {
-				let html = '' // Accumulates the markup
-				let prevCell = defaultCell
-				let tagIsOpen = false
-				const offs = j * cols
-				for (let i=0; i<cols; i++) {
-
-					const currCell = buffers.state[i + offs]
-
-					// If there is a change in style a new span has to be inserted
-					if (!isSameCellStyle(currCell, prevCell)) {
-						// Close the previous tag
-						if (tagIsOpen) html += '</span>'
-
-						const c = currCell.color === settings.color ? null : currCell.color
-						const b = currCell.background === settings.background ? null : currCell.background
-						const w = currCell.weight === settings.weight ? null : currCell.weight
-
-						// Accumulate the CSS inline attribute.
-						// Beginning space and double quotes are important (for string compare below):
-						let css = ''
-						if (c) css += 'color:' + c + ';'
-						if (b) css += 'background:' + b + ';'
-						if (w) css += 'font-weight:' + w + ';'
-						if (css) css = ' style="' + css + '"'
-						html += '<span' + css + '>'
-						tagIsOpen = true
-					}
-					html += currCell.char
-					prevCell = currCell
-				}
-				if (tagIsOpen) html += "</span>"
-				// String comparison: faster than a DOM reflow
-				// in case of small changes in the doc or a static image.
-				// NOTE: Check at buffer level? Probably faster & more accurate,
-				//       but difficult to perform because user can manipulate it
-				//       oustide the main loop? Maybe try double buffering + compare?
-				if (html != element.childNodes[j].innerHTML) {
-					element.childNodes[j].innerHTML = html
-				}
-			}
-		} catch (err){
-			console.warn("-- error in the render loop")
-			console.error(err.message)
-			cancelAnimationFrame(af)
-			return
-		}
-	}
+	})
 }
 
 // -- Helpers ------------------------------------------------------------------
