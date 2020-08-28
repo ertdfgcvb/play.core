@@ -3,14 +3,14 @@ Runner
 */
 
 import FPS from './fps.js'
-import storage from "./storage.js"
+import storage from './storage.js'
 
-// Default settings for the program runner
+// Default settings for the program runner.
 // They can be overwritten by the parameters of the runner
 // or as a settings object exported by the program (in this order).
 const defaultSettings = {
 	restoreState : false, // will store the "state" object in local storage
-                          // this is handy for live-coding situations
+	                      // this is handy for live-coding situations
 	cols         : 0,     // number of columns, 0 is equivalent to 'auto'
 	rows         : 0,     // number of columns, 0 is equivalent to 'auto'
 	once         : false, // if set to true the renderer will run only once
@@ -20,12 +20,16 @@ const defaultSettings = {
 	weight       : '',
 }
 
-// Program runner
+// Program runner.
 // Takes a program object (usually an imported module),
 // an Element object (usually a <pre> element) as rendering target
 // and some settings (see above) as arguments.
 // The program object should contain at least a main(), pre() or post() function.
 export function run(program, element, runSettings = {}) {
+
+	// Everything is wrapped inside a promise which will reject
+	// in case of some errors (try / catch).
+	// If the program reaches the bottom of the first frame the promise is resolved.
 	return new Promise(function(resolve, reject) {
 		// Merge of user- and default settings
 		const settings = {...defaultSettings, ...runSettings, ...program.settings}
@@ -52,7 +56,7 @@ export function run(program, element, runSettings = {}) {
 		const pointer = {
 			x       : 0,
 			y       : 0,
-			px      : 0,
+			px      : 0, // NOTE: px and py are unused for now
 			py      : 0,
 			pressed : false
 		}
@@ -81,7 +85,7 @@ export function run(program, element, runSettings = {}) {
 		disableSelect(element)
 
 		// Variable which holds some font metrics informations.
-		// It'll be populated after all the fonts are loaded.
+		// It’ll be populated after all the fonts are loaded.
 		// See additional notes below.
 		let metrics
 
@@ -110,14 +114,12 @@ export function run(program, element, runSettings = {}) {
 		// It is good after reload (cache related?)!
 		document.fonts.ready.then((e) => {
 			const ci = CSSinfo(element)
-			// console.log(`Using font faimily: ${ci.fontFamily} @ ${ci.fontSize}/${ci.lineHeight}`)
-
-			// Metrics
 			metrics = calcMetrics(element)
-
 			// element.style.lineHeight = Math.ceil(metrics.lineHeightf) + 'px'
+			// console.log(`Using font faimily: ${ci.fontFamily} @ ${ci.fontSize}/${ci.lineHeight}`)
 			// console.log(`Metrics: cellWidth: ${metrics.cellWidth}, lineHeightf: ${metrics.lineHeightf}`)
 
+			// Boot!
 			requestAnimationFrame(loop)
 		})
 
@@ -125,18 +127,18 @@ export function run(program, element, runSettings = {}) {
 		let timeSample = 0
 		// Previous time step to increment state.time (with state.time initial offset)
 		let ptime = 0
-		const interval   = 1000 / settings.fps
+		const interval = 1000 / settings.fps
 		const timeOffset = state.time
 
 		// FPS object (keeps some state for a precise FPS measure)
 		const fps = new FPS()
 
-		// no value cell is just a space
+		// A cell with no value at all is just a space
 		const EMPTY_CELL = ' '
 
 		// Buffers needed for the final DOM rendering,
 		// each array entry represents a cell.
-		// An extra data buffer for 'user data' is provided and can be modified
+		// An extra data buffer for ‘user data’ is provided and can be modified
 		// in runtime.
 		// NOTE: extra size infos will be attached at each frame update.
 		const buffers = {
@@ -196,9 +198,7 @@ export function run(program, element, runSettings = {}) {
 				weight     : settings.weight,
 			})
 
-			let error = 0
-
-			// 1. ------------------------------------------------------------------
+			// 1. --------------------------------------------------------------
 			// Call pre(), if defined
 			try {
 				if (typeof program.pre == 'function') {
@@ -209,16 +209,7 @@ export function run(program, element, runSettings = {}) {
 				reject({ message : '---- Error in pre()', error })
 			}
 
-			// Count the most frequent colors, they will be assigned
-			// to the container.
-			// This is probably an useless micro-optimization.
-			/*
-			let colorMap      = { count : {}, max : 0, val : settings.color }
-			let backgroundMap = { count : {}, max : 0, val : settings.background }
-			let weightMap     = { count : {}, max : 0, val : settings.weight }
-			*/
-
-			// 2. ------------------------------------------------------------------
+			// 2. --------------------------------------------------------------
 			// Call main(), if defined
 			try {
 				if (typeof program.main == 'function') {
@@ -238,7 +229,7 @@ export function run(program, element, runSettings = {}) {
 				reject({ message : '---- Error in main()', error })
 			}
 
-			// 3. ------------------------------------------------------------------
+			// 3. --------------------------------------------------------------
 			// Call post(), if defined
 			try {
 				if (typeof program.post == 'function') {
@@ -280,7 +271,6 @@ export function run(program, element, runSettings = {}) {
 					let tagIsOpen = false
 					const offs = j * cols
 					for (let i=0; i<cols; i++) {
-
 						const currCell = buffers.state[i + offs]
 
 						// If there is a change in style a new span has to be inserted
@@ -305,7 +295,7 @@ export function run(program, element, runSettings = {}) {
 						html += currCell.char
 						prevCell = currCell
 					}
-					if (tagIsOpen) html += "</span>"
+					if (tagIsOpen) html += '</span>'
 					// String comparison: faster than a DOM reflow
 					// in case of small changes in the doc or a static image.
 					// NOTE: Check at buffer level? Probably faster & more accurate,
@@ -320,7 +310,7 @@ export function run(program, element, runSettings = {}) {
 				reject({ message : '---- Error in renderloop', error })
 			}
 
-			// When we reach the end of the first draw call we can resolve the promise
+			// The end of the first frame is reached: the promise can be resolved
 			resolve(true)
 		}
 	})
@@ -354,11 +344,11 @@ function enableSelect(el) {
 export function copyContent(el){
 	enableSelect(el)
 	const range = document.createRange()
-    range.selectNode(el)
-    const sel = window.getSelection()
-    sel.removeAllRanges()
-    sel.addRange(range)
-	document.execCommand("copy")
+	range.selectNode(el)
+	const sel = window.getSelection()
+	sel.removeAllRanges()
+	sel.addRange(range)
+	document.execCommand('copy')
 	disableSelect(el)
 }
 
@@ -366,24 +356,25 @@ export function copyContent(el){
 // supposes CSS font-family is monospace.
 // Returns an immutable (frozen) object.
 export function calcMetrics(el) {
-	const test = document.createElement("span")
-	el.appendChild(test)
+	const test = document.createElement('span')
+	el.appendChild(test) // Must be visible!
 
-	const test_char = 'X'
-	const num = 100
+	const testChar = 'X'
+	const num = 100 // How wide, how high?
 
-	// metrics H
-	let out = ""
-	for (let i=0; i<num; i++) out += test_char
+	// Metrics H
+	let out = ''
+	for (let i=0; i<num; i++) out += testChar
 	test.innerHTML = out
 	const w = test.getBoundingClientRect().width / num
 
-	// metrics V
-	out = ""
-	for (let i=0; i<num; i++) out += "<span>" + test_char + "</span><br>"
+	// Metrics V
+	out = ''
+	for (let i=0; i<num; i++) out += '<span>' + testChar + '</span><br>'
 	test.innerHTML = out
 	const h = test.getBoundingClientRect().height / num
 
+	// Clean up
 	el.removeChild(test)
 
 	return Object.freeze({
@@ -398,9 +389,9 @@ export function calcMetrics(el) {
 function CSSinfo(el){
 	const style = window.getComputedStyle(el)
 	return Object.freeze({
-		fontFamily : style.getPropertyValue("font-family"),
-		lineHeight : style.getPropertyValue("line-height"),
-		fontSize   : style.getPropertyValue("font-size"),
+		fontFamily : style.getPropertyValue('font-family'),
+		lineHeight : style.getPropertyValue('line-height'),
+		fontSize   : style.getPropertyValue('font-size'),
 	})
 }
 
