@@ -5,7 +5,7 @@
 META-Enter  : run
 META-S      : save a new version (locally, with permalink)
 META-Period : show/hide editor
-META-U      : upload a version to the server (needs a new @name and @title)
+META-K      : upload a version to the server (needs a new @name and @title)
 
 Where META can be the CMD, OPT or CTRL key
 Use CRTL-Enter on macOS to avoid inserting a new line
