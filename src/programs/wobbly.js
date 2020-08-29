@@ -61,6 +61,7 @@ export function main(coord, context, cursor, buffer){
 		char       : charMap[index],
 		color      : k < 0.4 ? 'orangered' : 'royalblue',
 		// background : coord.y % 2 ? 'white' : 'cornsilk'
+		background : 'cornsilk'
 	}
 }
 
