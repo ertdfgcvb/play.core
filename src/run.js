@@ -191,7 +191,7 @@ export function run(program, element, runSettings = {}) {
 			buffers.rows = rows
 			buffers.length = cols * rows
 
-			// Default cell inserted in case of undefined / null
+			// Default cellstyle inserted in case of undefined / null
 			const defaultCell = Object.freeze({
 				color      : settings.color,
 				background : settings.background,
@@ -240,6 +240,9 @@ export function run(program, element, runSettings = {}) {
 				reject({ message : '---- Error in post()', error })
 			}
 
+			// 4. --------------------------------------------------------------
+			// Renderloop
+
 			// DOM rows update: expand lines if necessary
 			// TODO: also benchmark a complete 'innerHTML' rewrite, could be faster?
 			while(element.childElementCount < rows) {
@@ -271,7 +274,7 @@ export function run(program, element, runSettings = {}) {
 					let tagIsOpen = false
 					const offs = j * cols
 					for (let i=0; i<cols; i++) {
-						const currCell = buffers.state[i + offs]
+						const currCell = buffers.state[i + offs] || {...defaultCell, char : EMPTY_CELL}
 
 						// If there is a change in style a new span has to be inserted
 						if (!isSameCellStyle(currCell, prevCell)) {
