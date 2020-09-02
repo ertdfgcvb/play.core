@@ -48,6 +48,11 @@ export function mix(v1, v2, a){
 	return v1 * (1 - a) + v2 * a
 }
 
+// GLSL step
+function step(edge, x) {
+	return (x < edge ? 0 : 1)
+}
+
 // GLSL smoothstep
 // https://en.wikipedia.org/wiki/Smoothstep
 export function smoothstep(edge0, edge1, t) {
@@ -56,9 +61,14 @@ export function smoothstep(edge0, edge1, t) {
 }
 
 // GLSL smootherstep
-// https://en.wikipedia.org/wiki/Smoothstep
 export function smootherstep(edge0, edge1, t) {
   const x = clamp((t - edge0) / (edge1 - edge0), 0, 1)
   return x * x * x * (x * (x * 6 - 15) + 10)
 }
+
+// GLSL modulo
+function mod(a, b) {
+	return a % b
+}
+
 

@@ -260,3 +260,11 @@ export function min(a, b, out) {
 	return out
 }
 
+// Returns the fractional part of the vector (component-wise)
+export function fract(a, out) {
+	out = out || vec2(0, 0)
+	out.x = out.x - Math.floor(out.x)
+	out.y = out.y - Math.floor(out.y)
+	out.z = out.z - Math.floor(out.z)
+	return out
+}
