@@ -3,92 +3,20 @@ Camera module
 TODO: add description
 */
 
-import { map } from "../modules/num.js"
+import { map } from "./num.js"
+import { ImageBuffer } from './imagebuffer.js'
 
-let video, canvas, ctx
-const buf = []
+let video, imgbuf
 
 export default {
-	init,
-	update,
-	getGray,
-	normalize,
+	init
 }
 
 function init(){
 	// Avoid double init of video object
 	video = video || getUserMedia()
-	canvas = canvas || document.createElement("canvas")
-	ctx = ctx || canvas.getContext('2d')
-	return {
-		canvas,
-		video
-	}
-}
-
-function update(context, scale=1.0){
-
-	const w  = context.cols
-	const h  = context.rows
-	const va = video.videoWidth / video.videoHeight // video aspect
-	const ma = context.aspect
-	const ca = w / h
-
-	// Adjust the canvas size to the context size
-	canvas.width  = w
-	canvas.height = h
-
-	// Always 'cover'
-	let dw, dh
-	if (va > ca * ma) {
-		dw = h / ma * va
-		dh = h / ma
-	} else {
-		dw = w
-		dh = w / va
-	}
-
-	// Update the canvas with correct aspect ratios
-	const sx = scale
-	const sy = scale * ma // adjust aspect
-	ctx.save()
-	ctx.translate(w/2, h/2)
-	ctx.scale(-sx, sy)   // flip for mirror mode
-	ctx.drawImage(video, -dw/2, -dh/2, dw, dh)
-	ctx.restore()
-}
-
-function getGray(target){
-	target = target || buf
-	const w = canvas.width
-	const h = canvas.height
-	const data = ctx.getImageData(0, 0, w, h).data
-	let idx = 0
-	for (let i=0; i<data.length; i += 4) {
-		// https://en.wikipedia.org/wiki/Grayscale
-		const v = data[i] * 0.2126 + data[i+1] * 0.7152 + data[i+2] * 0.0722
-		target[idx++] = v / 255.0
-	}
-	// Chop excessive length, not really necessary…
-	const len = w * h
-	if (target.length > len) target.length = len
-	return target
-}
-
-function normalize(target){
-	target = target || buf
-	let min = 1.0
-	let max = 0.0
-	for (let i=0; i<target.length; i++) {
-		min = Math.min(target[i], min)
-		max = Math.max(target[i], max)
-	}
-	for (let i=0; i<target.length; i++) {
-		target[i] = map(target[i], min, max, 0, 1)
-	}
-	// return target.map( v => {
-	//     return map(v, min, max, 0, 1)
-	// })
+	imgbuf = imgbuf || new ImageBuffer(video)
+	return imgbuf
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia

@@ -21,35 +21,25 @@ Type ?video night
 to switch to dark mode for the editor.
 */
 
-import { sort } from "/src/modules/sort.js"
+import {sort} from "/src/modules/sort.js"
+import {map} from "/src/modules/num.js"
 import cam from "/src/modules/camera.js"
+
+const c = cam.init()
+// Debug:
+// c.display(document.body, 10, 10)
 
 const chars = sort(" .x?▁▂▃▄▅▆▇█".split(''))
 
-const c = cam.init()
-
-// Debug:
-// c.canvas.style.position = "absolute"
-// c.canvas.style.left = "0"
-// c.canvas.style.top = "0"
-// document.body.appendChild(c.canvas)
-
 export function pre(context, cursor, buffers){
-    cam.update(context)
-    cam.getGray(buffers.data)
-    cam.normalize(buffers.data)
+    c.cover(context).gray().normalize().mirrorX().write(buffers.data)
 }
 
 export function main(coord, context, cursor, buffers){
     // Coord also contains the index of each box:
-    const i = coord.x + coord.y * context.cols
-    const c = buffers.data[i]
+    const c = buffers.data[coord.index]
     const index = Math.floor(c * chars.length)
-    return {
-        char       : chars[index],
-        color      : 'black',
-        background : 'white'
-    }
+    return chars[index]
 }
 
 import { drawInfo } from "/src/modules/drawbox.js"
