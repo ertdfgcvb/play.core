@@ -2,9 +2,7 @@
 @author No1
 @title  Sin Sin
 @desc   inspired by https://www.shadertoy.com/view/MdXGDH
-
 [header]
-
 */
 
 import {vec2, dot, add, sub, length} from '/src/modules/vec2.js'

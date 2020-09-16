@@ -2,9 +2,7 @@
 @author No1
 @title  Name
 @desc   Write your name
-
 [header]
-
 */
 
 const TAU = Math.PI * 2

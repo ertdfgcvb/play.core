@@ -2,9 +2,7 @@
 @author No1
 @title  Camera RGB
 @desc   Color input from camera (warning: slow FPS)
-
 [header]
-
 */
 
 import {map} from "/src/modules/num.js"

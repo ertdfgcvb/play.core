@@ -2,11 +2,8 @@
 @author No1
 @title  Cursor
 @desc   Example with mouse cursor
-
 [header]
-
 */
-
 
 import { sdCircle, opSmoothUnion } from "/src/modules/sdf.js"
 import { sub, vec2 } from "/src/modules/vec2.js"

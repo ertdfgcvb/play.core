@@ -1,9 +1,7 @@
 /**
 @author No1
 @title  Chroma Spiral
-
 [header]
-
 */
 
 import { map } from '/src/modules/num.js'

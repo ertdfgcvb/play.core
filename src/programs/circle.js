@@ -2,11 +2,8 @@
 @author No1
 @title  Circle
 @desc   How to draw a circle
-
 [header]
-
 */
-
 
 import { sdCircle, opSmoothUnion, } from "/src/modules/sdf.js"
 import { sort } from "/src/modules/sort.js"

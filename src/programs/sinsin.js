@@ -2,11 +2,8 @@
 @author No1
 @title  Sin Sin
 @desc   Basic output
-
 [header]
-
 */
-
 
 // Globals have module scope
 const chars = "ABCxyz01═|+:. ".split('')

@@ -2,9 +2,7 @@
 @author No1
 @title  Camera grayscale
 @desc   Grayscale input from camera
-
 [header]
-
 */
 
 import {sort} from "/src/modules/sort.js"

@@ -2,9 +2,7 @@
 @author No1
 @title  Balls
 @desc   Draw smooth circles with SDF
-
 [header]
-
 */
 
 import { map } from "/src/modules/num.js"

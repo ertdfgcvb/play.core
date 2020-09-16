@@ -2,9 +2,7 @@
 @author No1
 @title  Boxes
 @desc   Smooth SDF boxes
-
 [header]
-
 */
 
 import { map } from "/src/modules/num.js"
