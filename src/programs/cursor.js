@@ -1,25 +1,12 @@
 /**
 @author No1
 @title  Cursor
+@desc   Example with mouse cursor
 
-META-Enter  : run
-META-S      : save a new version (locally, with permalink)
-META-Period : show/hide editor
-META-K      : upload a version to the server (needs a new @name and @title)
+[header]
 
-Where META can be the CMD, OPT or CTRL key
-Use CRTL-Enter on macOS to avoid inserting a new line
-
-Type ?help
-anywhere (or edit the previous line) to open the manual for an overview
-about the playground, more commands like this and links to many examples.
-
-Type ?immediate on
-to enable immediate mode.
-
-Type ?video night
-to switch to dark mode for the editor.
 */
+
 
 import { sdCircle, opSmoothUnion } from "/src/modules/sdf.js"
 import { sub, vec2 } from "/src/modules/vec2.js"
