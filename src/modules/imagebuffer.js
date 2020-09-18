@@ -1,29 +1,26 @@
 /**
 An abstraction for images or video streams.
 NOTE: this is not a general purpose imaging class.
-The purpose is to offer a ready to use buffer (an array of grayscale or {r,g,b,a} values)
+The purpose is to offer a ready to use buffer (an array of {r,g,b,a,grey} values)
 with the size of the (ascii) context and adjusted aspect ratio.
 
-Image data is passed as the follwing:
+Image data is processed as the follwing:
 
-   0. source (canvas or video element)
--> 1. copy to a resized & adjusted canvas
--> 2. copy to array buffer (gray or rgba)
--> 3. manipulate the buffer (mirror, normalize, etc)
--> 4. write it to a destination or return it directly
+   0.  source (canvas or video element)
+-> 1a. copy to a resized & adjusted canvas
+-> 1b. copy to array buffer (color as object: rgba + gray)
+-> 2.  manipulate the buffer (mirror, normalize, etc)
+-> 3.  write it to a destination or return it directly
 
 Three main functions are implemented to resize / scale the source image:
 - cover(context, scale)
 - fit(context, scale)
 - copy(x, y, w, h)
 
-Two functions to transfer the canvas to an array
-- gray()
-- rgba()
-
 One of the above functions has to be called before buffer functions can be used
 - mirrorX()
-- normalize() // only for grayscale
+- normalize() // only for gray
+- qauntize()
 
 Typical use could be (video):
 
@@ -33,7 +30,7 @@ const c = cam.init() // The camera module returns an ImageBuffer object
 
 export function pre(asciiContext, pointer, buffers) {
 	const scale = 1.5 // zoom in slightly
-	c.cover(asciiContext, scale).gray().normalize().mirrorX().write(buffers.data)
+	c.cover(asciiContext, scale).normalize().mirrorX().write(buffers.data)
 }
 
 */
@@ -41,8 +38,10 @@ export function pre(asciiContext, pointer, buffers) {
 import { map } from './num.js'
 
 export const TYPE_EMPTY = Symbol()
-export const TYPE_RGBA  = Symbol()
 export const TYPE_GRAY  = Symbol()
+export const TYPE_RGB   = Symbol()
+export const TYPE_RGBA  = Symbol()
+export const TYPE_RGBAG = Symbol()
 export const MODE_COVER = Symbol()
 export const MODE_FIT   = Symbol()
 
@@ -59,7 +58,7 @@ export class ImageBuffer {
 		this.type = TYPE_EMPTY
 	}
 
-	// 1. ----------------------------------------------------------------------
+	// 1a + 1b -----------------------------------------------------------------
 
 	// Resizes the destination canvas to the size of the ascii context
 	// and covers it with the source image.
@@ -69,7 +68,9 @@ export class ImageBuffer {
 		this.canvas.width = context.cols
 		this.canvas.height = context.rows
 		centerImage(this.sourceCanvas, this.canvas, scale, context.aspect, MODE_COVER, false)
-		this.type = TYPE_EMPTY
+
+		toBuffer(this.canvas, this.buffer)
+		this.type = TYPE_RGBAG
 		return this
 	}
 
@@ -81,7 +82,9 @@ export class ImageBuffer {
 		this.canvas.width = context.cols
 		this.canvas.height = context.rows
 		centerImage(this.sourceCanvas, this.canvas, scale, context.aspect, MODE_FIT, false)
-		this.type = TYPE_EMPTY
+
+		toBuffer(this.canvas, this.buffer)
+		this.type = TYPE_RGBAG
 		return this
 	}
 
@@ -95,27 +98,13 @@ export class ImageBuffer {
 		ctx.fillStyle = 'black'
 		ctx.fillRect(0, 0, w, h)
 		ctx.drawImage(sourceCanvas, x, y, w, h)
-		this.type = TYPE_EMPTY
+
+		toBuffer(this.canvas, this.buffer)
+		this.type = TYPE_RGBAG
 		return this
 	}
 
 	// 2. ----------------------------------------------------------------------
-
-	gray(buf){
-		buf = buf || this.buffer
-		toGray(this.canvas, buf)
-		this.type = TYPE_GRAY
-		return this
-	}
-
-	rgba(buf){
-		buf = buf || this.buffer
-		toRGBA(this.canvas, buf)
-		this.type = TYPE_RGBA
-		return this
-	}
-
-	// 3. ----------------------------------------------------------------------
 
 	mirrorX(buf){
 		if (this.type == TYPE_EMPTY) return // TODO: warn?
@@ -127,7 +116,7 @@ export class ImageBuffer {
 			for (let i=0; i<w/2; i++) {
 				const a = w * j + i
 				const b = w * (j + 1) - i - 1
-				const t = buf[b]
+				const t = buf[b] // Swap
 				buf[b] = buf[a]
 				buf[a] = t
 			}
@@ -135,18 +124,21 @@ export class ImageBuffer {
 		return this
 	}
 
-	normalize(buf, lower=0, upper=1){
+	normalize(buf){
 		if (this.type == TYPE_EMPTY) return // TODO: warn?
 		buf = buf || this.buffer
-		if (this.type == TYPE_GRAY) {
-			normGray(this.buffer, buf, lower, upper)
-		} if (this.type == TYPE_RGBA) {
-			normRGBA(this.buffer, buf, lower, upper)
-		}
+		normalizeGray(this.buffer, buf, 0, 255)
 		return this
 	}
 
-	// 4. ----------------------------------------------------------------------
+	quantize(palette, buf) {
+		if (this.type == TYPE_EMPTY) return // TODO: warn?
+		buf = buf || this.buffer
+		paletteQuantize(this.buffer, buf, palette)
+		return this
+	}
+
+	// 3. ----------------------------------------------------------------------
 
 	write(buf){
 		if (Array.isArray(buf)) {
@@ -236,97 +228,64 @@ function centerImage(sourceCanvas, targetCanvas, scale=1, aspectAdjust=1, mode=M
 	ctx.restore()
 }
 
-
-// Fills the target array 'out' with values (0-255) from the image data
-function toGray(canvas, out){
-	out = out || []
-	const w = canvas.width
-	const h = canvas.height
-	const data = canvas.getContext('2d').getImageData(0, 0, w, h).data
-	let idx = 0
-	for (let i=0; i<data.length; i += 4) {
-		// https://en.wikipedia.org/wiki/Grayscale
-		const v = data[i] * 0.2126 + data[i+1] * 0.7152 + data[i+2] * 0.0722
-		out[idx++] = Math.floor(v) // / 255.0
-	}
-	return out
-}
-
-// Fills the target array 'out' with rgba values (0-255) from the image data
-function toRGBA(canvas, out){
+// Fills the target array 'out' with rgba+gray values (0-255) from the image data
+function toBuffer(canvas, out){
 	out = out || []
 	const w = canvas.width
 	const h = canvas.height
 	const data = canvas.getContext('2d').getImageData(0, 0, w, h).data
 	let idx = 0
 	for (let i=0; i<data.length; i+=4) {
-		out[idx++] = {
-			r : data[i  ], // / 255.0,
-			g : data[i+1], // / 255.0,
-			b : data[i+2], // / 255.0,
-			a : data[i+3]  // / 255.0
-		}
+		const r    = data[i  ]  // / 255.0,
+		const g    = data[i+1]  // / 255.0,
+		const b    = data[i+2]  // / 255.0,
+		const a    = data[i+3]  // / 255.0
+		const gray = toGray(r, g, b)
+		out[idx++] = { r, g, b, a, gray }
 	}
 	return out
 }
 
-// Normalizes an array array (auto levels)
-function normGray(array, out, lower=0, upper=1){
-	out = out || []
+// https://en.wikipedia.org/wiki/Grayscale
+function toGray(r,g,b) {
+	return Math.round(r * 0.2126 + g * 0.7152 + b * 0.0722)
+}
+
+function paletteQuantize(arrayIn, arrayOut, palette) {
+	arrayOut = arrayOut || []
+	const distFn = (a, b) => Math.sqrt(Math.pow(a.r - b.r, 2) + Math.pow(a.g - b.g, 2) + Math.pow(a.b - b.b, 2))
+	for (let i=0; i<arrayIn.length; i++) {
+		const a = arrayIn[i]
+		let dist = Number.MAX_VALUE
+		let nearest
+		for (const b of palette) {
+			const d = distFn(a, b)
+			if (d < dist) {
+				dist = d
+				nearest = b
+			}
+		}
+		arrayOut[i] = {...nearest, gray : toGray(nearest.r, nearest.g, nearest.b) }
+	}
+	return arrayOut
+}
+
+// Normalizes the gray component (auto levels)
+function normalizeGray(arrayIn, arrayOut, lower=0, upper=255){
+	arrayOut = arrayOut || []
 
 	let min =  Number.MAX_VALUE
 	let max = -Number.MAX_VALUE
-	for (let i=0; i<array.length; i++) {
-		min = Math.min(array[i], min)
-		max = Math.max(array[i], max)
+	for (let i=0; i<arrayIn.length; i++) {
+		min = Math.min(arrayIn[i].gray, min)
+		max = Math.max(arrayIn[i].gray, max)
 	}
 	// return target.map( v => {
 	//     return map(v, min, max, 0, 1)
 	// })
-	for (let i=0; i<array.length; i++) {
-		out[i] = map(array[i], min, max, lower, upper)
+	for (let i=0; i<arrayIn.length; i++) {
+		const gray = min == max ? min : Math.round(map(arrayIn[i].gray, min, max, lower, upper))
+		arrayOut[i] = {...arrayOut[i], gray}
 	}
-	return out
-}
-
-// Normalizes an RGBA array, each channel individually
-// TODO: better / generic impl.?
-function normRGBA(array, out, lower=0, upper=1){
-	out = out || []
-
-	const min = {
-		r : Number.MAX_VALUE,
-		g : Number.MAX_VALUE,
-		b : Number.MAX_VALUE,
-		a : Number.MAX_VALUE
-	}
-
-	const max = {
-		r : -Number.MAX_VALUE,
-		g : -Number.MAX_VALUE,
-		b : -Number.MAX_VALUE,
-		a : -Number.MAX_VALUE
-	}
-
-	for (let i=0; i<array.length; i++) {
-		const c = array[i]
-		min.r = Math.min(c.r, min.r)
-		min.g = Math.min(c.g, min.g)
-		min.b = Math.min(c.b, min.b)
-		min.a = Math.min(c.a, min.a)
-		max.r = Math.max(c.r, max.r)
-		max.g = Math.max(c.g, max.g)
-		max.b = Math.max(c.b, max.b)
-		max.a = Math.max(c.a, max.a)
-	}
-
-	for (let i=0; i<array.length; i++) {
-		out[i] = {
-			r : map(array[i], min.r, max.r, lower, upper),
-			g : map(array[i], min.g, max.g, lower, upper),
-			b : map(array[i], min.b, max.b, lower, upper),
-			a : map(array[i], min.a, max.a, lower, upper)
-		}
-	}
-	return out
+	return arrayOut
 }

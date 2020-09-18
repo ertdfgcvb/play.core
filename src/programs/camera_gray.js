@@ -10,19 +10,19 @@ import {map} from "/src/modules/num.js"
 import cam from "/src/modules/camera.js"
 
 const c = cam.init()
-// Debug:
+// For a debug view uncomment the following line:
 // c.display(document.body, 10, 10)
 
 const chars = sort(" .x?▁▂▃▄▅▆▇█".split(''))
 
 export function pre(context, cursor, buffers){
-    c.cover(context).gray().normalize().mirrorX().write(buffers.data)
+    c.cover(context).normalize().mirrorX().write(buffers.data)
 }
 
 export function main(coord, context, cursor, buffers){
-    // Coord also contains the index of each box:
-    const c = buffers.data[coord.index]
-    const index = Math.floor(c * chars.length)
+    // Coord also contains the index of each cell:
+    const c = buffers.data[coord.index].gray
+    const index = Math.floor(c.gray / 255.0 * chars.length)
     return chars[index]
 }
 
