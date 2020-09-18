@@ -27,22 +27,22 @@ const pal = [
 
 export function pre(context, cursor, buffers){
 	// Scale the image slightly
-    const scale = map(Math.sin(context.time * 0.001), -1, 1, 1, 3)
-    c.cover(context, scale).mirrorX().quantize(pal).write(buffers.data)
+	const scale = map(Math.sin(context.time * 0.001), -1, 1, 1, 3)
+	c.cover(context, scale).mirrorX().quantize(pal).write(buffers.data)
 }
 
 export function main(coord, context, cursor, buffers){
-    // Coord also contains the index of each cell:
-    const c = buffers.data[coord.index]
-    const index = Math.floor(c.gray / 255.0 * chars.length)
-    return {
-        char       : chars[index],
+	// Coord also contains the index of each cell:
+	const color = buffers.data[coord.index]
+	const index = Math.floor(color.gray / 255.0 * chars.length)
+	return {
+		char       : chars[index],
 		color      : 'white',
-        background : `rgb(${c.r},${c.g},${c.b})`
-    }
+		background : `rgb(${c.r},${c.g},${c.b})`
+	}
 }
 
 import { drawInfo } from "/src/modules/drawbox.js"
 export function post(context, cursor, buffers){
-    //drawInfo(context, cursor, buffers)
+	//drawInfo(context, cursor, buffers)
 }
