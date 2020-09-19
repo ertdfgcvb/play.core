@@ -5,7 +5,6 @@
 [header]
 */
 import {map} from "/src/modules/num.js"
-import {sort} from "/src/modules/sort.js"
 import cam from "/src/modules/camera.js"
 
 const c = cam.init()
@@ -38,11 +37,11 @@ export function main(coord, context, cursor, buffers){
 	return {
 		char       : chars[index],
 		color      : 'white',
-		background : `rgb(${c.r},${c.g},${c.b})`
+		background : `rgb(${color.r},${color.g},${color.b})`
 	}
 }
 
 import { drawInfo } from "/src/modules/drawbox.js"
 export function post(context, cursor, buffers){
-	//drawInfo(context, cursor, buffers)
+	drawInfo(context, cursor, buffers)
 }
