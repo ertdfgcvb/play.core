@@ -2,7 +2,7 @@
 Some palettes
 */
 
-export const c64 = [
+export const C64 = [
 	{r:0,   g:0,   b:0  },
 	{r:0,   g:0,   b:170},
 	{r:0,   g:136, b:255},
@@ -19,4 +19,23 @@ export const c64 = [
 	{r:255, g:119, b:119},
 	{r:255, g:255, b:255},
 	{r:51,  g:51,  b:51 }
+]
+
+export const CGA = [
+	0x000000,
+	0x555555,
+	0x0000AA,
+	0x5555FF,
+	0x00AA00,
+	0x55FF55,
+	0x00AAAA,
+	0x55FFFF,
+	0xAA0000,
+	0xFF5555,
+	0xAA00AA,
+	0xFF55FF,
+	0xAA5500,
+	0xFFFF55,
+	0xAAAAAA,
+	0xFFFFFF
 ]
