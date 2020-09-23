@@ -10,7 +10,7 @@ import { sort } from '/src/modules/sort.js'
 import { length, dot, rot } from '/src/modules/vec2.js'
 import { map, fract, smoothstep } from '/src/modules/num.js'
 
-const charMap = sort('▚╳▄▀▐─═0123.+?+'.split(''))
+const chars = sort('▀▄▚▐─═0123.+?'.split(''))
 
 export function main(coord, context, cursor, buffer){
 
@@ -39,13 +39,12 @@ export function main(coord, context, cursor, buffer){
 	const k = smoothstep(width, width + 0.2, Math.sin(10 * d + t));
 	const c = (1.0 - Math.exp(-3 * Math.abs(d))) * k
 
-	const index = Math.floor(c * charMap.length)
+	const index = Math.floor(c * (chars.length-1))
 
 	return {
-		char       : charMap[index],
-		color      : k < 0.4 ? 'orangered' : 'royalblue',
+		char  : chars[index],
+		color : k == 0 ? 'orangered' : 'royalblue',
 		// background : coord.y % 2 ? 'white' : 'cornsilk'
-		background : 'cornsilk'
 	}
 }
 

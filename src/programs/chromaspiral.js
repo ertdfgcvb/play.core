@@ -8,7 +8,7 @@ import { map } from '/src/modules/num.js'
 import { sort } from '/src/modules/sort.js'
 import { vec2, rot, add, mulN, addN, subN, length } from '/src/modules/vec2.js'
 
-const chars  = '╳╱╲XYZabc.:+-=!? '.split('')
+const chars  = '#Wabc:+-. '.split('')
 const colors = ['deeppink', 'black', 'red', 'blue', 'orange', 'yellow']
 
 export function main(coord, context, cursor, buffers){
@@ -44,8 +44,8 @@ export function main(coord, context, cursor, buffers){
 	c = Math.sin(st.x * 3.0 + s) + Math.sin(st.y * 21)
 	c = map(Math.sin(c * 0.5), -1, 1, 0, 1)
 
-	const index = Math.floor(c * chars.length - 1)
-	const color = Math.floor(c * colors.length - 1)
+	const index = Math.floor(c * (chars.length - 1))
+	const color = Math.floor(c * (colors.length - 1))
 
 	return {
 		// char  : (coord.x + coord.y) % 2 ? chars[index] : '╲',
