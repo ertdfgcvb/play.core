@@ -11,7 +11,7 @@ Type ?help
      to open the manual for an overview about the playground,
      more commands like this and links to many examples.
 Type ?immediate on
-     to enable immediate mode.
-Type ?video day to switch
-     to dark mode for the editor.
+     to enable immediate mode (off to disable).
+Type ?video night
+     to switch to dark mode for the editor (day for light).
 ---------------------------------------------------------------------------
