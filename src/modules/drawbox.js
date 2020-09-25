@@ -224,7 +224,7 @@ export function drawBox(style, buffers){
 const defaultInfoStyle = {
 	x           : 3,
 	y           : 2,
-	width       : 25,
+	width       : 26,
 	height      : 9,
 	background  : 'white',
 	color       : 'black',
