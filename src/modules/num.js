@@ -49,7 +49,7 @@ export function mix(v1, v2, a){
 }
 
 // GLSL step
-function step(edge, x) {
+export function step(edge, x) {
 	return (x < edge ? 0 : 1)
 }
 
@@ -67,7 +67,7 @@ export function smootherstep(edge0, edge1, t) {
 }
 
 // GLSL modulo
-function mod(a, b) {
+export function mod(a, b) {
 	return a % b
 }
 
