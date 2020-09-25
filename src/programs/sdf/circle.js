@@ -28,7 +28,7 @@ export function main(coord, context, cursor, buffer){
 	const radius = (Math.cos(t)) * 0.4 + 0.5
 	const d = sdCircle(st, radius)
 	const c = 1.0 - Math.exp(-5 * Math.abs(d))
-	const index = Math.floor(c * (chars.length-1))
+	const index = Math.floor(c * chars.length)
 
 	return coord.x % 2 ? '│' : chars[index]
 }
