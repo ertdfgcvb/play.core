@@ -1,8 +1,7 @@
 /**
 @author nkint
 @title  oeö
-@desc   Inspired by Ernst Jandl, 1964, oeö
-
+@desc   Inspired by Ernst Jandl, 1964
 */
 
 import {dist, vec2, length, add, mulN} from '/src/modules/vec2.js'
@@ -54,7 +53,7 @@ export function main(coord, context, cursor, buffers){
 	}
 }
 
-import { drawInfo } from "/src/modules/drawbox.js"
+import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers){
     drawInfo(context, cursor, buffers)
 }

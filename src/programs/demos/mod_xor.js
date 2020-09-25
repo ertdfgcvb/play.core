@@ -1,7 +1,9 @@
 /**
 @author No1
 @title  Mod Xor
-@desc   Inspired by this tweet: https://twitter.com/ntsutae/status/1292115106763960327
+@desc   Patterns obtained trough modulo and xor
+Inspired by this tweet by @ntsutae
+https://twitter.com/ntsutae/status/1292115106763960327
 [header]
 */
 

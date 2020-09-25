@@ -1,12 +1,12 @@
 /**
 @author No1
-@title  Sin Sin
-@desc   Basic output
+@title  Time: milliseconds
+@desc   Use of context.time
 [header]
 */
 
 // Globals have module scope
-const chars = "ABCxyz01═|+:. ".split('')
+const chars = 'ABCxyz01═|+:. '.split('')
 
 // This is the main loop.
 // Character coordinates are passed in coord {x, y, index}.
@@ -22,14 +22,17 @@ export function main(coord, context, cursor, buffers){
 		char       : chars[i],
 		color      : 'black',
 		background : 'white',
-		weight     : '100',
+		weight     : '100', // or 'light', 'bold', '400'
 	}
 }
 
-import { drawInfo } from "/src/modules/drawbox.js"
+import { drawInfo } from '/src/modules/drawbox.js'
 
 // This function is called after the main loop and is useful
 // to manipulate the buffers; in this case with a window overlay.
 export function post(context, cursor, buffers){
-    drawInfo(context, cursor, buffers)
+	// An extra object can be passed to drawInfo to alter the default style
+	drawInfo(context, cursor, buffers, {
+		color : 'white', background : 'blue', shadowStyle : 'gray'
+	})
 }

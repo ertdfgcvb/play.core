@@ -2,10 +2,9 @@
 @author Alex Miller
 @title  Pathfinder
 @desc   Click to spawn new path segments
-
 */
 
-import { dist, sub } from "/src/modules/vec2.js"
+import { dist, sub } from '/src/modules/vec2.js'
 import * as v2 from '/src/modules/vec2.js'
 
 const vec2 = v2.vec2

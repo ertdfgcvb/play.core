@@ -5,18 +5,17 @@
 [header]
 */
 
-import {sort} from "/src/modules/sort.js"
-import {map} from "/src/modules/num.js"
-import cam from "/src/modules/camera.js"
+import { sort } from '/src/modules/sort.js'
+import Camera from '/src/modules/camera.js'
 
-const c = cam.init()
+const cam = Camera.init()
 // For a debug view uncomment the following line:
-// c.display(document.body, 10, 10)
+// cam.display(document.body, 10, 10)
 
-const chars = sort(" .x?▁▂▃▄▅▆▇█".split(''))
+const chars = sort(' .x?▂▄▆█'.split(''))
 
 export function pre(context, cursor, buffers){
-	c.cover(context).normalize().mirrorX().write(buffers.data)
+	cam.cover(context).normalize().mirrorX().write(buffers.data)
 }
 
 export function main(coord, context, cursor, buffers){
@@ -26,7 +25,7 @@ export function main(coord, context, cursor, buffers){
 	return chars[index]
 }
 
-import { drawInfo } from "/src/modules/drawbox.js"
+import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers){
 	drawInfo(context, cursor, buffers)
 }

@@ -1,15 +1,14 @@
 /**
 @author nkint
 @title  EQUAL TEA TALK, #65
-@desc   Inspired by Frederick Hammersley 1969
-
-see http://www.hammersleyfoundation.org/index.php/artwork/computer-drawings/184-computer-drawings/331-equal-tea-talk
+@desc   Inspired by Frederick Hammersley, 1969
+See: http://www.hammersleyfoundation.org/index.php/artwork/computer-drawings/184-computer-drawings/331-equal-tea-talk
 */
 
-import { map, step, mod } from "/src/modules/num.js"
-import { vec2, mul, fract as fract2 } from "/src/modules/vec2.js"
+import { map, step, mod } from '/src/modules/num.js'
+import { vec2, mul, fract as fract2 } from '/src/modules/vec2.js'
 
-const chars = "#BEFTI_".split('')
+const chars = '#BEFTI_'.split('')
 
 const wx = new Array(50).fill(0).map((_, i) => i);
 const sumW = (n) => (n * 2 + 3) * 5
@@ -109,7 +108,7 @@ export function main(coord, context, cursor, buffers){
 	}
 }
 
-import { drawInfo } from "/src/modules/drawbox.js"
+import { drawInfo } from '/src/modules/drawbox.js'
 
 export function post(context, cursor, buffers){
     //drawInfo(context, cursor, buffers)

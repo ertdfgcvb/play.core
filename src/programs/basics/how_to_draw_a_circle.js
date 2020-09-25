@@ -1,11 +1,11 @@
 /**
 @author No1
 @title  How to draw a circle
-@desc   Draw a SDF square
+@desc   Use of context.aspect
 [header]
 */
 
-import { length } from "/src/modules/vec2.js"
+import { length } from '/src/modules/vec2.js'
 
 export function main(coord, context, cursor, buffers){
 
@@ -27,7 +27,7 @@ export function main(coord, context, cursor, buffers){
 }
 
 // Draw some info
-import { drawBox } from "/src/modules/drawbox.js"
+import { drawBox } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers){
 	// Apply some rounding
 	const ar = cursor.pressed ? (''+context.aspect).substr(0, 8) : 1
@@ -35,7 +35,7 @@ export function post(context, cursor, buffers){
 	// Output string
 	let txt = ''
 	txt += 'Hold the cursor button\n'
-	txt += 'to change the aspect ratio.\n'
+	txt += 'to change the aspect ratio:\n'
 	txt += 'aspectRatio = ' + ar + '\n'
 
 	// Box style

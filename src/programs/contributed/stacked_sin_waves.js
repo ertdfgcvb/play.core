@@ -1,8 +1,7 @@
 /**
 @author Raurir
 @title  Stacked sin waves
-
-noob at frag shaders.
+@desc   noob at frag shaders
 */
 
 const chars = '█▓▒░ '.split('')

@@ -2,23 +2,22 @@
 @author Alex Miller
 @title  Sand game
 @desc   Click to drop sand
-
 */
 
-import { dist, sub } from "/src/modules/vec2.js"
+import { dist, sub } from '/src/modules/vec2.js'
 
 let prevFrame;
 let initialized = false;
 let width, height;
 
 function newParticle() {
-	return "sand".charAt(Math.random() * 4)
+	return 'sand'.charAt(Math.random() * 4)
 }
 
 export function pre(context, cursor, buffers) {
 	if (!initialized) {
 		for (let i = 0; i < buffers.length; i++) {
-			buffers.state[i] = {char : Math.random() > 0.5 ? newParticle() : " "};
+			buffers.state[i] = {char : Math.random() > 0.5 ? newParticle() : ' '};
         }
 		initialized = true;
 
@@ -36,7 +35,7 @@ export function main(coord, context, cursor, buffers) {
 	if (cursor.pressed) {
 		if (dist(coord, cursor) < 3) {
 			return {
-				char: Math.random() > 0.5 ? newParticle() : " ",
+				char: Math.random() > 0.5 ? newParticle() : ' ',
 
 				background: 'white',
 				color: 'rgb(179, 158, 124)',

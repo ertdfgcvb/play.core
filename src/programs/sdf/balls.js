@@ -1,18 +1,16 @@
 /**
 @author No1
 @title  Balls
-@desc   Draw smooth circles with SDF
+@desc   Smooth SDF balls
 [header]
 */
 
-import { map } from "/src/modules/num.js"
-import { sdCircle, opSmoothUnion } from "/src/modules/sdf.js"
+import { map } from '/src/modules/num.js'
+import { sdCircle, opSmoothUnion } from '/src/modules/sdf.js'
 
-//let chars = " ▚╳▄▀abc".split('')
-let chars = "╳ABC|/:÷×+-=?*· .".split('')
+const chars = '#ABC|/:÷×+-=?*· .'.split('')
 
 const PI  = Math.PI
-const TAU = Math.PI * 2
 
 export function main(coord, context, cursor, buffer){
 
@@ -29,7 +27,7 @@ export function main(coord, context, cursor, buffer){
 
 	const s = map(Math.sin(t * 0.0005), -1, 1, 0.0, 0.9)
 
-	let d = 1e100
+	let d = Number.MAX_VALUE
 
 	const num = 16
 	for (let i=0; i<num; i++){
@@ -44,7 +42,6 @@ export function main(coord, context, cursor, buffer){
 	//if (d < 0) c = 0
 
 	const index = Math.floor(c * chars.length)
-
 	return chars[index]
 }
 

@@ -1,14 +1,20 @@
 /**
 @author No1
 @title  Circle
-@desc   How to draw a circle
+@desc   Draw a smooth circle with exp()
 [header]
 */
 
-import { sdCircle, opSmoothUnion, } from "/src/modules/sdf.js"
-import { sort } from "/src/modules/sort.js"
+import { sdCircle } from '/src/modules/sdf.js'
+import { sort } from '/src/modules/sort.js'
 
-const chars = sort("/\\MXYZabc!?=-. ".split(''))
+const chars = sort('/\\MXYZabc!?=-. '.split(''))
+
+export const settings = {
+	fps : 60,
+	background : 'black',
+	color : 'white'
+}
 
 export function main(coord, context, cursor, buffer){
 
@@ -19,19 +25,15 @@ export function main(coord, context, cursor, buffer){
 		y : 2.0 * (coord.y - context.rows / 2) / a
 	}
 
-	const rad = (Math.cos(t)) * 0.4 + 0.5
-	const d = sdCircle(st, rad)
+	const radius = (Math.cos(t)) * 0.4 + 0.5
+	const d = sdCircle(st, radius)
 	const c = 1.0 - Math.exp(-5 * Math.abs(d))
-	const index = Math.floor(c * chars.length)
+	const index = Math.floor(c * (chars.length-1))
 
-	return {
-		char       : coord.x % 2 ? "│" : chars[index],
-		color      : "white",
-		background : "black",
-	}
+	return coord.x % 2 ? '│' : chars[index]
 }
 
-import { drawInfo } from "/src/modules/drawbox.js"
+import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, metrics, cursor, buffer){
 	drawInfo(context, metrics, cursor, buffer)
 }

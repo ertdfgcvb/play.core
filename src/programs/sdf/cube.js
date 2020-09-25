@@ -1,7 +1,7 @@
 /**
 @author No1
-@title  How to draw a cube
-@desc   cursor controls box thickness and exp
+@title  Wireframe cube
+@desc   The cursor controls box thickness and exp
 [header]
 */
 
@@ -12,7 +12,7 @@ import {map} from '/src/modules/num.js'
 
 export const settings = {fps : 60}
 
-const chars = "  -=+abcdX".split('')
+const chars = '  -=+abcdX'.split('')
 
 // Shorthands
 const vec3 = v3.vec3
@@ -23,6 +23,10 @@ const TAU = Math.PI * 2
 // Lookup table for the background
 const bgMatrix = [
 '┼─────────',
+'│         ',
+'│         ',
+'│         ',
+'│         ',
 '│         ',
 '│         ',
 ]
@@ -106,7 +110,7 @@ export function main(coord, context, cursor){
 	}
 }
 
-import { drawInfo } from "/src/modules/drawbox.js"
+import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers){
     drawInfo(context, cursor, buffers)
 }

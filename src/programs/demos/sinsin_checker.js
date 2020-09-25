@@ -1,19 +1,13 @@
 /**
 @author No1
-@title  Sin Sin (Checker)
-@desc   Resize the window to modify the pattern
+@title  Sin Sin
+@desc   Checker variation
 [header]
 */
 
-// Globals have module scope
 const chars = [" _000111_ ".split(''), ".+abc+.      ".split('')]
 const col = ['black', 'blue']
 const weights = [100, 700]
-
-// This is the main loop.
-// Character coordinates are passed in coord {x, y, index}.
-// The function must return a single character or, alternatively, an object:
-// {char, color, backgroung, weight}.
 
 const f = Math.floor
 const s = Math.sin
@@ -36,9 +30,6 @@ export function main(coord, context, cursor, buffers){
 }
 
 import { drawInfo } from "/src/modules/drawbox.js"
-
-// This function is called after the main loop and is useful
-// to manipulate the buffers; in this case with a window overlay.
 export function post(context, cursor, buffers){
     drawInfo(context, cursor, buffers)
 }

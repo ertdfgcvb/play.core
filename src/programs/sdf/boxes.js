@@ -1,14 +1,14 @@
 /**
 @author No1
-@title  Boxes
-@desc   Smooth SDF boxes
+@title  Rectangles
+@desc   Smooth SDF Rectangles
 [header]
 */
 
-import { map } from "/src/modules/num.js"
-import { sdBox, opSmoothUnion } from "/src/modules/sdf.js"
+import { map } from '/src/modules/num.js'
+import { sdBox, opSmoothUnion } from '/src/modules/sdf.js'
 
-let chars = "▚▀abc|/:÷×+-=?*·. ".split('')
+let chars = '▚▀abc|/:÷×+-=?*· '.split('')
 
 export function main(coord, context, cursor, buffers){
 
@@ -48,7 +48,7 @@ function transform(p, trans, rot){
 	}
 }
 
-import { drawInfo } from "/src/modules/drawbox.js"
+import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers){
 	drawInfo(context, cursor, buffers)
 }

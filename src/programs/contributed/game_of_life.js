@@ -1,15 +1,13 @@
 /**
 @author Alex Miller
-@title  Game of Life
+@title  GOL
 @desc   Conway's Game of Life
-
-see https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
-
+See https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
 Each frame of the animation depends on the previous frame. Code in the `pre()`
 function saves the previous frame so it can be used in `main()`.
 */
 
-import { dist, sub } from "/src/modules/vec2.js"
+import { dist, sub } from '/src/modules/vec2.js'
 
 let prevFrame;
 let initialized = false;
@@ -18,7 +16,7 @@ let width, height;
 export function pre(context, cursor, buffers) {
 	if (!initialized) {
 		for (let i = 0; i < buffers.length; i++) {
-			buffers.state[i] = {char : Math.random() > 0.5 ? "▒" : " "};
+			buffers.state[i] = {char : Math.random() > 0.5 ? '▒' : ' '};
         }
 		initialized = true;
 		width = context.cols;
@@ -33,7 +31,7 @@ export function pre(context, cursor, buffers) {
 export function main(coord, context, cursor, buffers) {
 	if (cursor.pressed) {
 		if (dist(coord, cursor) < 3) {
-			return Math.random() > 0.5 ? "▒" : " ";
+			return Math.random() > 0.5 ? '▒' : ' ';
 		}
 	}
 
@@ -50,9 +48,9 @@ export function main(coord, context, cursor, buffers) {
 
 	const current = get(x, y);
 	if (current == 1) {
-		return neighbors == 2 || neighbors == 3 ? "▒" : " ";
+		return neighbors == 2 || neighbors == 3 ? '▒' : ' ';
 	} else if (current == 0) {
-		return neighbors == 3 ? "x" : " ";
+		return neighbors == 3 ? 'x' : ' ';
 	}
 }
 
@@ -60,5 +58,5 @@ function get(x, y) {
 	if (x < 0 || x >= width) return 0;
 	if (y < 0 || y >= height) return 0;
 	const index = y * width + x;
-	return prevFrame[index].char === " " ? 0 : 1
+	return prevFrame[index].char === ' ' ? 0 : 1
 }

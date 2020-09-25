@@ -1,10 +1,10 @@
 /**
 @author Eliza
 @title  Color Waves
-
+@desc   ¯\_(ツ)_/¯
 */
 
-const chars = "¯\_(ツ)_/¯.::.ᕦ(ò_óˇ)ᕤ ".split('')
+const chars = '¯\_(ツ)_/¯.::.ᕦ(ò_óˇ)ᕤ '.split('')
 
 export function main(coord, context, cursor, buffers){
 	const t = context.time * 0.0001
@@ -20,7 +20,7 @@ export function main(coord, context, cursor, buffers){
 
 	const colors = ['mediumvioletred', 'gold', 'orange', 'chartreuse', 'blueviolet', 'deeppink'];
 
-	const i = Math.round(Math.abs(x / 10 + y + o / 5)) % chars.length
+	const i = Math.round(Math.abs(x / 5 + y + o / 5)) % chars.length
 	return {
 		char       : chars[i],
 		color      : colors[i % colors.length],
@@ -30,7 +30,7 @@ export function main(coord, context, cursor, buffers){
 	}
 }
 
-import { drawInfo } from "/src/modules/drawbox.js"
+import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers){
     drawInfo(context, cursor, buffers)
 }

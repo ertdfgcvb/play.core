@@ -1,15 +1,15 @@
 /**
 @author No1
 @title  Camera RGB
-@desc   Color input from camera (warning: slow FPS)
+@desc   Color input from camera (quantized)
 [header]
 */
-import {map} from "/src/modules/num.js"
-import cam from "/src/modules/camera.js"
+import { map } from '/src/modules/num.js'
+import Camera from '/src/modules/camera.js'
 
-const c = cam.init()
+const cam = Camera.init()
 // For a debug view uncomment the following line:
-// c.display(document.body, 10, 10)
+// cam.display(document.body, 10, 10)
 
 const chars = ' .+=?X#ABC'.split('')
 
@@ -27,7 +27,7 @@ const pal = [
 export function pre(context, cursor, buffers){
 	// Scale the image slightly
 	const scale = map(Math.sin(context.time * 0.001), -1, 1, 1, 3)
-	c.cover(context, scale).mirrorX().quantize(pal).write(buffers.data)
+	cam.cover(context, scale).mirrorX().quantize(pal).write(buffers.data)
 }
 
 export function main(coord, context, cursor, buffers){
@@ -41,7 +41,7 @@ export function main(coord, context, cursor, buffers){
 	}
 }
 
-import { drawInfo } from "/src/modules/drawbox.js"
+import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers){
 	drawInfo(context, cursor, buffers)
 }
