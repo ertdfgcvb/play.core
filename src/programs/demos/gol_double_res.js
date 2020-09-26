@@ -6,21 +6,22 @@
 Based on Alex Miller’s version of Game of Life:
 https://play.ertdfgcvb.xyz/#/src/contributed/game_of_life
 
-By using three box chars (plus space) each char can host two vertical cells
-of the automata allowing a double resolution.
+By using three box chars (plus space) each char can host
+two vertical cells of the automata allowing a double resolution.
 '█' both cells are occupied
 ' ' both cells are empty
 '▀' upper cell is occupied
 '▄' lower cell is occupied
 
 All the automata state is stored in the custom 'data' buffer.
-Each frame of the animation depends on the previous frame.
+Each frame of the animation depends on the previous frame,
+so in this case the 'data' buffer is two arrays (see initialization in pre).
 */
 
 // Safe set function
 function set(val, x, y, w, h, buf) {
-	if (x < 0 || x >= w) return 0
-	if (y < 0 || y >= h) return 0
+	if (x < 0 || x >= w) return
+	if (y < 0 || y >= h) return
 	buf[y * w + x] = val
 }
 
@@ -37,7 +38,7 @@ let cols, rows
 // The automata is computed in a single step and stored in the 'data' buffer
 export function pre(context, cursor, buffers) {
 
-	// The window has been resized, reset the buffers:
+	// The window has been resized (or “init”), reset the buffers:
 	if (cols != context.cols || rows != context.rows) {
 		cols = context.cols
 		rows = context.rows
@@ -46,6 +47,7 @@ export function pre(context, cursor, buffers) {
 		// We need two buffers (store them in the user 'data' array)
 		buffers.data[0] = []
 		buffers.data[1] = []
+		// Initialize with some random state
 		for (let i=0; i<len; i++){
 			const v = Math.random() > 0.5 ? 1 : 0
 			buffers.data[0][i] = v
@@ -77,14 +79,14 @@ export function pre(context, cursor, buffers) {
 		for (let x=0; x<w; x++){
 			const current = get(x, y, w, h, prev)
 			const neighbors =
-				  get(x - 1, y - 1, w, h, prev) +
-				  get(x,     y - 1, w, h, prev) +
-				  get(x + 1, y - 1, w, h, prev) +
-				  get(x - 1, y,     w, h, prev) +
-				  get(x + 1, y,     w, h, prev) +
-				  get(x - 1, y + 1, w, h, prev) +
-				  get(x,     y + 1, w, h, prev) +
-				  get(x + 1, y + 1, w, h, prev)
+				get(x - 1, y - 1, w, h, prev) +
+				get(x,     y - 1, w, h, prev) +
+				get(x + 1, y - 1, w, h, prev) +
+				get(x - 1, y,     w, h, prev) +
+				get(x + 1, y,     w, h, prev) +
+				get(x - 1, y + 1, w, h, prev) +
+				get(x,     y + 1, w, h, prev) +
+				get(x + 1, y + 1, w, h, prev)
 			// Update
 			const i = x + y * w
 			if (current == 1) {
@@ -107,8 +109,8 @@ export function main(coord, context, cursor, buffers) {
 	const lower = curr[idx + context.cols]
 
 	if (upper && lower) return '█' // both cells are occupied
-	if (upper) return '▀'          // upper cell
-	if (lower) return '▄'          // lower cell
-	return ' '                     // both cells are empty
+	if (upper)          return '▀' // upper cell
+	if (lower)          return '▄' // lower cell
+	                    return ' ' // both cells are empty
 }
 

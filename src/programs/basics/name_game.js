@@ -20,8 +20,9 @@ export function main(coord, context){
 	const f = Math.floor((1 - Math.cos(a)) * 10) + 1
 	const g = Math.floor(a / TAU) % 10 + 1
 	const i = coord.index % (coord.y * g + 1) % (f % context.cols)
-	// NOTE: If the function returns undefined or null
-	// the a default character will be inserted (space).
-	// In this case i may be greater than 2...
+	// NOTE: If the function returns ‘undefined’ or ‘null’
+	// a space character will be inserted.
+	// In some cases ‘i’ may be greater than 2:
+	// JavaScript array out of bounds results in ‘undefined’.
 	return 'Ada'[i]
 }

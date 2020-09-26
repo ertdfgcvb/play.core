@@ -24,9 +24,7 @@ export function main(coord, context, cursor, buffers){
 	return {
 		char       : chars[i],
 		color      : colors[i % colors.length],
-		background : 'white',
-		weight     : '700',
-
+		weight     : '700'
 	}
 }
 

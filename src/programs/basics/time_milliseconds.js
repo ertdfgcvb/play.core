@@ -20,8 +20,6 @@ export function main(coord, context, cursor, buffers){
 	const i = Math.round(Math.abs(x + y + o)) % chars.length
 	return {
 		char       : chars[i],
-		color      : 'black',
-		background : 'white',
 		weight     : '100', // or 'light', 'bold', '400'
 	}
 }

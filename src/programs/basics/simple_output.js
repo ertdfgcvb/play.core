@@ -8,3 +8,9 @@
 export function main(){
 	return '?'
 }
+
+// Shorter:
+// export const main () => '?'
+
+// Shortest:
+// export let main=o=>'?'

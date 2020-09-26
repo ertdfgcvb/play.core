@@ -219,7 +219,7 @@ export function run(program, element, runSettings = {}) {
 							const idx = i + offs
 							const out = program.main({x:i, y:j, index:idx}, context, cursor, buffers)
 							const cell = typeof out == 'object' ? {...defaultCell, ...out} : {...defaultCell, char : out}
-							cell.char = cell.char || EMPTY_CELL // Make sure that char is set
+							if (cell.char === undefined) cell.char || EMPTY_CELL // Make sure that char is set
 							buffers.state[idx] = cell
 						}
 					}
