@@ -5,14 +5,19 @@
 	<title>Test multi</title>
 	<link rel="stylesheet" type="text/css" href="/css/simple_console.css">
 	<style type="text/css" media="screen">
+		body {
+			background-color: rgb(250, 250, 250);
+			margin:2em;
+		}
 		pre {
-			margin: 2em 4em;
+			margin: 1em;
 			width: 40em;
-			height: 20em;
-			display: block;
+			height: 22em;
+			display: inline-block;
 			font-size: 1em;
 			line-height: 1.2;
 			font-family: 'Simple Console', monospace;
+			background-color: white;
 		}
 
 	</style>
@@ -21,17 +26,19 @@
 	<pre></pre>
 	<pre></pre>
 	<pre></pre>
+	<pre></pre>
 	<script type="module">
 		import    { run } from '/src/run.js'
 		import * as prog0 from '/src/programs/basics/time_milliseconds.js'
 		import * as prog1 from '/src/programs/basics/cursor.js'
 		import * as prog2 from '/src/programs/sdf/balls.js'
+		import * as prog3 from '/src/programs/basics/time_frames.js'
 
 		const pre = document.querySelectorAll('pre')
-
-		run(prog0, pre[0], true)
-		run(prog1, pre[1], true)
-		run(prog2, pre[2], true)
+		run(prog0, pre[0])
+		run(prog1, pre[1])
+		run(prog2, pre[2])
+		run(prog3, pre[3])
 	</script>
 </body>
 </html>
