@@ -15,17 +15,17 @@ function polygon(center, edges, time) {
 	const p = center;
 	const N = edges;
 	const a = (atan2(p.x, p.y) + 2 + time * PI) / (2. * PI);
-    const b = (floor(a * N) + 0.5) / N;
-    const c = length(p) * cos((a - b) * 2. * PI);
-    return smoothstep(0.3, 0.31, c);
+	const b = (floor(a * N) + 0.5) / N;
+	const c = length(p) * cos((a - b) * 2. * PI);
+	return smoothstep(0.3, 0.31, c);
 }
 
 export function main(coord, context, cursor, buffers){
-    const a = max(context.cols, context.rows)
+	const a = max(context.cols, context.rows)
 	const st = {
-        x : 2.0 * (coord.x - context.cols / 2) / a,
-        y : 2.0 * (coord.y - context.rows / 2) / a / context.aspect,
-    }
+		x : 2.0 * (coord.x - context.cols / 2) / a,
+		y : 2.0 * (coord.y - context.rows / 2) / a / context.aspect,
+	}
 
 	const centerT = add(
 		st,
@@ -55,6 +55,6 @@ export function main(coord, context, cursor, buffers){
 
 import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers){
-    drawInfo(context, cursor, buffers)
+	drawInfo(context, cursor, buffers)
 }
 

@@ -17,7 +17,7 @@ export function pre(context, cursor, buffers) {
 	if (!initialized) {
 		for (let i = 0; i < buffers.length; i++) {
 			buffers.state[i] = {char : Math.random() > 0.5 ? '▒' : ' '};
-        }
+		}
 		initialized = true;
 		width = context.cols;
 		height = context.rows;
@@ -40,7 +40,7 @@ export function main(coord, context, cursor, buffers) {
 		  get(x - 1, y - 1) +
 		  get(x, y - 1) +
 		  get(x + 1, y - 1) +
-          get(x - 1, y) +
+		  get(x - 1, y) +
 		  get(x + 1, y) +
 		  get(x - 1, y + 1) +
 		  get(x, y + 1) +
