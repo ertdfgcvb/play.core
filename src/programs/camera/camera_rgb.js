@@ -1,5 +1,5 @@
 /**
-@author No1
+@author ertdfgcvb
 @title  Camera RGB
 @desc   Color input from camera (quantized)
 [header]
@@ -33,7 +33,7 @@ export function pre(context, cursor, buffers){
 export function main(coord, context, cursor, buffers){
 	// Coord also contains the index of each cell:
 	const color = buffers.data[coord.index]
-	const index = Math.floor(color.gray / 255.0 * chars.length)
+	const index = Math.floor(color.gray / 255.0 * (chars.length-1))
 	return {
 		char       : chars[index],
 		color      : 'white',

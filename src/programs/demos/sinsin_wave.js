@@ -1,5 +1,5 @@
 /**
-@author No1
+@author ertdfgcvb
 @title  Sin Sin
 @desc   Wave variation
 [header]

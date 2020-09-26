@@ -1,5 +1,5 @@
 /**
-@author No1
+@author ertdfgcvb
 @title  Cursor
 @desc   Example with mouse cursor
 [header]

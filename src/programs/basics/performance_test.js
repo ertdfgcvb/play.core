@@ -1,5 +1,5 @@
 /**
-@author No1
+@author ertdfgcvb
 @title  Perfomance test
 @desc   Vertical vs horizontal changes impact FPS
 [header]

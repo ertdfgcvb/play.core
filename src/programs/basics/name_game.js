@@ -1,5 +1,5 @@
 /**
-@author No1
+@author ertdfgcvb
 @title  Name game
 @desc   What’s your name?
 [header]

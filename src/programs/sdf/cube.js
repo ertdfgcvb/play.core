@@ -1,5 +1,5 @@
 /**
-@author No1
+@author ertdfgcvb
 @title  Wireframe cube
 @desc   The cursor controls box thickness and exp
 [header]

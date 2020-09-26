@@ -1,5 +1,5 @@
 /**
-@author No1
+@author ertdfgcvb
 @title  Two circles
 @desc   Smooth union of two circles
 [header]

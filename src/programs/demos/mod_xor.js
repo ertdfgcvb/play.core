@@ -1,5 +1,5 @@
 /**
-@author No1
+@author ertdfgcvb
 @title  Mod Xor
 @desc   Patterns obtained trough modulo and xor
 Inspired by this tweet by @ntsutae
