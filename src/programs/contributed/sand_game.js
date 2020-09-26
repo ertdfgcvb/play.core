@@ -18,7 +18,7 @@ export function pre(context, cursor, buffers) {
 	if (!initialized) {
 		for (let i = 0; i < buffers.length; i++) {
 			buffers.state[i] = {char : Math.random() > 0.5 ? newParticle() : ' '};
-        }
+		}
 		initialized = true;
 
 		width = context.cols;

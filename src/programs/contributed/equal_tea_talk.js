@@ -52,8 +52,8 @@ export function main(coord, context, cursor, buffers){
 	// -----------------------------
 	// -----------------------------
 	const st = {
-        x : (coord.x / w),
-        y : (coord.y / context.rows),
+		x : (coord.x / w),
+		y : (coord.y / context.rows),
 	}
 	const _st =  mul(st, vec2(5.0, 1.0));
 	const tileIndex = step(1, mod(_st.x, 2.0));
@@ -111,6 +111,6 @@ export function main(coord, context, cursor, buffers){
 import { drawInfo } from '/src/modules/drawbox.js'
 
 export function post(context, cursor, buffers){
-    //drawInfo(context, cursor, buffers)
+	//drawInfo(context, cursor, buffers)
 	//console.log(JSON.stringify(buffers))
 }

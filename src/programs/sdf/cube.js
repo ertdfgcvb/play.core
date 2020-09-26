@@ -22,13 +22,13 @@ const TAU = Math.PI * 2
 
 // Lookup table for the background
 const bgMatrix = [
-'┼─────────',
-'│         ',
-'│         ',
-'│         ',
-'│         ',
-'│         ',
-'│         ',
+'┼──────',
+'│      ',
+'│      ',
+'│      ',
+'│      ',
+'│      ',
+'│      ',
 ]
 
 // Box primitive
@@ -42,7 +42,7 @@ const box = {
 		vec3( l, l,-l),
 		vec3(-l, l,-l),
 		vec3(-l,-l,-l),
-		vec3( l,-l,-l),
+		vec3( l,-l,-l)
 	],
 	edges : [
 		[0, 1],
@@ -56,7 +56,7 @@ const box = {
 		[0, 4],
 		[1, 5],
 		[2, 6],
-		[3, 7],
+		[3, 7]
 	]
 }
 
@@ -81,10 +81,10 @@ export function pre(context, cursor) {
 export function main(coord, context, cursor){
 	const t = context.time * 0.01
 	const a  = min(context.cols, context.rows)
-    const st = {
-        x : 2.0 * (coord.x - context.cols / 2 + 0.5) / a * context.aspect,
-        y : 2.0 * (coord.y - context.rows / 2 + 0.5) / a,
-    }
+	const st = {
+		x : 2.0 * (coord.x - context.cols / 2 + 0.5) / a * context.aspect,
+		y : 2.0 * (coord.y - context.rows / 2 + 0.5) / a,
+	}
 
 	let d = 1e10
 	const n = box.edges.length
@@ -96,7 +96,7 @@ export function main(coord, context, cursor){
 		d = min(d, sdSegment(st, a, b, thickness))
 	}
 
-    const idx = floor(exp(expMul * abs(d)) * chars.length)
+	const idx = floor(exp(expMul * abs(d)) * chars.length)
 
 	if (idx == 0) {
 		const x = coord.x % bgMatrixDim.x
@@ -112,6 +112,6 @@ export function main(coord, context, cursor){
 
 import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers){
-    drawInfo(context, cursor, buffers)
+	drawInfo(context, cursor, buffers)
 }
 
