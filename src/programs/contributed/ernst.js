@@ -48,8 +48,7 @@ export function main(coord, context, cursor, buffers){
 	return {
 		char       : chars[i],
 		color      : colors[i],
-		background : 'white',
-		weight     : '100',
+		weight     : '100'
 	}
 }
 

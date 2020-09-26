@@ -10,11 +10,7 @@ import { sort } from '/src/modules/sort.js'
 
 const chars = sort('/\\MXYZabc!?=-. '.split(''))
 
-export const settings = {
-	fps : 60,
-	background : 'black',
-	color : 'white'
-}
+export const settings = { fps : 60 }
 
 export function main(coord, context, cursor, buffer){
 
@@ -30,7 +26,11 @@ export function main(coord, context, cursor, buffer){
 	const c = 1.0 - Math.exp(-5 * Math.abs(d))
 	const index = Math.floor(c * chars.length)
 
-	return coord.x % 2 ? '│' : chars[index]
+	return {
+		char : coord.x % 2 ? '│' : chars[index],
+		background : 'black',
+		color : 'white'
+	}
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'

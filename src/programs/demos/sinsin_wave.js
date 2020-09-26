@@ -13,10 +13,7 @@ export function main(coord, context, cursor, buffers){
 	const y = coord.y
 	const o = Math.sin(y * x * Math.sin(t) * 0.003 + y * 0.01 + t) * 20
 	const i = Math.round(Math.abs(x + y + o)) % chars.length
-	return {
-		char   : chars[i],
-		weight : '700'
-	}
+	return chars[i]
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'

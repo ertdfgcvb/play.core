@@ -8,13 +8,13 @@
 import { map } from '/src/modules/num.js'
 import { sdCircle, opSmoothUnion } from '/src/modules/sdf.js'
 
-const chars = '#ABC|/:÷×+-=?*· .'.split('')
+const chars = '#ABC|/:÷×+-=?*· '.split('')
 
-const PI  = Math.PI
+const { PI, sin, cos, exp, abs } = Math
 
 export function main(coord, context, cursor, buffer){
 
-	const t = context.time
+	const t = context.time * 0.001 + 10
 	const a = Math.min(context.cols, context.rows)
 	const st = {
 		x : 2.0 * (coord.x - context.cols / 2) / a * context.aspect,
@@ -25,20 +25,20 @@ export function main(coord, context, cursor, buffer){
 	// st.x *= z
 	// st.y *= z
 
-	const s = map(Math.sin(t * 0.0005), -1, 1, 0.0, 0.9)
+	const s = map(sin(t * 0.5), -1, 1, 0.0, 0.9)
 
 	let d = Number.MAX_VALUE
 
-	const num = 16
+	const num = 12
 	for (let i=0; i<num; i++){
-		const r = map(Math.cos(t * 0.011 * (i + 1)/(num+1)), -1, 1, 0.1, 0.3)
-		const x = map(Math.cos(t * 0.00023 * (i / num * PI + PI)), -1, 1, -1.2, 1.2)
-		const y = map(Math.sin(t * 0.00037 * (i / num * PI + PI)), -1, 1, -1.2, 1.2)
-		const f = transform(st, {x: x, y: y},  t * 0.002)
+		const r = map(cos(t * 0.95 * (i + 1) / (num + 1)), -1, 1, 0.1, 0.3)
+		const x = map(cos(t * 0.23 * (i / num * PI + PI)), -1, 1, -1.2, 1.2)
+		const y = map(sin(t * 0.37 * (i / num * PI + PI)), -1, 1, -1.2, 1.2)
+		const f = transform(st, {x, y},  t)
 		d = opSmoothUnion(d, sdCircle(f, r), s)
 	}
 
-	let c = 1.0 - Math.exp(-3 * Math.abs(d));
+	let c = 1.0 - exp(-3 * abs(d));
 	//if (d < 0) c = 0
 
 	const index = Math.floor(c * chars.length)
@@ -46,8 +46,8 @@ export function main(coord, context, cursor, buffer){
 }
 
 function transform(p, trans, rot){
-	const s = Math.sin(-rot)
-	const c = Math.cos(-rot)
+	const s = sin(-rot)
+	const c = cos(-rot)
 	const dx = p.x - trans.x
 	const dy = p.y - trans.y
 	return {

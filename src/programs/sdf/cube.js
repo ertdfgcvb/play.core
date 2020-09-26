@@ -5,25 +5,23 @@
 [header]
 */
 
-import {sdSegment} from '/src/modules/sdf.js'
+import { sdSegment } from '/src/modules/sdf.js'
 import * as v2 from '/src/modules/vec2.js'
 import * as v3 from '/src/modules/vec3.js'
-import {map} from '/src/modules/num.js'
+import { map } from '/src/modules/num.js'
 
-export const settings = {fps : 60}
+export const settings = { fps : 60 }
 
 const chars = '  -=+abcdX'.split('')
 
 // Shorthands
-const vec3 = v3.vec3
-const vec2 = v2.vec2
-const {sin, cos, floor, abs, exp, min} = Math
-const TAU = Math.PI * 2
+const { vec3 } = v3
+const { vec2 } = v2
+const { sin, cos, floor, abs, exp, min } = Math
 
 // Lookup table for the background
 const bgMatrix = [
 '┼──────',
-'│      ',
 '│      ',
 '│      ',
 '│      ',
@@ -104,7 +102,7 @@ export function main(coord, context, cursor){
 		return d < 0 ? ' ' : bgMatrix[y][x]
 	} else {
 		return {
-			char : chars[idx],
+			char  : chars[idx],
 			color : 'blue'
 		}
 	}
