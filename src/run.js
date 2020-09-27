@@ -120,15 +120,15 @@ export function run(program, element, runSettings = {}) {
 					metrics = calcMetrics(element)
 					requestAnimationFrame(__run_twice__)
 				} else {
+					// element.style.lineHeight = Math.ceil(metrics.lineHeightf) + 'px'
+					// console.log(`Using font faimily: ${ci.fontFamily} @ ${ci.fontSize}/${ci.lineHeight}`)
+					// console.log(`Metrics: cellWidth: ${metrics.cellWidth}, lineHeightf: ${metrics.lineHeightf}`)
 					// Finally Boot!
 					requestAnimationFrame(loop)
 				}
 			}
 			requestAnimationFrame(__run_twice__)
 
-			// element.style.lineHeight = Math.ceil(metrics.lineHeightf) + 'px'
-			// console.log(`Using font faimily: ${ci.fontFamily} @ ${ci.fontSize}/${ci.lineHeight}`)
-			// console.log(`Metrics: cellWidth: ${metrics.cellWidth}, lineHeightf: ${metrics.lineHeightf}`)
 
 		})
 
