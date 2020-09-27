@@ -109,19 +109,29 @@ export function run(program, element, runSettings = {}) {
 		})
 		*/
 
-		// The font may STILL not be loaded yet.
-		// The first run on Safari 13.1.1 never works.
-		// It is good after reload (cache related?)!
+		// Even with the "fonts.ready" the font may STILL not be loaded yet
+		// on Safari 13.x and also 14.0.
+		// A (shitty) workaround is to wait 2! rAF and execute calcMetrics twice.
+		// See: https://bugs.webkit.org/show_bug.cgi?id=174030
 		document.fonts.ready.then((e) => {
-			const ci = CSSinfo(element)
-			metrics = calcMetrics(element)
+			let count = 2
+			function __run_twice__(){
+				if (count-- > 0) {
+					metrics = calcMetrics(element)
+					requestAnimationFrame(__run_twice__)
+				} else {
+					// Finally Boot!
+					requestAnimationFrame(loop)
+				}
+			}
+			requestAnimationFrame(__run_twice__)
+
 			// element.style.lineHeight = Math.ceil(metrics.lineHeightf) + 'px'
 			// console.log(`Using font faimily: ${ci.fontFamily} @ ${ci.fontSize}/${ci.lineHeight}`)
 			// console.log(`Metrics: cellWidth: ${metrics.cellWidth}, lineHeightf: ${metrics.lineHeightf}`)
 
-			// Boot!
-			requestAnimationFrame(loop)
 		})
+
 
 		// Time sample to calculate precise offset
 		let timeSample = 0
@@ -368,7 +378,7 @@ export function calcMetrics(el) {
 	el.appendChild(test) // Must be visible!
 
 	const testChar = 'X'
-	const num = 100 // How wide, how high?
+	const num = 50 // How wide, how high?
 
 	// Metrics H
 	let out = ''
