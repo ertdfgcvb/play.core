@@ -4,7 +4,8 @@
 @desc   Color input from camera (quantized)
 [header]
 */
-import { map } from '/src/modules/num.js'
+import {map} from '/src/modules/num.js'
+import {rgb2hex, rgb} from '/src/modules/colors.js'
 import Camera from '/src/modules/camera.js'
 
 const cam = Camera.init()
@@ -13,35 +14,36 @@ const cam = Camera.init()
 
 const chars = ' .+=?X#ABC'.split('')
 
-// A palette used for color quantization
-const pal = [
-	{r:  0, g:  0, b:  0},
-	{r:255, g:  0, b:  0},
-	{r:255, g:255, b:  0},
-	{r:  0, g:100, b:250},
-	{r:100, g:255, b:255},
-	// {r:255, g:182, b:193},
-	// {r:255, g:255, b:255},
-]
+// A custom palette used for color quantization:
+const pal = []
+pal.push(rgb(  0,   0,   0))
+pal.push(rgb(255,   0,   0))
+pal.push(rgb(255, 255,   0))
+pal.push(rgb(  0, 100, 250))
+pal.push(rgb(100, 255, 255))
+//pal.push(rgb(255, 182, 193))
+//pal.push(rgb(255, 255, 255))
 
 export function pre(context, cursor, buffers){
-	// Scale the image slightly
+	// Add a zoom effect
 	const scale = map(Math.sin(context.time * 0.001), -1, 1, 1, 3)
 	cam.cover(context, {x:scale, y:scale}).mirrorX().quantize(pal).write(buffers.data)
 }
 
 export function main(coord, context, cursor, buffers){
-	// Coord also contains the index of each cell:
+	// Coord also contains the index of each cell
 	const color = buffers.data[coord.index]
+	// Add some chars to the output
 	const index = Math.floor(color.gray / 255.0 * (chars.length-1))
 	return {
 		char       : chars[index],
 		color      : 'white',
-		background : `rgb(${color.r},${color.g},${color.b})`
+		// convert {r,g,b} obj to a valid CSS hex string
+		background : rgb2hex(color)
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
+import {drawInfo} from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers){
 	drawInfo(context, cursor, buffers)
 }

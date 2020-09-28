@@ -5,20 +5,25 @@
 [header]
 */
 
-import { sort } from '/src/modules/sort.js'
+import { CSS3 } from '/src/modules/colors.js'
 import Camera from '/src/modules/camera.js'
-import { X11 } from '/src/modules/palettes.js'
 
 const cam = Camera.init()
 // For a debug view uncomment the following line:
 // cam.display(document.body, 10, 10)
 
-const pal = ['red', 'blue', 'white', 'black'].map( e=> {
-	return X11[e].rgb
-})
+// Palette for quantization
+const pal = []
+pal.push(CSS3.red)
+pal.push(CSS3.blue)
+pal.push(CSS3.white)
+pal.push(CSS3.black)
+pal.push(CSS3.lightblue)
 
 export function pre(context, cursor, buffers){
-	cam.cover({cols:context.cols, rows:context.rows*2}).quantize(pal).mirrorX().write(buffers.data)
+	// Double the height of the camera image
+	const ctxSizes = {cols : context.cols, rows : context.rows * 2}
+	cam.cover(ctxSizes).quantize(pal).mirrorX().write(buffers.data)
 }
 
 export function main(coord, context, cursor, buffers){
@@ -29,8 +34,8 @@ export function main(coord, context, cursor, buffers){
 
 	return {
 		char       :'▄',
-		color      : `rgb(${lower.r},${lower.g},${lower.b})`,
-		background : `rgb(${upper.r},${upper.g},${upper.b})`
+		color      : lower.hex,
+		background : upper.hex
 	}
 }
 
@@ -38,3 +43,4 @@ import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers){
 	drawInfo(context, cursor, buffers)
 }
+

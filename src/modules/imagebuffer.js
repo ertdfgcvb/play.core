@@ -176,7 +176,7 @@ export class ImageBuffer {
 
 // Helpers ---------------------------------------------------------------------
 
-function centerImage(sourceCanvas, targetCanvas, scale=1, aspectAdjust=1, mode=MODE_COVER, mirrorX=false){
+function centerImage(sourceCanvas, targetCanvas, scale={x:1, y:1}, aspectAdjust=1, mode=MODE_COVER, mirrorX=false){
 	const type = sourceCanvas.nodeName
 
 	// Source size and aspect
