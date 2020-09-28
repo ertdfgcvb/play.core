@@ -27,7 +27,7 @@ const pal = [
 export function pre(context, cursor, buffers){
 	// Scale the image slightly
 	const scale = map(Math.sin(context.time * 0.001), -1, 1, 1, 3)
-	cam.cover(context, scale).mirrorX().quantize(pal).write(buffers.data)
+	cam.cover(context, {x:scale, y:scale}).mirrorX().quantize(pal).write(buffers.data)
 }
 
 export function main(coord, context, cursor, buffers){

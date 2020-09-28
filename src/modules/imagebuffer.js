@@ -63,7 +63,7 @@ export class ImageBuffer {
 	// Resizes the destination canvas to the size of the ascii context
 	// and covers it with the source image.
 	// An otional scaling factor can be passed.
-	cover(context, scale=1) {
+	cover(context, scale={x:1, y:1}) {
 		// Adjust the target canvas
 		this.canvas.width = context.cols
 		this.canvas.height = context.rows
@@ -77,7 +77,7 @@ export class ImageBuffer {
 	// Resizes the destination canvas to the size of the ascii context
 	// and fits the source image in it.
 	// An otional scaling factor can be passed.
-	fit(context, scale=1) {
+	fit(context, scale={x:1, y:1}) {
 		// Adjust the target canvas
 		this.canvas.width = context.cols
 		this.canvas.height = context.rows
@@ -90,14 +90,14 @@ export class ImageBuffer {
 
 	// Raw copy of source to dest, doesn't take in account the ascii context aspect ratio and size
 	copy(x, y, w, h) {
-		w = w || sourceCanvas.width
-		h = h || sourceCanvas.height
+		w = w || this.sourceCanvas.width
+		h = h || this.sourceCanvas.height
 		this.canvas.width = w
 		this.canvas.height = h
 		const ctx = this.canvas.getContext('2d')
 		ctx.fillStyle = 'black'
 		ctx.fillRect(0, 0, w, h)
-		ctx.drawImage(sourceCanvas, x, y, w, h)
+		ctx.drawImage(this.sourceCanvas, x, y, w, h)
 
 		toBuffer(this.canvas, this.buffer)
 		this.type = TYPE_RGBAG
@@ -214,8 +214,8 @@ function centerImage(sourceCanvas, targetCanvas, scale=1, aspectAdjust=1, mode=M
 	}
 
 	// Update the targetCanvas with correct aspect ratios
-	const sx = scale
-	const sy = scale * aspectAdjust // adjust aspect
+	const sx = scale.x
+	const sy = scale.y * aspectAdjust // adjust aspect
 	const ctx = targetCanvas.getContext('2d')
 
 	// Fill the canvas in case of 'fit'
