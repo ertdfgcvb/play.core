@@ -4,8 +4,8 @@
 @desc   Color input from camera (quantized)
 [header]
 */
-import {map} from '/src/modules/num.js'
-import {rgb2hex, rgb} from '/src/modules/colors.js'
+import { map } from '/src/modules/num.js'
+import { rgb2hex, rgb}  from '/src/modules/colors.js'
 import Camera from '/src/modules/camera.js'
 
 const cam = Camera.init()
@@ -43,7 +43,7 @@ export function main(coord, context, cursor, buffers){
 	}
 }
 
-import {drawInfo} from '/src/modules/drawbox.js'
+import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers){
 	drawInfo(context, cursor, buffers)
 }

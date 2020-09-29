@@ -145,7 +145,7 @@ export function setText(style, buffers) {
 }
 
 const defaultBoxStyle = {
-	x           : 2,
+	x           : 3,
 	y           : 2,
 	width       : 10,
 	height      : 5,
@@ -235,15 +235,15 @@ const defaultInfoStyle = {
 
 export function drawInfo(context, cursor, buffers, style){
 
-	let txt = ""
-	txt += "FPS          " + Math.round(context.fps) + "\n"
-	txt += "frame        " + context.frame + "\n"
-	txt += "time         " + Math.floor(context.time) + "\n"
-	txt += "size         " + context.cols + "×" + context.rows + "\n"
+	let txt = ''
+	txt += 'FPS          ' + Math.round(context.fps) + '\n'
+	txt += 'frame        ' + context.frame + '\n'
+	txt += 'time         ' + Math.floor(context.time) + '\n'
+	txt += 'size         ' + context.cols + '×' + context.rows + '\n'
 	// NOTE: width and height can be a float in case of user zoom
-	txt += "context      " + Math.floor(context.width) + "×" + Math.floor(context.height) + "\n"
-	txt += "font aspect  " + context.aspect.toFixed(2) + "\n"
-	txt += "cursor       " + Math.floor(cursor.x) + "," + Math.floor(cursor.y) + "\n"
+	txt += 'context      ' + Math.floor(context.width) + '×' + Math.floor(context.height) + '\n'
+	txt += 'font aspect  ' + context.aspect.toFixed(2) + '\n'
+	txt += 'cursor       ' + Math.floor(cursor.x) + ',' + Math.floor(cursor.y) + '\n'
 
 	const s = {...defaultInfoStyle, ...style, txt}
 

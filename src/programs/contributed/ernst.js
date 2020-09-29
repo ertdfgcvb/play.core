@@ -4,10 +4,10 @@
 @desc   Inspired by Ernst Jandl, 1964
 */
 
-import {dist, vec2, length, add, mulN} from '/src/modules/vec2.js'
-import {map, smoothstep} from '/src/modules/num.js';
+import { dist, vec2, length, add, mulN } from '/src/modules/vec2.js'
+import { map, smoothstep } from '/src/modules/num.js';
 
-const {PI, atan2, floor, cos, max} = Math;
+const { PI, atan2, floor, cos, max } = Math;
 
 function polygon(center, edges, time) {
 	time = time || 0

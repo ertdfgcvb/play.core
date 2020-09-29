@@ -5,7 +5,10 @@
 [header]
 */
 
-const chars = [" _000111_ ".split(''), ".+abc+.      ".split('')]
+const chars = [
+	" _000111_ ".split(''),
+	".+abc+.      ".split('')
+]
 const col = ['black', 'blue']
 const weights = [100, 700]
 

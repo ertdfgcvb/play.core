@@ -114,3 +114,27 @@ export function main(coord, context, cursor, buffers) {
 	                    return ' ' // both cells are empty
 }
 
+// Draw some info
+import { drawBox } from '/src/modules/drawbox.js'
+export function post(context, cursor, buffers){
+
+	const buff = buffers.data[(context.frame + 1) % 2]
+	const numCells = buff.reduce((a, b) => a + b, 0)
+
+	let txt = ''
+	txt += 'frame ' + context.frame + '\n'
+	txt += 'size  ' + context.cols + '×' + context.rows + '\n'
+	txt += 'cells ' + numCells + '/' + buff.length + '\n'
+
+    drawBox({
+		x : 3,
+		y : 2,
+		width : 26,
+		height : 5,
+		txt : txt,
+		background : 'yellow',
+		color : 'black',
+		borderStyle : 'double'
+	}, buffers)
+}
+
