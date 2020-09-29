@@ -112,7 +112,7 @@ export function run(program, element, runSettings = {}) {
 		// Even with the "fonts.ready" the font may STILL not be loaded yet
 		// on Safari 13.x and also 14.0.
 		// A (shitty) workaround is to wait 2! rAF and execute calcMetrics twice.
-		// See: https://bugs.webkit.org/show_bug.cgi?id=174030
+		// Submitted: https://bugs.webkit.org/show_bug.cgi?id=217047
 		document.fonts.ready.then((e) => {
 			let count = 2
 			function __run_twice__(){
