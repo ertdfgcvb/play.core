@@ -9,24 +9,24 @@ import { clamp, map } from '/src/modules/num.js'
 import { CSS4 } from '/src/modules/colors.js'
 import { lerp, smoothstep } from '/src/modules/num.js'
 
-
 export const settings = { background : 'black' }
 
 const { min, max, sin, floor } = Math
 
-
 const palette = [
-	CSS4.black,         // 0
+	CSS4.black,         // 0 < top
 	CSS4.purple,        // 1
 	CSS4.darkred,       // 2
 	CSS4.red,           // 3
 	CSS4.orangered,     // 4
 	CSS4.gold,          // 5
 	CSS4.lemonchiffon,  // 6
-	CSS4.white          // 7
+	CSS4.white          // 7 < bottom
 ]
 
-const flame = '011222233334444444455566667'.split('').map(e=>parseInt(e))
+//             top                       bottom
+//             v                         v
+const flame = '011222233334444444455566667'.split('').map(Number)
 
 const noise = valueNoise()
 
@@ -34,18 +34,18 @@ let cols, rows
 
 export function pre(context, cursor, buffers){
 
+	// Shorthand
 	const buf = buffers.data
 
+	// Detect resize (and reset buffers, in case)
 	if (cols != context.cols || rows != context.rows) {
 		cols = context.cols
 		rows = context.rows
-		const tot = cols * rows
-		for (let i=0; i<tot; i++) {
-			buf[i] = 0
-		}
+		buf.length = cols * rows // Don't loose reference
+		buf.fill(0)
 	}
 
-	// Floor flame:
+	// Fill the floor with some noise
 	if (!cursor.pressed) {
 		const t = context.time * 0.0015
 		const last = cols * (rows - 1)
@@ -59,6 +59,7 @@ export function pre(context, cursor, buffers){
 		buf[cx + cy * cols] = rndi(5, 50)
 	}
 
+	// Propagate towards the ceiling with some randomness
 	for (let i=0; i<buf.length; i++) {
 		const row = floor(i / cols)
 		const col = i % cols
@@ -66,16 +67,14 @@ export function pre(context, cursor, buffers){
   		const src = min(rows-1, row + 1) * cols + col
   		buf[dest] = max(0, buf[src]-rndi(0, 2))
 	}
-
 }
 
 export function main(coord, context, cursor, buffers){
 
-	const idx = coord.y * context.cols + coord.x
-	const u = buffers.data[idx]
+	const u = buffers.data[coord.index]
 	const v = flame[clamp(u, 0, flame.length-1)]
 
-	if (v === 0) return
+	if (v === 0) return // Inserts a space
 
 	return {
 		char : u % 10,
@@ -89,7 +88,6 @@ function rndi(a, b=0) {
 	if (a > b) [a, b] = [b, a]
 	return Math.floor(a + Math.random() * (b - a + 1))
 }
-
 
 // Value noise:
 // https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1
@@ -125,25 +123,24 @@ function valueNoise() {
 	    const ry0 = yi % tableSize
 	    const ry1 = (ry0 + 1) % tableSize
 
-	    // random values at the corners of the cell using permutation table
+	    // Random values at the corners of the cell using permutation table
 	    const c00 = r[permutationTable[permutationTable[rx0] + ry0]]
 	    const c10 = r[permutationTable[permutationTable[rx1] + ry0]]
 	    const c01 = r[permutationTable[permutationTable[rx0] + ry1]]
 	    const c11 = r[permutationTable[permutationTable[rx1] + ry1]]
 
-	    // remapping of tx and ty using the Smoothstep function
+	    // Remapping of tx and ty using the Smoothstep function
 	    const sx = smoothstep(0, 1, tx);
 	    const sy = smoothstep(0, 1, ty);
 
-	    // linearly interpolate values along the x axis
+	    // Linearly interpolate values along the x axis
 	    const nx0 = lerp(c00, c10, sx)
 	    const nx1 = lerp(c01, c11, sx)
 
-	    // linearly interpolate the nx0/nx1 along they y axis
+	    // Linearly interpolate the nx0/nx1 along they y axis
 	    return lerp(nx0, nx1, sy)
 	}
 }
-
 
 import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers){

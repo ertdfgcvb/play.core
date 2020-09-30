@@ -1,10 +1,10 @@
 ---------------------------------------------------------------------------
-META-Enter  : run
-META-S      : save a new version (locally, with permalink)
-META-Period : show/hide editor
-META-K      : upload a version to the server (needs @name and @title tags)
-META can be the CMD, OPT or CTRL key.
-Use CRTL-Enter on macOS to avoid inserting a new line.
+Meta-Enter   : run
+Meta-S       : save a new version (locally, with permalink)
+Meta-Period  : show/hide editor
+Meta-Shift-U : upload a version to the server (needs @name and @title tags)
+Meta can be the Cmd, Opt, Alt or Ctrl key.
+Use Ctrl-Enter (or Opt-Enter) on macOS to avoid inserting a new line.
 ---------------------------------------------------------------------------
 Type ?help
      anywhere (or edit the previous line)

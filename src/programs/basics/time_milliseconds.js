@@ -19,8 +19,8 @@ export function main(coord, context, cursor, buffers){
 	const o = Math.sin(y * Math.sin(t) * 0.2 + x * 0.04 + t) * 20
 	const i = Math.round(Math.abs(x + y + o)) % chars.length
 	return {
-		char       : chars[i],
-		weight     : '100', // or 'light', 'bold', '400'
+		char   : chars[i],
+		weight : '100', // or 'light', 'bold', '400'
 	}
 }
 
