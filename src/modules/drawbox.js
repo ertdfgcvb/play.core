@@ -224,7 +224,7 @@ export function drawBox(style, buffers){
 const defaultInfoStyle = {
 	x           : 3,
 	y           : 2,
-	width       : 26,
+	width       : 30,
 	height      : 9,
 	background  : 'white',
 	color       : 'black',
@@ -236,14 +236,15 @@ const defaultInfoStyle = {
 export function drawInfo(context, cursor, buffers, style){
 
 	let txt = ''
-	txt += 'FPS          ' + Math.round(context.fps) + '\n'
+	txt += 'FPS          ' + Math.round(context.info.fps) + '\n'
 	txt += 'frame        ' + context.frame + '\n'
 	txt += 'time         ' + Math.floor(context.time) + '\n'
 	txt += 'size         ' + context.cols + '×' + context.rows + '\n'
-	// NOTE: width and height can be a float in case of user zoom
-	txt += 'context      ' + Math.floor(context.width) + '×' + Math.floor(context.height) + '\n'
+	txt += 'row repaint  ' + context.info.updatedRowNum + '\n'
 	txt += 'font aspect  ' + context.aspect.toFixed(2) + '\n'
 	txt += 'cursor       ' + Math.floor(cursor.x) + ',' + Math.floor(cursor.y) + '\n'
+	// NOTE: width and height can be a float in case of user zoom
+	// txt += 'context      ' + Math.floor(context.width) + '×' + Math.floor(context.height) + '\n'
 
 	const s = {...defaultInfoStyle, ...style, txt}
 

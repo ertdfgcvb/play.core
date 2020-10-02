@@ -158,6 +158,8 @@ export function run(program, element, runSettings = {}) {
 
 		// A buffer to keep track of the state to check if update of row is necessary
 		const backBuffer = []
+		// Debug info (counts the number of rows that have been updated)
+		let updatedRowNum = 0
 
 		// Main program loop
 		function loop(t) {
@@ -181,15 +183,19 @@ export function run(program, element, runSettings = {}) {
 			const cols = settings.cols || Math.floor(rect.width / metrics.cellWidth)
 			const rows = settings.rows || Math.floor(rect.height / metrics.lineHeight)
 			const context = Object.freeze({
-				cycle  : state.cycle,
-				frame  : state.frame,
-				time   : state.time,
-				fps    : fps.update(t),
-				cols   : cols,
-				rows   : rows,
-				width  : rect.width,
-				height : rect.height,
-				aspect : metrics.aspect
+				frame          : state.frame,
+				time           : state.time,
+				cols           : cols,
+				rows           : rows,
+				aspect         : metrics.aspect,
+				info : Object.freeze({
+					cycle         : state.cycle,
+					fps           : fps.update(t),
+					width         : rect.width,
+					height        : rect.height,
+					updatedRowNum : updatedRowNum,
+					parentElement : element
+				})
 			})
 
 			// Cursor update
@@ -282,7 +288,7 @@ export function run(program, element, runSettings = {}) {
 
 			// Count the number of rows which will be updated
 			// (for debugging purposes)
-			// let updatedRowNum = 0
+			updatedRowNum = 0
 
 			// A bit of a cumbersome render-loop…
 			// A few notes: the fastest way I found to render the image
@@ -306,7 +312,7 @@ export function run(program, element, runSettings = {}) {
 						const newCell = buffers.state[idx]
 						const oldCell = backBuffer[idx]
 						if (!isSameCell(newCell, oldCell)) {
-							// if (rowNeedsUpdate == false) updatedRowNum++
+							if (rowNeedsUpdate == false) updatedRowNum++
 							rowNeedsUpdate = true
 							backBuffer[idx] = {...newCell}
 						}
@@ -331,7 +337,6 @@ export function run(program, element, runSettings = {}) {
 							const w = currCell.weight === settings.weight ? null : currCell.weight
 
 							// Accumulate the CSS inline attribute.
-							// Beginning space and double quotes are important (for string compare below):
 							let css = ''
 							if (c) css += 'color:' + c + ';'
 							if (b) css += 'background:' + b + ';'
