@@ -20,7 +20,7 @@ export function main(coord, context, cursor, buffers){
 
 	const colors = ['mediumvioletred', 'gold', 'orange', 'chartreuse', 'blueviolet', 'deeppink'];
 
-	const i = Math.round(Math.abs(x / 5 + y + o / 5)) % chars.length
+	const i = Math.round(Math.abs(x + y + o)) % chars.length
 	return {
 		char       : chars[i],
 		color      : colors[i % colors.length],
