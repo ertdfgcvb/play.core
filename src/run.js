@@ -156,6 +156,9 @@ export function run(program, element, runSettings = {}) {
 			data  : []  // user data
 		}
 
+		// A buffer to keep track of the state to check if update of row is necessary
+		const backBuffer = []
+
 		// Main program loop
 		function loop(t) {
 
@@ -277,6 +280,10 @@ export function run(program, element, runSettings = {}) {
 			element.style.color = settings.color
 			element.style.fontWeight = settings.weight
 
+			// Count the number of rows which will be updated
+			// (for debugging purposes)
+			// let updatedRowNum = 0
+
 			// A bit of a cumbersome render-loop…
 			// A few notes: the fastest way I found to render the image
 			// is by manually write the markup into the parent node via .innerHTML;
@@ -284,10 +291,33 @@ export function run(program, element, runSettings = {}) {
 			// remarkably slower (even if more elegant for the CSS handling below).
 			try {
 				for (let j=0; j<rows; j++) {
+
+					const offs = j * cols
+
+					// This check is faster than to force update the DOM.
+					// Buffers can be manually modified in pre, main and after
+					// with semi-arbitrary values…
+					// It is necessary to keep track of the previous state
+					// and specifically check if a change in style
+					// or char happened on the whole row.
+					let rowNeedsUpdate = false
+					for (let i=0; i<cols; i++) {
+						const idx = i + offs
+						const newCell = buffers.state[idx]
+						const oldCell = backBuffer[idx]
+						if (!isSameCell(newCell, oldCell)) {
+							// if (rowNeedsUpdate == false) updatedRowNum++
+							rowNeedsUpdate = true
+							backBuffer[idx] = {...newCell}
+						}
+					}
+
+					// Skip row if update is not necessary
+					if (rowNeedsUpdate == false) continue
+
 					let html = '' // Accumulates the markup
 					let prevCell = defaultCell
 					let tagIsOpen = false
-					const offs = j * cols
 					for (let i=0; i<cols; i++) {
 						const currCell = buffers.state[i + offs] || {...defaultCell, char : EMPTY_CELL}
 
@@ -314,14 +344,9 @@ export function run(program, element, runSettings = {}) {
 						prevCell = currCell
 					}
 					if (tagIsOpen) html += '</span>'
-					// String comparison: faster than a DOM reflow
-					// in case of small changes in the doc or a static image.
-					// NOTE: Check at buffer level? Probably faster & more accurate,
-					//       but difficult to perform because user can manipulate it
-					//       oustide the main loop? Maybe try double buffering + compare?
-					if (html != element.childNodes[j].innerHTML) {
-						element.childNodes[j].innerHTML = html
-					}
+
+					// Write the row
+					element.childNodes[j].innerHTML = html
 				}
 			} catch (error){
 				cancelAnimationFrame(af)
@@ -336,10 +361,21 @@ export function run(program, element, runSettings = {}) {
 
 // -- Helpers ------------------------------------------------------------------
 
-// Compares two cells for style
+// Compares two cells
+function isSameCell(cellA, cellB) {
+	if (typeof cellA != 'object')              return false
+	if (typeof cellB != 'object')              return false
+	if (cellA.char !== cellB.char)             return false
+	if (cellA.weight !== cellB.weight)         return false
+	if (cellA.color !== cellB.color)           return false
+	if (cellA.background !== cellB.background) return false
+	return true
+}
+
+// Compares two cells for style only
 function isSameCellStyle(cellA, cellB) {
-	if (cellA.weight !== cellB.weight) return false
-	if (cellA.color !== cellB.color) return false
+	if (cellA.weight !== cellB.weight)         return false
+	if (cellA.color !== cellB.color)           return false
 	if (cellA.background !== cellB.background) return false
 	return true
 }
