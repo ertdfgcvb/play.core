@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+	<meta charset="utf-8">
+	<title>Proxy test</title>
+</head>
+<body>
+	<pre>Console output only</pre>
+	<script type="module">
+
+		const ARR_LEN = 5000
+		const array = []
+		for (let i=0; i<ARR_LEN; i++) {
+			array[i] = i
+		}
+
+		const arrayP = []
+		for (let i=0; i<ARR_LEN; i++) {
+			arrayP[i] = i
+		}
+
+		const proxy = new Proxy(arrayP, {
+			apply: function(target, thisArg, argumentsList) {
+				return thisArg[target].apply(this, argumentList)
+			},
+			// deleteProperty: function(target, property) {
+			// 	// console.log('Deleted ' + property)
+			// 	return true
+			// },
+			set: function(target, property, value, receiver) {
+				if (value == target[property]) {
+					// console.log('Value is identical, not set!')
+					return true
+				}
+				target[property] = value
+				// console.log('Set ' + property + ' to ' + value)
+				return true
+			}
+		})
+
+		// --------------------------------------
+
+		const num = 10000
+
+		const a0 = performance.now()
+
+		for (let i=0; i<num; i++) {
+			const idx = i % ARR_LEN
+			if (array[idx] === i) continue
+			array[idx] = i
+		}
+
+		const a1 = performance.now()
+
+		console.log('Delta a: ' + (a1-a0))
+
+		// --------------------------------------
+
+		const b0 = performance.now()
+
+		for (let i=0; i<num; i++) {
+			// const idx = i % proxy.length
+			const idx = i % ARR_LEN // Much faster than proxy.length!
+			proxy[idx] = i
+		}
+
+		const b1 = performance.now()
+
+		console.log('Delta b: ' + (b1-b0))
+
+
+
+	</script>
+</body>
+</html>
