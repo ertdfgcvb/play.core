@@ -290,6 +290,11 @@ export function run(program, element, runSettings = {}) {
 			// (for debugging purposes)
 			updatedRowNum = 0
 
+			// In case of a window resize the backbuffer gets 'emptied',
+			// forcing a repaint of all the rows
+			// (in certain edge cases this is required)
+			if (backBuffer.length != buffers.state.length) backBuffer.length = 0
+
 			// A bit of a cumbersome render-loop…
 			// A few notes: the fastest way I found to render the image
 			// is by manually write the markup into the parent node via .innerHTML;
