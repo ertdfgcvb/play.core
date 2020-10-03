@@ -1,7 +1,7 @@
 /**
 @author ertdfgcvb
 @title  Camera RGB
-@desc   Color input from camera (quantized)
+@desc   Color input from camera (quantised)
 [header]
 */
 import { map } from '/src/modules/num.js'
@@ -14,7 +14,7 @@ const cam = Camera.init()
 
 const density = ' .+=?X#ABC'.split('')
 
-// A custom palette used for color quantization:
+// A custom palette used for color quantisation:
 const pal = []
 pal.push(rgb(  0,   0,   0))
 pal.push(rgb(255,   0,   0))
