@@ -1,6 +1,6 @@
 /**
 @author ertdfgcvb
-@title  Doom Flame
+@title  Doom Flame (full color)
 @desc   Oldschool flame effect
 [header]
 */
@@ -9,14 +9,28 @@ import { clamp, map } from '/src/modules/num.js'
 import { CSS4 } from '/src/modules/colors.js'
 import { lerp, smoothstep } from '/src/modules/num.js'
 
-export const settings = { fps : 30, background : 'black', color : 'white' }
+export const settings = { background : 'black' }
 
 const { min, max, sin, floor } = Math
 
-const flame = '...::/\\/\\/\\+=*abcdef01X#'.split('')
-let cols, rows
+const palette = [
+	CSS4.black,         // 0 < top
+	CSS4.purple,        // 1
+	CSS4.darkred,       // 2
+	CSS4.red,           // 3
+	CSS4.orangered,     // 4
+	CSS4.gold,          // 5
+	CSS4.lemonchiffon,  // 6
+	CSS4.white          // 7 < bottom
+]
+
+//             top                       bottom
+//             v                         v
+const flame = '011222233334444444455566667'.split('').map(Number)
 
 const noise = valueNoise()
+
+let cols, rows
 
 export function pre(context, cursor, buffers){
 
@@ -56,12 +70,16 @@ export function pre(context, cursor, buffers){
 }
 
 export function main(coord, context, cursor, buffers){
+
 	const u = buffers.data[coord.index]
-	if (u === 0) return // Inserts a space
+	const v = flame[clamp(u, 0, flame.length-1)]
+
+	if (v === 0) return // Inserts a space
 
 	return {
-		char : flame[clamp(u, 0, flame.length-1)],
-		color : u > 25 ? 'white' : 'red'
+		char : u % 10,
+		color : palette[min(palette.length-1,v+1)].hex,
+		background : palette[v].hex
 	}
 }
 
