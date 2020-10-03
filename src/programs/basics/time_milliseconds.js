@@ -6,7 +6,7 @@
 */
 
 // Globals have module scope
-const chars = 'ABCxyz01═|+:. '.split('')
+const pattern = 'ABCxyz01═|+:. '.split('')
 
 // This is the main loop.
 // Character coordinates are passed in coord {x, y, index}.
@@ -17,9 +17,9 @@ export function main(coord, context, cursor, buffers){
 	const x = coord.x
 	const y = coord.y
 	const o = Math.sin(y * Math.sin(t) * 0.2 + x * 0.04 + t) * 20
-	const i = Math.round(Math.abs(x + y + o)) % chars.length
+	const i = Math.round(Math.abs(x + y + o)) % pattern.length
 	return {
-		char   : chars[i],
+		char   : pattern[i],
 		weight : '100', // or 'light', 'bold', '400'
 	}
 }

@@ -12,7 +12,7 @@ const cam = Camera.init()
 // For a debug view uncomment the following line:
 // cam.display(document.body, 10, 10)
 
-const chars = ' .+=?X#ABC'.split('')
+const density = ' .+=?X#ABC'.split('')
 
 // A custom palette used for color quantization:
 const pal = []
@@ -34,9 +34,9 @@ export function main(coord, context, cursor, buffers){
 	// Coord also contains the index of each cell
 	const color = buffers.data[coord.index]
 	// Add some chars to the output
-	const index = Math.floor(color.gray / 255.0 * (chars.length-1))
+	const index = Math.floor(color.gray / 255.0 * (density.length-1))
 	return {
-		char       : chars[index],
+		char       : density[index],
 		color      : 'white',
 		// convert {r,g,b} obj to a valid CSS hex string
 		background : rgb2hex(color)

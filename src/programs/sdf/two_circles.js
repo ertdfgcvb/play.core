@@ -8,7 +8,7 @@
 import { sdCircle, opSmoothUnion } from '/src/modules/sdf.js'
 import { sub, vec2 } from '/src/modules/vec2.js'
 
-const charMap = '#WX?*:÷×+=-· '.split('')
+const density = '#WX?*:÷×+=-· '.split('')
 
 export function main(coord, context, cursor, buffers){
 	const t = context.time
@@ -35,9 +35,9 @@ export function main(coord, context, cursor, buffers){
 
 	// Calc index of the char map
 	const c = 1.0 - Math.exp(-5 * Math.abs(d))
-	const index = Math.floor(c * charMap.length)
+	const index = Math.floor(c * density.length)
 
-	return charMap[index]
+	return density[index]
 
 }
 

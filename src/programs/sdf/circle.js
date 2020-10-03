@@ -8,7 +8,7 @@
 import { sdCircle } from '/src/modules/sdf.js'
 import { sort } from '/src/modules/sort.js'
 
-const chars = sort('/\\MXYZabc!?=-. '.split(''))
+const density = sort('/\\MXYZabc!?=-. '.split(''))
 
 export const settings = { fps : 60 }
 
@@ -24,10 +24,10 @@ export function main(coord, context, cursor, buffer){
 	const radius = (Math.cos(t)) * 0.4 + 0.5
 	const d = sdCircle(st, radius)
 	const c = 1.0 - Math.exp(-5 * Math.abs(d))
-	const index = Math.floor(c * chars.length)
+	const index = Math.floor(c * density.length)
 
 	return {
-		char : coord.x % 2 ? '│' : chars[index],
+		char : coord.x % 2 ? '│' : density[index],
 		background : 'black',
 		color : 'white'
 	}

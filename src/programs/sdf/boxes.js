@@ -8,7 +8,7 @@
 import { map } from '/src/modules/num.js'
 import { sdBox, opSmoothUnion } from '/src/modules/sdf.js'
 
-let chars = '▚▀abc|/:÷×+-=?*· '.split('')
+let density = '▚▀abc|/:÷×+-=?*· '.split('')
 
 export function main(coord, context, cursor, buffers){
 
@@ -33,8 +33,8 @@ export function main(coord, context, cursor, buffers){
 	}
 
 	let c = 1.0 - Math.exp(-5 * Math.abs(d))
-	const index = Math.floor(c * chars.length)
-	return chars[index]
+	const index = Math.floor(c * density.length)
+	return density[index]
 }
 
 function transform(p, trans, rot){

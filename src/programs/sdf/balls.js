@@ -8,7 +8,7 @@
 import { map } from '/src/modules/num.js'
 import { sdCircle, opSmoothUnion } from '/src/modules/sdf.js'
 
-const chars = '#ABC|/:÷×+-=?*· '.split('')
+const density = '#ABC|/:÷×+-=?*· '.split('')
 
 const { PI, sin, cos, exp, abs } = Math
 
@@ -41,8 +41,8 @@ export function main(coord, context, cursor, buffer){
 	let c = 1.0 - exp(-3 * abs(d));
 	//if (d < 0) c = 0
 
-	const index = Math.floor(c * chars.length)
-	return chars[index]
+	const index = Math.floor(c * density.length)
+	return density[index]
 }
 
 function transform(p, trans, rot){

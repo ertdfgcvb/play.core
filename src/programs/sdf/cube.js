@@ -12,7 +12,7 @@ import { map } from '/src/modules/num.js'
 
 export const settings = { fps : 60 }
 
-const chars = '  -=+abcdX'.split('')
+const density = '  -=+abcdX'.split('')
 
 // Shorthands
 const { vec3 } = v3
@@ -94,7 +94,7 @@ export function main(coord, context, cursor){
 		d = min(d, sdSegment(st, a, b, thickness))
 	}
 
-	const idx = floor(exp(expMul * abs(d)) * chars.length)
+	const idx = floor(exp(expMul * abs(d)) * density.length)
 
 	if (idx == 0) {
 		const x = coord.x % bgMatrixDim.x
@@ -102,7 +102,7 @@ export function main(coord, context, cursor){
 		return d < 0 ? ' ' : bgMatrix[y][x]
 	} else {
 		return {
-			char  : chars[idx],
+			char  : density[idx],
 			color : 'blue'
 		}
 	}

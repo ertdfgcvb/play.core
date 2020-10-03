@@ -5,7 +5,7 @@
 [header]
 */
 
-const chars = [
+const pattern = [
 	" _000111_ ".split(''),
 	".+abc+.      ".split('')
 ]
@@ -25,7 +25,7 @@ export function main(coord, context, cursor, buffers){
 	const i = f(Math.abs(x + y + o))
 	const c = (f(coord.x * 0.09) + f(coord.y * 0.09)) % 2
 	return {
-		char       : chars[c][i % chars[c].length],
+		char       : pattern[c][i % pattern[c].length],
 		color      : 'black', //col[c],
 		background : 'white', //col[(c+1)%2],
 		weight     : weights[c],

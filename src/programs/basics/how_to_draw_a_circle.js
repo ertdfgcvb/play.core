@@ -38,7 +38,7 @@ export function post(context, cursor, buffers){
 	txt += 'to change the aspect ratio:\n'
 	txt += 'aspectRatio = ' + ar + '\n'
 
-	// Box style
+	// Custom box style
 	const style = {
 		x : 3,
 		y : 2,
