@@ -13,7 +13,7 @@ export const settings = { fps : 30, background : 'black', color : 'white' }
 
 const { min, max, sin, floor } = Math
 
-const flame = '...::/\\/\\/\\+=*abcdef01X#'.split('')
+const flame = '...::/\\/\\/\\+=*abcdef01XYZ#'.split('')
 let cols, rows
 
 const noise = valueNoise()
@@ -36,7 +36,7 @@ export function pre(context, cursor, buffers){
 		const t = context.time * 0.0015
 		const last = cols * (rows - 1)
 		for (let i=0; i<cols; i++) {
-			const val = floor(map(noise(i * 0.05, t), 0, 1, 5, 50))
+			const val = floor(map(noise(i * 0.05, t), 0, 1, 5, 40))
 			buf[last + i] = min(val, buf[last + i] + 2)
 		}
 	} else {
@@ -61,7 +61,7 @@ export function main(coord, context, cursor, buffers){
 
 	return {
 		char : flame[clamp(u, 0, flame.length-1)],
-		color : u > 25 ? 'white' : 'red'
+		weight : u > 20 ? 700 : 100
 	}
 }
 
