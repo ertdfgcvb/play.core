@@ -128,10 +128,7 @@ export function run(program, element, runSettings = {}) {
 				}
 			}
 			requestAnimationFrame(__run_twice__)
-
-
 		})
-
 
 		// Time sample to calculate precise offset
 		let timeSample = 0
@@ -158,8 +155,12 @@ export function run(program, element, runSettings = {}) {
 
 		// A buffer to keep track of the state to check if update of row is necessary
 		const backBuffer = []
+
 		// Debug info (counts the number of rows that have been updated)
 		let updatedRowNum = 0
+
+		// Keep track of the context size to detect window resizes (no listener needed)
+		let cols, rows
 
 		// Main program loop
 		function loop(t) {
@@ -179,15 +180,24 @@ export function run(program, element, runSettings = {}) {
 			}
 
 			// Context data
-			const rect  = element.getBoundingClientRect()
-			const cols = settings.cols || Math.floor(rect.width / metrics.cellWidth)
-			const rows = settings.rows || Math.floor(rect.height / metrics.lineHeight)
+			const rect = element.getBoundingClientRect()
+			const c = settings.cols || Math.floor(rect.width / metrics.cellWidth)
+			const r = settings.rows || Math.floor(rect.height / metrics.lineHeight)
+
+			// Size changed?
+			const contextResized = cols != c || rows != r
+
+			if (contextResized) {
+				cols = c
+				rows = r
+			}
+
 			const context = Object.freeze({
-				frame          : state.frame,
-				time           : state.time,
-				cols           : cols,
-				rows           : rows,
-				aspect         : metrics.aspect,
+				frame  : state.frame,
+				time   : state.time,
+				cols   : cols,
+				rows   : rows,
+				aspect : metrics.aspect,
 				info : Object.freeze({
 					cycle         : state.cycle,
 					fps           : fps.update(t),
@@ -293,7 +303,7 @@ export function run(program, element, runSettings = {}) {
 			// In case of a window resize the backbuffer gets 'emptied',
 			// forcing a repaint of all the rows
 			// (in certain edge cases this is required)
-			if (backBuffer.length != buffers.state.length) backBuffer.length = 0
+			if (contextResized) backBuffer.length = 0
 
 			// A bit of a cumbersome render-loop…
 			// A few notes: the fastest way I found to render the image
