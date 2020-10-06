@@ -4,14 +4,17 @@
 @desc   noob at frag shaders
 */
 
-const chars = '█▓▒░ '.split('')
+const chars = "█▓▒░ ".split('')
 
-import { map } from '/src/modules/num.js'
+import { fract } from "/src/modules/num.js"
 
 export function main(coord, context, cursor, buffers){
 	const t = context.time * 0.002
 	const x = coord.x
 	const y = coord.y
+	//const index = coord.index
+	//const o = Math.sin(y * Math.sin(t) * 0.2 + x * 0.04 + t) * 20
+	//const i = Math.round(Math.abs(x + y + o)) % chars.length
 	const v0 = context.cols / 4 + wave(t, y, [0.15, 0.13, 0.37], [10,8,5]) * 0.9;
 	const v1 = v0 + wave(t, y, [0.12, 0.14, 0.27], [3,6,5]) * 0.8;
 	const v2 = v1 + wave(t, y, [0.089, 0.023, 0.217], [2,4,2]) * 0.3;
@@ -22,13 +25,7 @@ export function main(coord, context, cursor, buffers){
 		: x > v0 ? 1
 		: 0;
 
-	const r = map(Math.sin(t + y * 0.1), -1.5, 1, 0x11, 0xff)
-
-	return {
-		char       : chars[i],
-		color      : `#0000${Math.round(r).toString(16)}`,
-		background : 'black'
-	}
+	return chars[i];
 }
 
 function wave(t, y, seeds, amps) {
