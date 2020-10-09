@@ -246,15 +246,7 @@ export function run(program, element, runSettings = {}) {
 						const offs = j * cols
 						for (let i=0; i<cols; i++) {
 							const idx = i + offs
-							const out = program.main({x:i, y:j, index:idx}, context, cursor, buffers)
-							const cell = typeof out == 'object' ? {...defaultCell, ...out} : {...defaultCell, char : out}
-							// Make sure that char is set:
-							// undefined, null and '' (empty string) should be rendered as EMPTY_CELL
-							// Watch out for special case of 0 (zero).
-							if (!Boolean(cell.char) && cell.char !== 0) cell.char = EMPTY_CELL
-							// Chop in case of string (+ convert in case of number):
-							cell.char = (cell.char + '')[0]
-							buffers.state[idx] = cell
+							buffers.state[idx] = program.main({x:i, y:j, index:idx}, context, cursor, buffers)
 						}
 					}
 				}
@@ -275,6 +267,22 @@ export function run(program, element, runSettings = {}) {
 			}
 
 			// 4. --------------------------------------------------------------
+			// Normalize the buffer
+			// (the buffer can contain a single char or a cell object)
+			const num = rows * cols
+			for (let i=0; i<num; i++) {
+				const out = buffers.state[i]
+				const cell = typeof out == 'object' ? {...defaultCell, ...out} : {...defaultCell, char : out}
+				// Make sure that char is set:
+				// undefined, null and '' (empty string) should be rendered as EMPTY_CELL
+				// Watch out for special case of 0 (zero).
+				if (!Boolean(cell.char) && cell.char !== 0) cell.char = EMPTY_CELL
+				// Chop in case of string (+ convert in case of number):
+				cell.char = (cell.char + '')[0]
+				buffers.state[i] = cell
+			}
+
+			// 5. --------------------------------------------------------------
 			// Renderloop
 
 			// DOM rows update: expand lines if necessary
