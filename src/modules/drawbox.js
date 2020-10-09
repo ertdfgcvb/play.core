@@ -121,7 +121,11 @@ export function merge(val, x, y, buffers) {
 	if (x < 0 || x >= buffers.cols) return
 	if (y < 0 || y >= buffers.rows) return
 	const i = x + y * buffers.cols
-	buffers.state[i] = {...(buffers.state[i]) || {}, ...val}
+
+	// Flatten:
+	const cell = typeof buffers.state[i] == 'object' ? buffers.state[i] : { char : buffers.state[i] }
+
+	buffers.state[i] = { ...cell, ...val }
 }
 
 export function setRect(val, x, y, w, h, buffers) {
