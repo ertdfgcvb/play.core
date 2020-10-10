@@ -11,7 +11,7 @@ all the gaps.
 [header]
 */
 
-export const settings = { background : 'lightgrey' }
+export const settings = { background : 'whitesmoke' }
 
 export function pre(context, cursor, buffers){
 
