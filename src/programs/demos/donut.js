@@ -10,6 +10,9 @@ theta and phi (below) must be small enough to fill
 all the gaps.
 [header]
 */
+
+export const settings = { background : 'lightgrey' }
+
 export function pre(context, cursor, buffers){
 
 	const TAU = Math.PI * 2
