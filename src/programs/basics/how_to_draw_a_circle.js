@@ -46,7 +46,8 @@ export function post(context, cursor, buffers){
 		height : 6,
 		txt : txt,
 		background : 'yellow',
-		borderStyle : 'double'
+		borderStyle : 'double',
+		shadowStyle : 'gray'
 	}
 
 	// Finally draw the box
