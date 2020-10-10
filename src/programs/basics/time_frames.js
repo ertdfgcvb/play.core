@@ -17,6 +17,6 @@ export function main(coord, context){
 import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers){
 	drawInfo(context, cursor, buffers, {
-		color : 'white', background : 'blue', shadowStyle : 'gray'
+		color : 'white', background : 'royalblue', shadowStyle : 'gray'
 	})
 }

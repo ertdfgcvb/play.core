@@ -31,6 +31,6 @@ import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers){
 	// An extra object can be passed to drawInfo to alter the default style
 	drawInfo(context, cursor, buffers, {
-		color : 'white', background : 'blue', shadowStyle : 'gray'
+		color : 'white', background : 'royalblue', shadowStyle : 'gray'
 	})
 }
