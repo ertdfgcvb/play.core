@@ -67,7 +67,7 @@ export class ImageBuffer {
 		// Adjust the target canvas
 		this.canvas.width = context.cols
 		this.canvas.height = context.rows
-		centerImage(this.sourceCanvas, this.canvas, scale, context.aspect, MODE_COVER, false)
+		centerImage(this.sourceCanvas, this.canvas, scale, context.metrics.aspect, MODE_COVER, false)
 
 		toBuffer(this.canvas, this.buffer)
 		this.type = TYPE_RGBAG
@@ -81,7 +81,7 @@ export class ImageBuffer {
 		// Adjust the target canvas
 		this.canvas.width = context.cols
 		this.canvas.height = context.rows
-		centerImage(this.sourceCanvas, this.canvas, scale, context.aspect, MODE_FIT, false)
+		centerImage(this.sourceCanvas, this.canvas, scale, context.metrics.aspect, MODE_FIT, false)
 
 		toBuffer(this.canvas, this.buffer)
 		this.type = TYPE_RGBAG

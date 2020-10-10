@@ -13,10 +13,12 @@ let density = '▚▀abc|/:÷×+-=?*· '.split('')
 export function main(coord, context, cursor, buffers){
 
 	const t = context.time
-	const a = Math.max(context.cols, context.rows)
+    const m = Math.max(context.cols, context.rows)
+    const a = context.metrics.aspect
+
 	const st = {
-		x : 2.0 * (coord.x - context.cols / 2) / a,
-		y : 2.0 * (coord.y - context.rows / 2) / a / context.aspect,
+		x : 2.0 * (coord.x - context.cols / 2) / m,
+		y : 2.0 * (coord.y - context.rows / 2) / m / a
 	}
 
 	let d = 1e100

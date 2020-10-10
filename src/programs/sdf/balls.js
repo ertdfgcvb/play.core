@@ -13,12 +13,13 @@ const density = '#ABC|/:÷×+-=?*· '.split('')
 const { PI, sin, cos, exp, abs } = Math
 
 export function main(coord, context, cursor, buffer){
-
 	const t = context.time * 0.001 + 10
-	const a = Math.min(context.cols, context.rows)
+    const m = Math.min(context.cols, context.rows)
+    const a = context.metrics.aspect
+
 	const st = {
-		x : 2.0 * (coord.x - context.cols / 2) / a * context.aspect,
-		y : 2.0 * (coord.y - context.rows / 2) / a
+		x : 2.0 * (coord.x - context.cols / 2) / m * a,
+		y : 2.0 * (coord.y - context.rows / 2) / m
 	}
 
 	// const z = map(Math.sin(t * 0.00032), -1, 1, 0.5, 1)

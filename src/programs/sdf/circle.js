@@ -13,12 +13,13 @@ const density = sort('/\\MXYZabc!?=-. '.split(''))
 export const settings = { fps : 60 }
 
 export function main(coord, context, cursor, buffer){
-
 	const t  = context.time * 0.002
-	const a  = Math.min(context.cols, context.rows)
+    const m = Math.min(context.cols, context.rows)
+    const a = context.metrics.aspect
+
 	const st = {
-		x : 2.0 * (coord.x - context.cols / 2) / a * context.aspect,
-		y : 2.0 * (coord.y - context.rows / 2) / a
+		x : 2.0 * (coord.x - context.cols / 2) / m * a,
+		y : 2.0 * (coord.y - context.rows / 2) / m
 	}
 
 	const radius = (Math.cos(t)) * 0.4 + 0.5

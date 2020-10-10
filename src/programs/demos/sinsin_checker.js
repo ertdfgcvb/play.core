@@ -12,18 +12,15 @@ const pattern = [
 const col = ['black', 'blue']
 const weights = [100, 700]
 
-const f = Math.floor
-const s = Math.sin
+const { floor, sin } = Math
 
 export function main(coord, context, cursor, buffers){
-	const h = context.rows
-	const w = context.cols
 	const t = context.time * 0.001
-	const x = coord.x - w/2
-	const y = coord.y - h/2
-	const o = s(y * x * 0.001 + y * x * 0.002 + t ) * 40
-	const i = f(Math.abs(x + y + o))
-	const c = (f(coord.x * 0.09) + f(coord.y * 0.09)) % 2
+	const x = coord.x - context.cols / 2
+	const y = coord.y - context.rows / 2
+	const o = sin(y * x * 0.001 + y * x * 0.002 + t ) * 40
+	const i = floor(Math.abs(x + y + o))
+	const c = (floor(coord.x * 0.09) + floor(coord.y * 0.09)) % 2
 	return {
 		char       : pattern[c][i % pattern[c].length],
 		color      : 'black', //col[c],

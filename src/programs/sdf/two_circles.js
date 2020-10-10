@@ -12,18 +12,20 @@ const density = '#WX?*:÷×+=-· '.split('')
 
 export function main(coord, context, cursor, buffers){
 	const t = context.time
-	const a  = Math.min(context.cols, context.rows)
+    const m = Math.min(context.cols, context.rows)
+    const a = context.metrics.aspect
+
 	const st = vec2(
-		2.0 * (coord.x - context.cols / 2) / a * context.aspect,
-		2.0 * (coord.y - context.rows / 2) / a
+		2.0 * (coord.x - context.cols / 2) / m * a,
+		2.0 * (coord.y - context.rows / 2) / m
 	)
 
 	// A bit of a waste as cursor is not coord dependent;
 	// it could be calculated in pre(), and stored in a global
 	// (see commented code below).
 	const pointer = vec2(
-		2.0 * (cursor.x - context.cols / 2) / a * context.aspect,
-		2.0 * (cursor.y - context.rows / 2) / a
+		2.0 * (cursor.x - context.cols / 2) / m * a,
+		2.0 * (cursor.y - context.rows / 2) / m
 	)
 
 	// Circles
@@ -51,8 +53,9 @@ export function post(context, metrics, cursor, buffers){
 /*
 const p = vec2(0, 0)
 export function pre(context, cursor, buffers){
-	const a  = Math.min(context.cols, context.rows)
-	p.x = 2.0 * (cursor.x - context.cols / 2) / a * context.aspect,
-	p.y = 2.0 * (cursor.y - context.rows / 2) / a
+   	const m = Math.min(context.cols, context.rows)
+    const a = context.metrics.aspect
+	p.x = 2.0 * (cursor.x - context.cols / 2) / m * a,
+	p.y = 2.0 * (cursor.y - context.rows / 2) / m
 }
 */

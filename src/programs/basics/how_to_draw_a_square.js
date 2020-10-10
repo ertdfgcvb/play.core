@@ -20,12 +20,13 @@ export function box(p, size){
 
 export function main(coord, context, cursor, buffers){
     const t = context.time
-    const a = Math.min(context.cols, context.rows)
+    const m = Math.min(context.cols, context.rows)
+    const a = context.metrics.aspect
 
 	// Normalize space and adjust aspect ratio (screen and char)
 	const st = {
-        x : 2.0 * (coord.x - context.cols / 2) / a,
-        y : 2.0 * (coord.y - context.rows / 2) / a / context.aspect,
+        x : 2.0 * (coord.x - context.cols / 2) / m,
+        y : 2.0 * (coord.y - context.rows / 2) / m / a,
     }
 
 	// Transform the coordinate by rotating it

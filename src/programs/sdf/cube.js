@@ -78,10 +78,12 @@ export function pre(context, cursor) {
 
 export function main(coord, context, cursor){
 	const t = context.time * 0.01
-	const a  = min(context.cols, context.rows)
+	const m = min(context.cols, context.rows)
+    const a = context.metrics.aspect
+
 	const st = {
-		x : 2.0 * (coord.x - context.cols / 2 + 0.5) / a * context.aspect,
-		y : 2.0 * (coord.y - context.rows / 2 + 0.5) / a,
+		x : 2.0 * (coord.x - context.cols / 2 + 0.5) / m * a,
+		y : 2.0 * (coord.y - context.rows / 2 + 0.5) / m,
 	}
 
 	let d = 1e10

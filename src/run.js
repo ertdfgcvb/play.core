@@ -115,7 +115,7 @@ export function run(program, element, runSettings = {}) {
 		// Submitted: https://bugs.webkit.org/show_bug.cgi?id=217047
 		document.fonts.ready.then((e) => {
 			let count = 2
-			function __run_twice__(){
+			;(function __run_twice__(){
 				if (count-- > 0) {
 					metrics = calcMetrics(element)
 					requestAnimationFrame(__run_twice__)
@@ -126,8 +126,7 @@ export function run(program, element, runSettings = {}) {
 					// Finally Boot!
 					requestAnimationFrame(loop)
 				}
-			}
-			requestAnimationFrame(__run_twice__)
+			})()
 		})
 
 		// Time sample to calculate precise offset
@@ -193,17 +192,20 @@ export function run(program, element, runSettings = {}) {
 			}
 
 			const context = Object.freeze({
-				frame  : state.frame,
-				time   : state.time,
-				cols   : cols,
-				rows   : rows,
-				aspect : metrics.aspect,
+				// Context info
+				frame   : state.frame,
+				time    : state.time,
+				cols    : cols,
+				rows    : rows,
+				metrics : metrics,
 				info : Object.freeze({
+					// Runtime info
 					cycle         : state.cycle,
 					fps           : fps.update(t),
+					updatedRowNum : updatedRowNum,
+					// Parent element info
 					width         : rect.width,
 					height        : rect.height,
-					updatedRowNum : updatedRowNum,
 					parentElement : element
 				})
 			})
@@ -460,10 +462,9 @@ export function calcMetrics(el) {
 	el.removeChild(test)
 
 	return Object.freeze({
-		cellWidth   : w,
-		lineHeightf : h,
-		lineHeight  : Math.round(h), // should be the same as CSS
-		aspect      : w / Math.round(h),
+		cellWidth  : w,
+		lineHeight : h, // should be the same as CSS
+		aspect     : w / h,
 	})
 }
 
