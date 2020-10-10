@@ -1,5 +1,5 @@
 /**
-@author Andreas
+@author ertdfgcvb
 @title  Donut
 @desc   Ported from a1k0n’s donut demo.
 https://www.a1k0n.net/2011/07/20/donut-math.html
