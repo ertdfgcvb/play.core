@@ -36,6 +36,7 @@ export function main(coord, context, cursor, buffers){
 
 	let c = 1.0 - Math.exp(-5 * Math.abs(d))
 	const index = Math.floor(c * density.length)
+
 	return density[index]
 }
 
@@ -52,7 +53,5 @@ function transform(p, trans, rot){
 
 import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers){
-	drawInfo(context, cursor, buffers, {
-		color : 'white', background : 'royalblue', shadowStyle : 'gray'
-	})
+	drawInfo(context, cursor, buffers)
 }
