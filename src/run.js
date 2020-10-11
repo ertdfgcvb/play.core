@@ -18,6 +18,7 @@ const defaultSettings = {
 	background   : '',
 	color        : '',
 	weight       : '',
+	allowSelect  : false  // allows selection of the rendered element
 }
 
 // Program runner.
@@ -82,7 +83,7 @@ export function run(program, element, runSettings = {}) {
 		element.style.fontOpticalSizing = 'none'
 		element.style.fontSynthesis = 'none'
 		element.style.fontStrech = 'normal'
-		disableSelect(element)
+		if (settings.allowSelect == false) disableSelect(element)
 
 		// Variable which holds some font metrics informations.
 		// It’ll be populated after all the fonts are loaded.
@@ -352,6 +353,21 @@ export function run(program, element, runSettings = {}) {
 					for (let i=0; i<cols; i++) {
 						const currCell = buffers.state[i + offs] || {...defaultCell, char : EMPTY_CELL}
 
+						// Undocumented feature:
+						// possible to insert a tag (for example <a>) into the renderer.
+						// Opening and closing needs to be manually handled
+						// and this is a very hack…
+
+						if (currCell.tag) {
+							console.log(currCell.tag)
+							if (tagIsOpen) {
+								html += '</span>'
+								prevCell = defaultCell
+								tagIsOpen = false
+							}
+							html += currCell.tag
+						}
+
 						// If there is a change in style a new span has to be inserted
 						if (!isSameCellStyle(currCell, prevCell)) {
 							// Close the previous tag
@@ -415,6 +431,7 @@ function disableSelect(el){
 	el.style.userSelect = 'none'
 	el.style.webkitUserSelect = 'none' // for Safari on mac and iOS
 	el.style.mozUserSelect = 'none'    // for mobile FF
+	el.dataset.selectionEnabled = 'false'
 }
 
 // Enables selection for an HTML element
@@ -422,18 +439,27 @@ function enableSelect(el) {
 	el.style.userSelect = 'auto'
 	el.style.webkitUserSelect = 'auto'
 	el.style.mozUserSelect = 'auto'
+	el.dataset.selectionEnabled = 'true'
 }
 
 // Copies the content of an element to the clipboard
 export function copyContent(el){
-	enableSelect(el)
+	// Store selection default
+	const selectionEnabled = !el.dataset.selectionEnabled == 'false'
+
+	// Enable selection if necessary
+	if (!selectionEnabled) enableSelect(el)
+
+	// Copy the text block
 	const range = document.createRange()
 	range.selectNode(el)
 	const sel = window.getSelection()
 	sel.removeAllRanges()
 	sel.addRange(range)
 	document.execCommand('copy')
-	disableSelect(el)
+
+	// Restore default, if necessary
+	if (!selectionEnabled) disableSelect(el)
 }
 
 // Calcs width (fract), height, aspect of a monospaced char
