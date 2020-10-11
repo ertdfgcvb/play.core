@@ -40,12 +40,10 @@ export function post(context, cursor, buffers){
 
 	// Custom box style
 	const style = {
-		x : 3,
-		y : 2,
+		txt : txt,
 		width : 32,
 		height : 6,
-		txt : txt,
-		background : 'yellow',
+		background : 'tomato',
 		borderStyle : 'double',
 		shadowStyle : 'gray'
 	}

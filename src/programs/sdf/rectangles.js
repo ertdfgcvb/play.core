@@ -52,5 +52,7 @@ function transform(p, trans, rot){
 
 import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers){
-	drawInfo(context, cursor, buffers)
+	drawInfo(context, cursor, buffers, {
+		color : 'white', background : 'royalblue', shadowStyle : 'gray'
+	})
 }

@@ -44,8 +44,8 @@ export function main(coord, context, cursor, buffers){
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, metrics, cursor, buffers){
-	drawInfo(context, metrics, cursor, buffers)
+export function post(context, cursor, buffers){
+	drawInfo(context, cursor, buffers)
 }
 
 // Uncomment this to calculate the cursor position only once

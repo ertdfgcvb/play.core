@@ -33,8 +33,3 @@ export function main(coord, context, cursor, buffer){
 		color : 'white'
 	}
 }
-
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, metrics, cursor, buffer){
-	drawInfo(context, metrics, cursor, buffer)
-}

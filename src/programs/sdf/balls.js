@@ -43,6 +43,7 @@ export function main(coord, context, cursor, buffer){
 	//if (d < 0) c = 0
 
 	const index = Math.floor(c * density.length)
+
 	return density[index]
 }
 
