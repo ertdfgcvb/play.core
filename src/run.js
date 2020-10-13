@@ -354,18 +354,16 @@ export function run(program, element, runSettings = {}) {
 						const currCell = buffers.state[i + offs] || {...defaultCell, char : EMPTY_CELL}
 
 						// Undocumented feature:
-						// possible to insert a tag (for example <a>) into the renderer.
-						// Opening and closing needs to be manually handled
+						// possible to inject some custom HTML (for example <a>) into the renderer.
+						// It can be inserted before the char or after the char (beginHTML, endHTML)
 						// and this is a very hack…
-
-						if (currCell.tag) {
-							console.log(currCell.tag)
+						if (currCell.beginHTML) {
 							if (tagIsOpen) {
 								html += '</span>'
 								prevCell = defaultCell
 								tagIsOpen = false
 							}
-							html += currCell.tag
+							html += currCell.beginHTML
 						}
 
 						// If there is a change in style a new span has to be inserted
@@ -388,6 +386,17 @@ export function run(program, element, runSettings = {}) {
 						}
 						html += currCell.char
 						prevCell = currCell
+
+						// Add closing tag, in case
+						if (currCell.endHTML) {
+							if (tagIsOpen) {
+								html += '</span>'
+								prevCell = defaultCell
+								tagIsOpen = false
+							}
+							html += currCell.endHTML
+						}
+
 					}
 					if (tagIsOpen) html += '</span>'
 

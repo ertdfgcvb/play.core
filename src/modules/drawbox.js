@@ -104,6 +104,14 @@ const shadowStyles = {
 	}
 }
 
+// Safe get function to read into a buffer
+export function get(x, y, buffers) {
+	if (x < 0 || x >= buffers.cols) return
+	if (y < 0 || y >= buffers.rows) return
+	const i = x + y * buffers.cols
+	return buffers.state[i]
+}
+
 // Safe set and merge functions for a generic buffer object.
 // A buffer object contains at least a 'state' array
 // and a 'width' and a 'height' field to allow easy setting.
@@ -145,14 +153,28 @@ export function mergeRect(val, x, y, w, h, buffers) {
 }
 
 export function mergeText(txt, x, y, buffers) {
+	let col = x
 	let row = y
+
 	txt.split('\n').forEach((line, lineNum) => {
 		line.split('').forEach((char, charNum) => {
-			const col = x + charNum
+			col = x + charNum
 			merge({char}, col, row, buffers)
 		})
 		row++
 	})
+
+	// Adjust for last ++
+	row = Math.max(y, row-1)
+
+	// Returns some info about the inserted text:
+	// - the coordinates (offset) of the last inserted character
+	// - the first an last chars
+	return {
+		offset : {col, row},
+		first  : get(x, y, buffers),
+		last   : get(col, row, buffers)
+	}
 }
 
 const defaultBoxStyle = {
