@@ -144,8 +144,15 @@ export function mergeRect(val, x, y, w, h, buffers) {
 	}
 }
 
-export function setText(style, buffers) {
-
+export function mergeText(txt, x, y, buffers) {
+	let row = y
+	txt.split('\n').forEach((line, lineNum) => {
+		line.split('').forEach((char, charNum) => {
+			const col = x + charNum
+			merge({char}, col, row, buffers)
+		})
+		row++
+	})
 }
 
 const defaultBoxStyle = {
@@ -206,21 +213,67 @@ export function drawBox(style, buffers){
 	const ss = shadowStyles[s.shadowStyle] || shadowStyles['none']
 
 	// Shadow Bottom
-	mergeRect( ss, x1+ox, y2+1, w, oy, buffers )
+	mergeRect(ss, x1+ox, y2+1, w, oy, buffers)
 
 	// Shadow Right
-	mergeRect( ss, x2+1, y1+oy, ox, h-oy, buffers )
+	mergeRect(ss, x2+1, y1+oy, ox, h-oy, buffers)
 
 	// Txt
 	if (s.txt) {
-		s.txt.trim().split('\n').forEach((line, lineNum) => {
-			const row = y1 + 1 + lineNum
-			line.split('').forEach((char, charNum) => {
-				const col = x1 + 2 + charNum
-				merge({char}, col, row, buffers)
-			})
-		})
+		mergeText(s.txt, x1 + 2, y1 + 1, buffers)
 	}
+}
+
+// Wraps a string to a specific width.
+// Doesn’t break words and keeps trailing line breaks.
+// Counts lines and maxWidth (can be greater than width).
+export function wrap(string, width){
+    const paragraphs = string.split('\n')
+    let out = ''
+
+    let numLines = 0
+
+    let maxWidth = 0
+
+    for (const p of paragraphs) {
+        const chunks = p.split(' ')
+        let len = 0
+        for(const word of chunks){
+            // First word
+            if (len == 0) {
+                out += word
+                len = word.length
+                maxWidth = Math.max(maxWidth, len)
+            }
+            // Subseqeunt words
+            else {
+                if (len + 1 + word.length <= width) {
+                    out += ' ' + word
+                    len += word.length + 1
+                    maxWidth = Math.max(maxWidth, len)
+                } else {
+                    // Remove last space
+                    out += '\n' + word
+                    len = word.length + 1
+                    numLines++
+                }
+            }
+        }
+        out += '\n'
+        numLines++
+    }
+
+    // Remove last \n
+    out = out.slice(0, -1)
+
+    // Adjust line count in case of last trailing \n
+    if (out.charAt(out.length-1) == '\n') numLines--
+
+    return {
+        text : out, // Remove first line break in case of first long word
+        numLines,
+        maxWidth
+    }
 }
 
 // -- Utility for some info output ---------------------------------------------
