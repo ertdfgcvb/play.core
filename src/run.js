@@ -24,9 +24,11 @@ const defaultSettings = {
 // Program runner.
 // Takes a program object (usually an imported module),
 // an Element object (usually a <pre> element) as rendering target
-// and some settings (see above) as arguments.
+// and some optional settings (see above) as arguments.
+// Finally, a precalculated metrics object can be passed,
+// otherwise it will be calcualted prior first run.
 // The program object should contain at least a main(), pre() or post() function.
-export function run(program, element, runSettings = {}) {
+export function run(program, element, runSettings, metrics) {
 
 	// Everything is wrapped inside a promise which will reject
 	// in case of some errors (try / catch).
@@ -88,7 +90,7 @@ export function run(program, element, runSettings = {}) {
 		// Variable which holds some font metrics informations.
 		// It’ll be populated after all the fonts are loaded.
 		// See additional notes below.
-		let metrics
+		// let metrics (<--- passed optionally as arg.)
 
 		// Method to load a font via the FontFace object.
 		// The load promise works 100% of the times.
@@ -110,25 +112,33 @@ export function run(program, element, runSettings = {}) {
 		})
 		*/
 
-		// Even with the "fonts.ready" the font may STILL not be loaded yet
-		// on Safari 13.x and also 14.0.
-		// A (shitty) workaround is to wait 2! rAF and execute calcMetrics twice.
-		// Submitted: https://bugs.webkit.org/show_bug.cgi?id=217047
-		document.fonts.ready.then((e) => {
-			let count = 3
-			;(function __run_thrice__(){
-				if (count-- > 0) {
-					metrics = calcMetrics(element)
-					requestAnimationFrame(__run_thrice__)
-				} else {
-					// element.style.lineHeight = Math.ceil(metrics.lineHeightf) + 'px'
-					// console.log(`Using font faimily: ${ci.fontFamily} @ ${ci.fontSize}/${ci.lineHeight}`)
-					// console.log(`Metrics: cellWidth: ${metrics.cellWidth}, lineHeightf: ${metrics.lineHeightf}`)
-					// Finally Boot!
-					requestAnimationFrame(loop)
-				}
-			})()
-		})
+
+		// The metrics object is passed as param, let’s go!
+		if (metrics) {
+			requestAnimationFrame(loop)
+		}
+		// Metrics need to be calculated
+		else {
+			// Even with the "fonts.ready" the font may STILL not be loaded yet
+			// on Safari 13.x and also 14.0.
+			// A (shitty) workaround is to wait 2! rAF and execute calcMetrics twice.
+			// Submitted: https://bugs.webkit.org/show_bug.cgi?id=217047
+			document.fonts.ready.then((e) => {
+				let count = 3
+				;(function __run_thrice__(){
+					if (count-- > 0) {
+						metrics = calcMetrics(element)
+						requestAnimationFrame(__run_thrice__)
+					} else {
+						// element.style.lineHeight = Math.ceil(metrics.lineHeightf) + 'px'
+						// console.log(`Using font faimily: ${ci.fontFamily} @ ${ci.fontSize}/${ci.lineHeight}`)
+						// console.log(`Metrics: cellWidth: ${metrics.cellWidth}, lineHeightf: ${metrics.lineHeightf}`)
+						// Finally Boot!
+						requestAnimationFrame(loop)
+					}
+				})()
+			})
+		}
 
 		// Time sample to calculate precise offset
 		let timeSample = 0
@@ -137,7 +147,7 @@ export function run(program, element, runSettings = {}) {
 		const interval = 1000 / settings.fps
 		const timeOffset = state.time
 
-		// FPS object (keeps some state for a precise FPS measure)
+		// FPS object (keeps some state for precise FPS measure)
 		const fps = new FPS()
 
 		// A cell with no value at all is just a space
