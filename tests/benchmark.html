@@ -31,8 +31,8 @@
 
 		const target = document.querySelectorAll('pre')[0]
 		const output = document.querySelectorAll('pre')[1]
-		//const functions = [baseline, a, b, c, d]
-		const functions = [c, d]
+		const functions = [baseline, a, b, c]//, d]
+
 
 		let frame = 0
 		let step = 0
@@ -61,7 +61,6 @@
 				out.push('')
 				output.innerHTML += out.join('<br>')
 
-
 				frame = 0
 				step++
 				if (step < functions.length) {
@@ -73,6 +72,8 @@
 		}
 
 		requestAnimationFrame(loop)
+
+		// ---------------------------------------------------------------------
 
 		// Unstyled; should run at 60fps
 		// Direct write to innerHTML
@@ -88,6 +89,8 @@
 			target.innerHTML = html
 		}
 
+		// ---------------------------------------------------------------------
+
 		// Every char is wrapped in a span, same style
 		// Direct write to innerHTML
 		function a(target, frame) {
@@ -101,6 +104,8 @@
 			}
 			target.innerHTML = html
 		}
+
+		// ---------------------------------------------------------------------
 
 		// Every char is wrapped in a span, foreground and background change
 		// Direct write to innerHTML
@@ -117,6 +122,8 @@
 			target.innerHTML = html
 		}
 
+		// ---------------------------------------------------------------------
+
 		// Direct write to innerHTML of each span
 		// Re-use of <spans>
 		const r = new Array(rows).fill(null).map(function(e){
@@ -124,6 +131,7 @@
 			span.style.display = 'block'
 			return span
 		})
+
 		function c(target, frame) {
 			if (frame == 0) {
 				target.innerHTML = ''
@@ -148,12 +156,16 @@
 			// }
 		}
 
-		// Direct write to innerHTML of each span
+		// ---------------------------------------------------------------------
+
+		// Document fragments
+		/*
 		const fragment = new DocumentFragment()
 		const p = document.createElement("pre")
 		fragment.appendChild(p)
+
 		function d(target, frame) {
-			p.innerHTML = ""
+			p.innerHTML = ''
 			for (let j=0; j<rows; j++){
 			//	let html = ''
 				for (let i=0; i<cols; i++){
@@ -163,6 +175,7 @@
 				}
 				// r[j].innerHTML = html
 				// fragment.appendChild(r[j])
+				p.innerHTML += '<br>'
 			}
 			target.innerHTML = ''
 			target.appendChild(fragment)
@@ -170,6 +183,7 @@
 			// 	r[j].style.display = 'block'
 			// }
 		}
+		*/
 
 	</script>
 </body>
