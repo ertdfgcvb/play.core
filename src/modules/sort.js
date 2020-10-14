@@ -1,8 +1,10 @@
 /**
-Sorts a set of characters by brightness by painting them on a canvas
-and counting the pixels.
-This could be done once and then stored / hardcoded.
+@module    sort.js
+@desc      Sorts a set of characters by brightness
+@cathegory public
 
+Paints chars on a temporary canvas and counts the pixels.
+This could be done once and then stored / hardcoded.
 The fontFamily paramter needs to be set because it's used by the canvas element
 to draw the correct font.
 */

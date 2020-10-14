@@ -1,5 +1,8 @@
 /**
-Vec3 helper functions
+@module    vec3.js
+@desc      3D helper functions
+@cathegory public
+
 - No vector class (a 'vector' is just any object with {x, y, z})
 - The functions never modify the original object.
 - An optional destination object can be passed as last paremeter  to all

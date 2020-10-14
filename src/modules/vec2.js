@@ -1,5 +1,8 @@
 /**
-Vec2 helper functions
+@module    vec2.js
+@desc      2D vector helper functions
+@cathegory public
+
 - No vector class (a 'vector' is just any object with {x, y})
 - The functions never modify the original object.
 - An optional destination object can be passed as last paremeter  to all

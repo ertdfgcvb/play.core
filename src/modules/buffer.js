@@ -1,5 +1,8 @@
 /**
-Buffer helpers, mostly for internal use.
+@module    buffer.js
+@desc      Safe buffer helpers, mostly for internal use
+@cathegory internal
+
 Safe set() and get() functions, rect() and text() ‘drawing’ helpers.
 
 Buffers are 1D arrays for 2D data so at least a ‘width’ parameter
@@ -12,6 +15,9 @@ Read some value from the user-data buffer:
 const v = get(10, 10, buffers, bufers.data)
 
 (width and height are still obtained from the ‘buffers’ object)
+
+NOTE: set() is slightly faster than merge() as no testing is done,
+the value is just written directly into the buffer.
 */
 
 // Safe get function to read from a buffer

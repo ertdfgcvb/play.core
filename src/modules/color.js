@@ -1,5 +1,7 @@
 /**
-Some common palettes and simple color helpers
+@module    color.js
+@desc      Some common palettes and simple color helpers
+@cathegory public
 
 Colors can be defined as:
 

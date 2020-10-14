@@ -1,5 +1,8 @@
 /**
-An abstraction for images or video streams.
+@module    imagebuffer.js
+@desc      An abstraction for images or video streams
+@cathegory internal
+
 NOTE: this is not a general purpose imaging class.
 The purpose is to offer a ready to use buffer (an array of {r,g,b,a,grey} values)
 with the size of the (ascii) context and adjusted aspect ratio.

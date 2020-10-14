@@ -5,7 +5,7 @@
 [header]
 */
 
-import { CSS3 } from '/src/modules/colors.js'
+import { CSS3 } from '/src/modules/color.js'
 import Camera from '/src/modules/camera.js'
 
 const cam = Camera.init()

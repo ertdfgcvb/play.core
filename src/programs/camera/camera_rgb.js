@@ -5,7 +5,7 @@
 [header]
 */
 import { map } from '/src/modules/num.js'
-import { rgb2hex, rgb}  from '/src/modules/colors.js'
+import { rgb2hex, rgb}  from '/src/modules/color.js'
 import Camera from '/src/modules/camera.js'
 
 const cam = Camera.init()

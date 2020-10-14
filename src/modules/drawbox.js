@@ -1,19 +1,22 @@
 /**
-Box drawing helpers.
-Boxes can be styled with custom borders and shadows.
-a style object has to be passed plus some text content:
+@module    drawbox.js
+@desc      Draw text boxes with optional custom styles
+@cathegory public
+
+A style object can be passed to override the default style:
 
 const style = {
 	x           : 3,
 	y           : 2,
-	width       : 10,
-	height      : 5,
-	txt         : ''
+	width       : 0,
+	height      : 0,
 	background  : 'white',
 	color       : 'black',
 	weight      : 'normal',
 	shadowStyle : 'none',
 	borderStyle : 'round'
+	paddingX    : 2,
+	paddingY    : 1,
 }
 */
 

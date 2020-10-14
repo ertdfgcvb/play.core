@@ -1,5 +1,8 @@
 /**
-Some GLSL functions ported to JS
+@module    num.js
+@desc      Some GLSL functions ported to JS
+@cathegory public
+
 TODO: add description
 */
 

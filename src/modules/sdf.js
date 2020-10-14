@@ -1,6 +1,9 @@
 /**
-Some SDF functions from the almighty Inigo Quilezles
-transcoded to JS
+@module    sdf.js
+@desc      Some signed distance functions
+@cathegory public
+
+SDF functions ported from the almighty Inigo Quilezles:
 https://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
 */
 

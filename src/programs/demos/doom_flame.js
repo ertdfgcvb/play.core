@@ -6,7 +6,7 @@
 */
 
 import { clamp, map } from '/src/modules/num.js'
-import { CSS4 } from '/src/modules/colors.js'
+import { CSS4 } from '/src/modules/color.js'
 import { lerp, smoothstep } from '/src/modules/num.js'
 
 export const settings = { fps : 30, background : 'black', color : 'white' }

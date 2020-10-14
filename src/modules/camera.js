@@ -1,6 +1,9 @@
 /**
-Camera module
-TODO: add description
+@module    camera.js
+@desc      Webcam init and helper
+@cathegory public
+
+TODO: add full desc
 */
 
 import { map } from "./num.js"
