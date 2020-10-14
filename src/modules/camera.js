@@ -59,5 +59,3 @@ function getUserMedia(callback){
 	})
 	return video
 }
-
-

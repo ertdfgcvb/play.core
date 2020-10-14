@@ -2,12 +2,12 @@
 
 # Trims a string
 function trim {
-    local var="$*"
-    # remove leading whitespace characters
-    var="${var#"${var%%[![:space:]]*}"}"
-    # remove trailing whitespace characters
-    var="${var%"${var##*[![:space:]]}"}"
-    printf '%s' "$var"
+	local var="$*"
+	# remove leading whitespace characters
+	var="${var#"${var%%[![:space:]]*}"}"
+	# remove trailing whitespace characters
+	var="${var%"${var##*[![:space:]]}"}"
+	printf '%s' "$var"
 }
 
 # Script to generate a list of all the projects
@@ -33,6 +33,7 @@ for folder in ${FOLDERS[@]}; do
 		AUTHOR=$(sed -En 's/^@author[ \t](.*)$/\1/p' $file)
 		TITLE=$(sed -En 's/^@title[ \t](.*)$/\1/p' $file)
 		DESC=$(sed -En 's/^@desc[ \t](.*)$/\1/p' $file)
+
 		if [[ $FIRST == 1 ]]; then
 			FOLDER=$(echo $folder | sed -e 's/\.\///' -e 's/\///' -e 's/\.js//' )
 			FIRST=0
