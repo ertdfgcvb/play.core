@@ -4,7 +4,7 @@ Boxes can be styled with custom borders and shadows.
 a style object has to be passed plus some text content:
 
 const style = {
-	x           : 2,
+	x           : 3,
 	y           : 2,
 	width       : 10,
 	height      : 5,
@@ -104,106 +104,44 @@ const shadowStyles = {
 	}
 }
 
-// Safe get function to read into a buffer
-export function get(x, y, buffers) {
-	if (x < 0 || x >= buffers.cols) return
-	if (y < 0 || y >= buffers.rows) return
-	const i = x + y * buffers.cols
-	return buffers.state[i]
-}
-
-// Safe set and merge functions for a generic buffer object.
-// A buffer object contains at least a 'state' array
-// and a 'width' and a 'height' field to allow easy setting.
-// The value to be set is a 'cell' object like:
-// { char, color, background, weight }
-// which can overwrite the buffer (set) or partially merged (merge)
-export function set(val, x, y, buffers) {
-	if (x < 0 || x >= buffers.cols) return
-	if (y < 0 || y >= buffers.rows) return
-	const i = x + y * buffers.cols
-	buffers.state[i] = val
-}
-
-export function merge(val, x, y, buffers) {
-	if (x < 0 || x >= buffers.cols) return
-	if (y < 0 || y >= buffers.rows) return
-	const i = x + y * buffers.cols
-
-	// Flatten:
-	const cell = typeof buffers.state[i] == 'object' ? buffers.state[i] : { char : buffers.state[i] }
-
-	buffers.state[i] = { ...cell, ...val }
-}
-
-export function setRect(val, x, y, w, h, buffers) {
-	for (let j=y; j<y+h; j++ ) {
-		for (let i=x; i<x+w; i++ ) {
-			set(val, i, j, buffers)
-		}
-	}
-}
-
-export function mergeRect(val, x, y, w, h, buffers) {
-	for (let j=y; j<y+h; j++ ) {
-		for (let i=x; i<x+w; i++ ) {
-			merge(val, i, j, buffers)
-		}
-	}
-}
-
-export function mergeText(txt, x, y, buffers) {
-	let col = x
-	let row = y
-
-	txt.split('\n').forEach((line, lineNum) => {
-		line.split('').forEach((char, charNum) => {
-			col = x + charNum
-			merge({char}, col, row, buffers)
-		})
-		row++
-	})
-
-	// Adjust for last ++
-	row = Math.max(y, row-1)
-
-	// Returns some info about the inserted text:
-	// - the coordinates (offset) of the last inserted character
-	// - the first an last chars
-	return {
-		offset : {col, row},
-		first  : get(x, y, buffers),
-		last   : get(col, row, buffers)
-	}
-}
-
-const defaultBoxStyle = {
-	x           : 3,
-	y           : 2,
-	width       : 10,
-	height      : 5,
-	txt         : '',
+const defaultTextBoxStyle = {
+	x           : 2,
+	y           : 1,
+	width       : 0, // auto width
+	height      : 0, // auto height
+	paddingX    : 2, // text offset from the left border
+	paddingY    : 1, // text offset from the top border
 	background  : 'white',
 	color       : 'black',
 	weight      : 'normal',
 	shadowStyle : 'none',
 	borderStyle : 'round',
-	shadowX     : 2,
-	shadowY     : 1,
+	shadowX     : 2, // horizontal shadow offset
+	shadowY     : 1, // vertical shadow offset
 }
 
-export function drawBox(style, buffers){
+import { wrap, measure } from './string.js'
+import { merge, setRect, mergeRect, mergeText } from './buffer.js'
 
-	const s = {...defaultBoxStyle, ...style}
+export function drawBox(text, style, buffers, target){
 
-	const buf_w = buffers.cols
-	const buf_h = buffers.rows
+	const s = {...defaultTextBoxStyle, ...style}
+
+	let boxWidth  = s.width
+	let boxHeight = s.height
+
+	if (!boxWidth || !boxHeight) {
+		const m = measure(text)
+		boxWidth = boxWidth || m.maxWidth + s.paddingX * 2
+		boxHeight = boxHeight || m.numLines + s.paddingY * 2
+	}
+
 	const x1 = s.x
 	const y1 = s.y
-	const x2 = s.x+s.width-1
-	const y2 = s.y+s.height-1
-	const w = s.width  // TODO: auto
-	const h = s.height // TODO: auto
+	const x2 = s.x + boxWidth - 1
+	const y2 = s.y + boxHeight - 1
+	const w  = boxWidth
+	const h  = boxHeight
 
 	const border = borderStyles[s.borderStyle] || borderStyles['round']
 
@@ -213,98 +151,42 @@ export function drawBox(style, buffers){
 		color      : s.color,
 		weight     : s.weight,
 		background : s.background
-	}, x1, y1, w, h, buffers)
+	}, x1, y1, w, h, buffers, target)
 
 	// Corners
-	merge({ char : border.topleft     }, x1, y1, buffers)
-	merge({ char : border.topright    }, x2, y1, buffers)
-	merge({ char : border.bottomright }, x2, y2, buffers)
-	merge({ char : border.bottomleft  }, x1, y2, buffers)
+	merge({ char : border.topleft     }, x1, y1, buffers, target)
+	merge({ char : border.topright    }, x2, y1, buffers, target)
+	merge({ char : border.bottomright }, x2, y2, buffers, target)
+	merge({ char : border.bottomleft  }, x1, y2, buffers, target)
 
 	// Top & Bottom
-	mergeRect({ char : border.top    }, x1+1, y1, w-2, 1, buffers)
-	mergeRect({ char : border.bottom }, x1+1, y2, w-2, 1, buffers)
+	mergeRect({ char : border.top    }, x1+1, y1, w-2, 1, buffers, target)
+	mergeRect({ char : border.bottom }, x1+1, y2, w-2, 1, buffers, target)
 
 	// Left & Right
-	mergeRect({ char : border.left  }, x1, y1+1, 1, h-2, buffers)
-	mergeRect({ char : border.right }, x2, y1+1, 1, h-2, buffers)
+	mergeRect({ char : border.left  }, x1, y1+1, 1, h-2, buffers, target)
+	mergeRect({ char : border.right }, x2, y1+1, 1, h-2, buffers, target)
 
 	// Shadows
 	const ox = s.shadowX
 	const oy = s.shadowY
 	const ss = shadowStyles[s.shadowStyle] || shadowStyles['none']
-
-	// Shadow Bottom
-	mergeRect(ss, x1+ox, y2+1, w, oy, buffers)
-
-	// Shadow Right
-	mergeRect(ss, x2+1, y1+oy, ox, h-oy, buffers)
+	if (ss !== shadowStyles['none']) {
+		// Shadow Bottom
+		mergeRect(ss, x1+ox, y2+1, w, oy, buffers, target)
+		// Shadow Right
+		mergeRect(ss, x2+1, y1+oy, ox, h-oy, buffers, target)
+	}
 
 	// Txt
-	if (s.txt) {
-		mergeText(s.txt, x1 + 2, y1 + 1, buffers)
-	}
-}
+	mergeText(text, x1+s.paddingX, y1+s.paddingY, buffers, target)
 
-// Wraps a string to a specific width.
-// Doesn’t break words and keeps trailing line breaks.
-// Counts lines and maxWidth (can be greater than width).
-export function wrap(string, width){
-    const paragraphs = string.split('\n')
-    let out = ''
-
-    let numLines = 0
-
-    let maxWidth = 0
-
-    for (const p of paragraphs) {
-        const chunks = p.split(' ')
-        let len = 0
-        for(const word of chunks){
-            // First word
-            if (len == 0) {
-                out += word
-                len = word.length
-                maxWidth = Math.max(maxWidth, len)
-            }
-            // Subseqeunt words
-            else {
-                if (len + 1 + word.length <= width) {
-                    out += ' ' + word
-                    len += word.length + 1
-                    maxWidth = Math.max(maxWidth, len)
-                } else {
-                    // Remove last space
-                    out += '\n' + word
-                    len = word.length + 1
-                    numLines++
-                }
-            }
-        }
-        out += '\n'
-        numLines++
-    }
-
-    // Remove last \n
-    out = out.slice(0, -1)
-
-    // Adjust line count in case of last trailing \n
-    if (out.charAt(out.length-1) == '\n') numLines--
-
-    return {
-        text : out, // Remove first line break in case of first long word
-        numLines,
-        maxWidth
-    }
 }
 
 // -- Utility for some info output ---------------------------------------------
 
 const defaultInfoStyle = {
-	x           : 3,
-	y           : 2,
-	width       : 30,
-	height      : 9,
+	width       : 24,
 	background  : 'white',
 	color       : 'black',
 	weight      : 'normal',
@@ -314,18 +196,18 @@ const defaultInfoStyle = {
 
 export function drawInfo(context, cursor, buffers, style){
 
-	let txt = ''
-	txt += 'FPS          ' + Math.round(context.info.fps) + '\n'
-	txt += 'frame        ' + context.frame + '\n'
-	txt += 'time         ' + Math.floor(context.time) + '\n'
-	txt += 'size         ' + context.cols + '×' + context.rows + '\n'
-	txt += 'row repaint  ' + context.info.updatedRowNum + '\n'
-	txt += 'font aspect  ' + context.metrics.aspect.toFixed(2) + '\n'
-	txt += 'cursor       ' + Math.floor(cursor.x) + ',' + Math.floor(cursor.y) + '\n'
+	let info = ''
+	info += 'FPS         ' + Math.round(context.info.fps) + '\n'
+	info += 'frame       ' + context.frame + '\n'
+	info += 'time        ' + Math.floor(context.time) + '\n'
+	info += 'size        ' + context.cols + '×' + context.rows + '\n'
+	info += 'row repaint ' + context.info.updatedRowNum + '\n'
+	info += 'font aspect ' + context.metrics.aspect.toFixed(2) + '\n'
+	info += 'cursor      ' + Math.floor(cursor.x) + ',' + Math.floor(cursor.y) + '\n'
 	// NOTE: width and height can be a float in case of user zoom
-	// txt += 'context      ' + Math.floor(context.width) + '×' + Math.floor(context.height) + '\n'
+	// info += 'context      ' + Math.floor(context.width) + '×' + Math.floor(context.height) + '\n'
 
-	const s = {...defaultInfoStyle, ...style, txt}
+	const textBoxStyle = {...defaultInfoStyle, ...style}
 
-	drawBox(s, buffers)
+	drawBox(info, textBoxStyle, buffers)
 }

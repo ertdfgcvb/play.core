@@ -33,21 +33,18 @@ export function post(context, cursor, buffers){
 	const ar = cursor.pressed ? (''+context.metrics.aspect).substr(0, 8) : 1
 
 	// Output string
-	let txt = ''
-	txt += 'Hold the cursor button\n'
-	txt += 'to change the aspect ratio:\n'
-	txt += 'aspectRatio = ' + ar + '\n'
+	let text = ''
+	text += 'Hold the cursor button\n'
+	text += 'to change the aspect ratio:\n'
+	text += 'aspectRatio = ' + ar + '\n'
 
 	// Custom box style
 	const style = {
-		txt : txt,
-		width : 32,
-		height : 6,
 		background : 'tomato',
 		borderStyle : 'double',
 		shadowStyle : 'gray'
 	}
 
 	// Finally draw the box
-    drawBox(style, buffers)
+    drawBox(text, style, buffers)
 }

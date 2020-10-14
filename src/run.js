@@ -115,11 +115,11 @@ export function run(program, element, runSettings = {}) {
 		// A (shitty) workaround is to wait 2! rAF and execute calcMetrics twice.
 		// Submitted: https://bugs.webkit.org/show_bug.cgi?id=217047
 		document.fonts.ready.then((e) => {
-			let count = 2
-			;(function __run_twice__(){
+			let count = 3
+			;(function __run_thrice__(){
 				if (count-- > 0) {
 					metrics = calcMetrics(element)
-					requestAnimationFrame(__run_twice__)
+					requestAnimationFrame(__run_thrice__)
 				} else {
 					// element.style.lineHeight = Math.ceil(metrics.lineHeightf) + 'px'
 					// console.log(`Using font faimily: ${ci.fontFamily} @ ${ci.fontSize}/${ci.lineHeight}`)

@@ -23,7 +23,7 @@ pal.push(CSS3.lightblue)
 export function pre(context, cursor, buffers){
 	// Double the height of the camera image
 	const ctxSizes = {cols : context.cols, rows : context.rows * 2}
-	cam.cover(ctxSizes).quantize(pal).mirrorX().write(buffers.data)
+	cam.cover({...context, ...ctxSizes}).quantize(pal).mirrorX().write(buffers.data)
 }
 
 export function main(coord, context, cursor, buffers){
