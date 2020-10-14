@@ -35,10 +35,10 @@
 		import * as prog3 from '/src/programs/basics/time_frames.js'
 
 		const pre = document.querySelectorAll('pre')
-		run(prog0, pre[0]).catch(errorHandler(e))
-		run(prog1, pre[1]).catch(errorHandler(e))
-		run(prog2, pre[2]).catch(errorHandler(e))
-		run(prog3, pre[3]).catch(errorHandler(e))
+		run(prog0, pre[0]).catch(errorHandler)
+		run(prog1, pre[1]).catch(errorHandler)
+		run(prog2, pre[2]).catch(errorHandler)
+		run(prog3, pre[3]).catch(errorHandler)
 
 		function errorHandler(e){
 			console.warn(e.message)
