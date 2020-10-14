@@ -79,22 +79,15 @@ export function rgb2gray(rgb) {
 	return Math.round(rgb.r * 0.2126 + rgb.g * 0.7152 + rgb.b * 0.0722)
 }
 
-function augment(pal) {
-	return pal.map(el => {
-		const rgb  = int2rgb(el.int)
-		const hex  = rgb2hex(rgb)
-		const css  = rgb2css(rgb)
-		const gray = rgb2gray(rgb)
-	 	return {...el, ...rgb, gray, hex, css}
-	})
-}
+// hex is not a string but an int number
+export function int2rgb(int) {
+	return {
+		a : 1.0,
+		r : int >> 16 & 0xff,
+		g : int >>  8 & 0xff,
+		b : int       & 0xff
 
-function toMap(pal) {
-	const out = {}
-	pal.forEach(el => {
-		out[el.name] = el
-	})
-	return out
+	}
 }
 
 // export function int2hex(int) {
@@ -301,15 +294,25 @@ const _CSS4 = [..._CSS3,
 	{ int: 0x663399, name : 'rebeccapurple'}
 ]
 
-// hex is not a string but an int number
-export function int2rgb(int) {
-	return {
-		a : 1.0,
-		r : int >> 16 & 0xff,
-		g : int >>  8 & 0xff,
-		b : int       & 0xff
 
-	}
+// Helper function
+function augment(pal) {
+	return pal.map(el => {
+		const rgb  = int2rgb(el.int)
+		const hex  = rgb2hex(rgb)
+		const css  = rgb2css(rgb)
+		const gray = rgb2gray(rgb)
+	 	return {...el, ...rgb, gray, hex, css}
+	})
+}
+
+// Helper function
+function toMap(pal) {
+	const out = {}
+	pal.forEach(el => {
+		out[el.name] = el
+	})
+	return out
 }
 
 export const CSS4 = toMap(augment(_CSS4))
