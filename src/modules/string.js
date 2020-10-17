@@ -15,6 +15,9 @@ export function wrap(string, width=0){
 	const paragraphs = string.split('\n')
 	let out = ''
 
+	let maxWidth = 0
+	let numLines = 0
+
 	for (const p of paragraphs) {
 		const chunks = p.split(' ')
 		let len = 0
