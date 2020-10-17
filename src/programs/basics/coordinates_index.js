@@ -6,7 +6,7 @@
 */
 
 // Global variables have scope in the whole module.
-const pattern = '|▁|▂|▃|▄|▅|▆|▇|▆|▅|▄|▃|▂'.split('')
+const pattern = '|▁|▂|▃|▄|▅|▆|▇|▆|▅|▄|▃|▂'
 
 // Resize the browser window to modify the pattern.
 export function main(coord, context, cursor, buffers){

@@ -13,7 +13,7 @@ export const settings = { fps : 30, background : 'black', color : 'white' }
 
 const { min, max, sin, floor } = Math
 
-const flame = '...::/\\/\\/\\+=*abcdef01XYZ#'.split('')
+const flame = '...::/\\/\\/\\+=*abcdef01XYZ#'
 let cols, rows
 
 const noise = valueNoise()

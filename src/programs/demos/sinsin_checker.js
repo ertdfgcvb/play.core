@@ -6,8 +6,8 @@
 */
 
 const pattern = [
-	" _000111_ ".split(''),
-	".+abc+.      ".split('')
+	' _000111_ ',
+	'.+abc+.      '
 ]
 const col = ['black', 'blue']
 const weights = [100, 700]
@@ -29,7 +29,7 @@ export function main(coord, context, cursor, buffers){
 	}
 }
 
-import { drawInfo } from "/src/modules/drawbox.js"
+import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers){
     drawInfo(context, cursor, buffers, { shadowStyle : 'gray' })
 }

@@ -8,7 +8,7 @@
 import { sdCircle, opSmoothUnion } from '/src/modules/sdf.js'
 import { sub, vec2 } from '/src/modules/vec2.js'
 
-const density = '#WX?*:÷×+=-· '.split('')
+const density = '#WX?*:÷×+=-· '
 
 export function main(coord, context, cursor, buffers){
 	const t = context.time

@@ -8,7 +8,7 @@
 import { map } from '/src/modules/num.js'
 import { sdBox, opSmoothUnion } from '/src/modules/sdf.js'
 
-let density = '▚▀abc|/:÷×+-=?*· '.split('')
+let density = '▚▀abc|/:÷×+-=?*· '
 
 export function main(coord, context, cursor, buffers){
 

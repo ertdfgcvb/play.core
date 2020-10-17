@@ -7,7 +7,7 @@ https://twitter.com/ntsutae/status/1292115106763960327
 [header]
 */
 
-const pattern = "└┧─┨┕┪┖┫┘┩┙┪━".split('')
+const pattern = "└┧─┨┕┪┖┫┘┩┙┪━"
 
 export function main(coord, context, cursor, buffers){
 	const t1 = Math.floor(context.frame / 2)

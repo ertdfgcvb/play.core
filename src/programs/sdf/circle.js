@@ -8,7 +8,7 @@
 import { sdCircle } from '/src/modules/sdf.js'
 import { sort } from '/src/modules/sort.js'
 
-const density = sort('/\\MXYZabc!?=-. '.split(''))
+const density = sort('/\\MXYZabc!?=-. ', 'Simple Console', false)
 
 export const settings = { fps : 60 }
 

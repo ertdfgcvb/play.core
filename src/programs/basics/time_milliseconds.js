@@ -6,7 +6,7 @@
 */
 
 // Globals have module scope
-const pattern = 'ABCxyz01═|+:. '.split('')
+const pattern = 'ABCxyz01═|+:. '
 
 // This is the main loop.
 // Character coordinates are passed in coord {x, y, index}.

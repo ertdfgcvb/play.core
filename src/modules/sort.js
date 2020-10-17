@@ -57,8 +57,8 @@ export function sort(charSet, fontFamily, ascending = false){
 	// cleanup
 	document.body.removeChild(ctx.canvas)
 	if (ascending) {
-		return out.sort((a, b) => a.count - b.count).map( x => x.char)
+		return out.sort((a, b) => a.count - b.count).map( x => x.char).join('')
 	} else {
-		return out.sort((a, b) => b.count - a.count).map( x => x.char)
+		return out.sort((a, b) => b.count - a.count).map( x => x.char).join('')
 	}
 }

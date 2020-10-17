@@ -5,7 +5,7 @@
 [header]
 */
 
-const pattern = '┌┘└┐╰╮╭╯'.split('')
+const pattern = '┌┘└┐╰╮╭╯'
 
 export function main(coord, context, cursor, buffers){
 	const t = context.time * 0.0005

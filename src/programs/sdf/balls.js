@@ -8,7 +8,7 @@
 import { map } from '/src/modules/num.js'
 import { sdCircle, opSmoothUnion } from '/src/modules/sdf.js'
 
-const density = '#ABC|/:÷×+-=?*· '.split('')
+const density = '#ABC|/:÷×+-=?*· '
 
 const { PI, sin, cos, exp, abs } = Math
 

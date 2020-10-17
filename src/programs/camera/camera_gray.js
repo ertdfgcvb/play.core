@@ -12,7 +12,7 @@ const cam = Camera.init()
 // For a debug view uncomment the following line:
 // cam.display(document.body, 10, 10)
 
-const density = sort(' .x?▂▄▆█'.split(''))
+const density = sort(' .x?▂▄▆█', 'Simple Console', false)
 
 export function pre(context, cursor, buffers){
 	cam.cover(context).normalize().mirrorX().write(buffers.data)

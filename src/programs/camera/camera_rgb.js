@@ -12,7 +12,7 @@ const cam = Camera.init()
 // For a debug view uncomment the following line:
 // cam.display(document.body, 10, 10)
 
-const density = ' .+=?X#ABC'.split('')
+const density = ' .+=?X#ABC'
 
 // A custom palette used for color quantisation:
 const pal = []
