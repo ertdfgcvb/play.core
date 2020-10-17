@@ -7,7 +7,7 @@
 
 import { clamp, map } from '/src/modules/num.js'
 import { CSS4 } from '/src/modules/color.js'
-import { lerp, smoothstep } from '/src/modules/num.js'
+import { mix, smoothstep } from '/src/modules/num.js'
 
 export const settings = { background : 'black' }
 
@@ -134,11 +134,11 @@ function valueNoise() {
 	    const sy = smoothstep(0, 1, ty);
 
 	    // Linearly interpolate values along the x axis
-	    const nx0 = lerp(c00, c10, sx)
-	    const nx1 = lerp(c01, c11, sx)
+	    const nx0 = mix(c00, c10, sx)
+	    const nx1 = mix(c01, c11, sx)
 
 	    // Linearly interpolate the nx0/nx1 along they y axis
-	    return lerp(nx0, nx1, sy)
+	    return mix(nx0, nx1, sy)
 	}
 }
 

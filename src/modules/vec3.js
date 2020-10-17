@@ -220,7 +220,7 @@ export function rotZ(v, ang, out) {
 }
 
 // Performs linear interpolation on two vectors
-export function lerp(a, b, t, out) {
+export function mix(a, b, t, out) {
 	out = out || vec3(0, 0, 0)
 
 	out.x = (1 - t) * a.x + t * b.x

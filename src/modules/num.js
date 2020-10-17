@@ -9,7 +9,6 @@ TODO: add description
 export default {
 	map,
 	fract,
-	lerp,
 	clamp,
 	sign,
 	mix,
@@ -25,11 +24,6 @@ export function map(v, inA, inB, outA, outB){
 // Returns the fractional part of a float
 export function fract(v) {
 	return v - Math.floor(v)
-}
-
-// Performs linear interpolation on two floats
-export function lerp(a, b, t) {
-	return a + (b - a) * t
 }
 
 // Clamps a value between min and max
