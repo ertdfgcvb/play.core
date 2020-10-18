@@ -53,7 +53,7 @@ const black = {
 	g    : 0,
 	b    : 0,
 	a    : 1.0,
-	gray : 0
+	gray : 0.0
 }
 
 export class ImageBuffer {
@@ -189,7 +189,6 @@ export class ImageBuffer {
 		return this.buffer[x + y * this.canvas.width]
 	}
 
-
 	// Debug -------------------------------------------------------------------
 
 	// Attaches the canvas to a target element for debug purposes
@@ -274,8 +273,9 @@ function toBuffer(canvas, out){
 	return out
 }
 
+// Use this or import 'rgb2gray' from color.js
 // https://en.wikipedia.org/wiki/Grayscale
-function toGray(r,g,b) {
+function toGray(r, g, b) {
 	return Math.round(r * 0.2126 + g * 0.7152 + b * 0.0722) / 255.0
 }
 

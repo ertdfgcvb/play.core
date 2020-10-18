@@ -15,15 +15,15 @@ C64 and CGA palettes are exported as arrays
 
 Colors in exported palettes are augmented to:
 {
-	name: 'red',
-	r: 255,
-	g: 0,
-	b: 0,
-	a: 1.0,
-	gray: 54,
-	hex: '#FF0000',
-	css: 'rgb(255,0,0)'
-	int: 16711680,
+	name : 'red',
+	r    : 255,        // 0-255 (as in CSS)
+	g    : 0,          // 0-255 (as in CSS)
+	b    : 0,          // 0-255 (as in CSS)
+	a    : 1.0,        // 0-1   (as in CSS)
+	gray : 0.6,        // 0-1   (custom)
+	hex  : '#FF0000',
+	css  : 'rgb(255,0,0)'
+	int  : 16711680
 }
 
 */
@@ -74,9 +74,9 @@ export function rgb2hex(rgb) {
 	return '#' + r + g + b + a
 }
 
-// Convert {r,g,b} values to gray value [0-255]
+// Convert {r,g,b} values to gray value [0-1]
 export function rgb2gray(rgb) {
-	return Math.round(rgb.r * 0.2126 + rgb.g * 0.7152 + rgb.b * 0.0722)
+	return Math.round(rgb.r * 0.2126 + rgb.g * 0.7152 + rgb.b * 0.0722) / 255.0
 }
 
 // hex is not a string but an int number
