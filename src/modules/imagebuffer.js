@@ -119,12 +119,16 @@ export class ImageBuffer {
 
 	mirrorX(buf){
 		if (this.type == TYPE_EMPTY) return // TODO: warn?
+
+		const w = this.canvas.width
+		const h = this.canvas.height
+
 		buf = buf || this.buffer
 		// Width and height are obtained from the canvas… not super safe
 		for (let j=0; j<h; j++) {
 			for (let i=0; i<w/2; i++) {
-				const a = this.canvas.width * j + i
-				const b = this.canvas.width * (j + 1) - i - 1
+				const a = w * j + i
+				const b = w * (j + 1) - i - 1
 				const t = buf[b] // Swap
 				buf[b] = buf[a]
 				buf[a] = t
@@ -136,7 +140,7 @@ export class ImageBuffer {
 	normalize(buf){
 		if (this.type == TYPE_EMPTY) return // TODO: warn?
 		buf = buf || this.buffer
-		normalizeGray(this.buffer, buf, 0, 255)
+		normalizeGray(this.buffer, buf, 0.0, 1.0)
 		return this
 	}
 
@@ -299,7 +303,7 @@ function paletteQuantize(arrayIn, arrayOut, palette) {
 }
 
 // Normalizes the gray component (auto levels)
-function normalizeGray(arrayIn, arrayOut, lower=0, upper=255){
+function normalizeGray(arrayIn, arrayOut, lower=0.0, upper=1.0){
 	arrayOut = arrayOut || []
 
 	let min =  Number.MAX_VALUE
@@ -312,7 +316,7 @@ function normalizeGray(arrayIn, arrayOut, lower=0, upper=255){
 	//     return map(v, min, max, 0, 1)
 	// })
 	for (let i=0; i<arrayIn.length; i++) {
-		const gray = min == max ? min : Math.round(map(arrayIn[i].gray, min, max, lower, upper))
+		const gray = min == max ? min : map(arrayIn[i].gray, min, max, lower, upper)
 		arrayOut[i] = {...arrayOut[i], gray}
 	}
 	return arrayOut
