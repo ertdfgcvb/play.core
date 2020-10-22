@@ -55,6 +55,10 @@ export function run(program, element, runSettings, metrics) {
 			state.cycle++ // Keep track of the cycle count for debugging purposes
 		}
 
+		// Eventqueue
+		// Stores events and pops them at the end of the renderloop
+		const eventQueue = []
+
 		// Input pointer updated by DOM evenets
 		const pointer = {
 			x       : 0,
@@ -70,20 +74,21 @@ export function run(program, element, runSettings, metrics) {
 			pointer.py = pointer.y
 			pointer.x = e.clientX - rect.left
 			pointer.y = e.clientY - rect.top
+			eventQueue.push('pointerMove')
 		})
 
 		element.addEventListener('pointerdown', e => {
 			pointer.pressed = true
+			eventQueue.push('pointerDown')
 		})
 
 		element.addEventListener('pointerup', e => {
 			pointer.pressed = false
+			eventQueue.push('pointerUp')
 		})
 
-		// A few CSS fixes
-		element.style.fontVariantLigatures = 'none'
-		element.style.fontOpticalSizing = 'none'
-		element.style.fontSynthesis = 'none'
+		const CSSInfo = getCSSInfo(element)
+
 		element.style.fontStrech = 'normal'
 		if (settings.allowSelect == false) disableSelect(element)
 
@@ -204,27 +209,31 @@ export function run(program, element, runSettings, metrics) {
 
 			const context = Object.freeze({
 				// Context info
-				frame   : state.frame,
-				time    : state.time,
-				cols    : cols,
-				rows    : rows,
-				metrics : metrics,
-				info : Object.freeze({
-					// Runtime info
-					cycle         : state.cycle,
-					fps           : fps.update(t),
-					updatedRowNum : updatedRowNum,
-					// Parent element info
-					width         : rect.width,
-					height        : rect.height,
-					parentElement : element
+				frame : state.frame,
+				time  : state.time,
+				cols,
+				rows,
+				// Metrics & CSS
+				metrics,
+				CSSInfo,
+				// Container
+				parentInfo : Object.freeze({
+					width  : rect.width,
+					height : rect.height,
+					element
+				}),
+				// Runtime & debug data
+				runtime : Object.freeze({
+					cycle : state.cycle,
+					fps   : fps.update(t),
+					updatedRowNum
 				})
 			})
 
 			// Cursor update
 			const cursor = Object.freeze({
-				x       : pointer.x / metrics.cellWidth,  // Not floored,
-				y       : pointer.y / metrics.lineHeight, // for better precision.
+				x       : pointer.x / metrics.cellWidth,
+				y       : pointer.y / metrics.lineHeight,
 				pressed : pointer.pressed,
 			})
 
@@ -418,7 +427,28 @@ export function run(program, element, runSettings, metrics) {
 				reject({ message : '---- Error in renderloop', error })
 			}
 
-			// The end of the first frame is reached: the promise can be resolved
+			// 7. --------------------------------------------------------------
+			// Post render event
+			// Useful for frame export, etc.
+			// TODO: should the whole pipeline be treated like this?
+			eventQueue.push('postRender')
+
+			// 8. --------------------------------------------------------------
+			// Queued events
+			try {
+				while (eventQueue.length > 0) {
+					const type = eventQueue.shift()
+					if (type && typeof program[type] == 'function') {
+						program[type](context, cursor, buffers)
+					}
+				}
+			} catch (error){
+				cancelAnimationFrame(af)
+				reject({ message : '---- Error in customEvent', error })
+			}
+
+			// The end of the first frame is reached:
+			// the promise can be resolved
 			resolve(true)
 		}
 	})
@@ -514,7 +544,7 @@ export function calcMetrics(el) {
 }
 
 // Returns some CSS info
-function CSSinfo(el){
+function getCSSInfo(el){
 	const style = window.getComputedStyle(el)
 	return Object.freeze({
 		fontFamily : style.getPropertyValue('font-family'),
