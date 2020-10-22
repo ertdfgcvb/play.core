@@ -28,7 +28,7 @@ const defaultSettings = {
 // Finally, a precalculated metrics object can be passed,
 // otherwise it will be calcualted prior first run.
 // The program object should contain at least a main(), pre() or post() function.
-export function run(program, element, runSettings, metrics) {
+export function run(program, element, runSettings) {
 
 	// Everything is wrapped inside a promise which will reject
 	// in case of some errors (try / catch).
@@ -87,7 +87,7 @@ export function run(program, element, runSettings, metrics) {
 			eventQueue.push('pointerUp')
 		})
 
-		const CSSInfo = getCSSInfo(element)
+		// const CSSInfo = getCSSInfo(element)
 
 		element.style.fontStrech = 'normal'
 		if (settings.allowSelect == false) disableSelect(element)
@@ -118,32 +118,32 @@ export function run(program, element, runSettings, metrics) {
 		*/
 
 
-		// The metrics object is passed as param, let’s go!
-		if (metrics) {
-			requestAnimationFrame(loop)
-		}
 		// Metrics need to be calculated
-		else {
-			// Even with the "fonts.ready" the font may STILL not be loaded yet
-			// on Safari 13.x and also 14.0.
-			// A (shitty) workaround is to wait 2! rAF and execute calcMetrics twice.
-			// Submitted: https://bugs.webkit.org/show_bug.cgi?id=217047
-			document.fonts.ready.then((e) => {
-				let count = 3
-				;(function __run_thrice__(){
-					if (count-- > 0) {
-						metrics = calcMetrics(element)
-						requestAnimationFrame(__run_thrice__)
-					} else {
-						// element.style.lineHeight = Math.ceil(metrics.lineHeightf) + 'px'
-						// console.log(`Using font faimily: ${ci.fontFamily} @ ${ci.fontSize}/${ci.lineHeight}`)
-						// console.log(`Metrics: cellWidth: ${metrics.cellWidth}, lineHeightf: ${metrics.lineHeightf}`)
-						// Finally Boot!
-						requestAnimationFrame(loop)
-					}
-				})()
-			})
-		}
+		// Even with the "fonts.ready" the font may STILL not be loaded yet
+		// on Safari 13.x and also 14.0.
+		// A (shitty) workaround is to wait 2! rAF and execute calcMetrics twice.
+		// Submitted: https://bugs.webkit.org/show_bug.cgi?id=217047
+		let metrics
+		document.fonts.ready.then((e) => {
+			/*
+			let count = 3
+			;(function __run_thrice__(){
+				if (count-- > 0) {
+					metrics = calcMetrics(element)
+					requestAnimationFrame(__run_thrice__)
+				} else {
+					// element.style.lineHeight = Math.ceil(metrics.lineHeightf) + 'px'
+					// console.log(`Using font faimily: ${ci.fontFamily} @ ${ci.fontSize}/${ci.lineHeight}`)
+					// console.log(`Metrics: cellWidth: ${metrics.cellWidth}, lineHeightf: ${metrics.lineHeightf}`)
+					// Finally Boot!
+					requestAnimationFrame(loop)
+				}
+			})()
+			*/
+			// NOTE: seems to work better with the updated calcMetrics / canvas mode
+			metrics = calcMetrics(element)
+			requestAnimationFrame(loop)
+		})
 
 		// Time sample to calculate precise offset
 		let timeSample = 0
@@ -213,9 +213,7 @@ export function run(program, element, runSettings, metrics) {
 				time  : state.time,
 				cols,
 				rows,
-				// Metrics & CSS
 				metrics,
-				CSSInfo,
 				// Container
 				parentInfo : Object.freeze({
 					width  : rect.width,
@@ -511,9 +509,8 @@ export function copyContent(el){
 	if (!selectionEnabled) disableSelect(el)
 }
 
-// Calcs width (fract), height, aspect of a monospaced char
-// supposes CSS font-family is monospace.
-// Returns an immutable (frozen) object.
+// Old method, see updatd version below:
+/*
 export function calcMetrics(el) {
 	const test = document.createElement('span')
 	el.appendChild(test) // Must be visible!
@@ -552,4 +549,33 @@ function getCSSInfo(el){
 		fontSize   : style.getPropertyValue('font-size'),
 	})
 }
+*/
+
+// Calcs width (fract), height, aspect of a monospaced char
+// assuming that the CSS font-family is a monospaced font.
+// Returns an immutable (frozen) object.
+
+export function calcMetrics(el) {
+	const style = window.getComputedStyle(el)
+
+	const fontFamily = style.getPropertyValue('font-family')
+	const lineHeight = parseFloat(style.getPropertyValue('line-height'))
+	const fontSize   = parseFloat(style.getPropertyValue('font-size'))
+
+	const c = document.createElement('canvas')
+	const ctx = c.getContext("2d")
+	ctx.font = fontSize + 'px ' + fontFamily
+
+	const cellWidth = ctx.measureText(''.padEnd(10, 'x')).width / 10
+
+	return Object.freeze({
+		aspect : cellWidth / lineHeight,
+		cellWidth,
+		lineHeight,
+		fontFamily,
+		fontSize
+	})
+}
+
+
 

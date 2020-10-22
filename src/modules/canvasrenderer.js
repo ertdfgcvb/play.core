@@ -22,7 +22,7 @@ export function render(context, cursor, buffers, settings) {
 	canvas.width = c * cw * 2
 	canvas.height = r * ch * 2
 
-	const ff = context.CSSInfo.fontSize + ' ' + context.CSSInfo.fontFamily
+	const ff = m.fontSize + 'px ' + m.fontFamily
 
 	ctx.textBaseline = 'top'
 
