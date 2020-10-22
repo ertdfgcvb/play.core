@@ -5,7 +5,7 @@
 
 */
 
-const canvas = document.createElement('canvas')
+export const canvas = document.createElement('canvas')
 const ctx = canvas.getContext('2d')
 
 export function render(context, cursor, buffers, settings) {
