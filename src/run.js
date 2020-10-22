@@ -4,6 +4,7 @@ Runner
 
 import FPS from './fps.js'
 import storage from './storage.js'
+import { render } from './renderers/textrenderer.js'
 
 // Default settings for the program runner.
 // They can be overwritten by the parameters of the runner
@@ -15,9 +16,9 @@ const defaultSettings = {
 	rows         : 0,     // number of columns, 0 is equivalent to 'auto'
 	once         : false, // if set to true the renderer will run only once
 	fps          : 30,    // fps capping
-	background   : '',
-	color        : '',
-	weight       : '',
+	background   : 'white',
+	color        : 'black',
+	weight       : '400',
 	allowSelect  : false  // allows selection of the rendered element
 }
 
@@ -168,15 +169,6 @@ export function run(program, element, runSettings) {
 			data  : []  // user data
 		}
 
-		// A buffer to keep track of the state to check if update of row is necessary
-		const backBuffer = []
-
-		// Debug info (counts the number of rows that have been updated)
-		let updatedRowNum = 0
-
-		// Keep track of the context size to detect window resizes (no listener needed)
-		let cols, rows
-
 		// Main program loop
 		function loop(t) {
 
@@ -196,16 +188,8 @@ export function run(program, element, runSettings) {
 
 			// Context data
 			const rect = element.getBoundingClientRect()
-			const c = settings.cols || Math.floor(rect.width / metrics.cellWidth)
-			const r = settings.rows || Math.floor(rect.height / metrics.lineHeight)
-
-			// Size changed?
-			const contextResized = cols != c || rows != r
-
-			if (contextResized) {
-				cols = c
-				rows = r
-			}
+			const cols = settings.cols || Math.floor(rect.width / metrics.cellWidth)
+			const rows = settings.rows || Math.floor(rect.height / metrics.lineHeight)
 
 			const context = Object.freeze({
 				// Context info
@@ -223,8 +207,8 @@ export function run(program, element, runSettings) {
 				// Runtime & debug data
 				runtime : Object.freeze({
 					cycle : state.cycle,
-					fps   : fps.update(t),
-					updatedRowNum
+					fps   : fps.update(t)
+					// updatedRowNum
 				})
 			})
 
@@ -303,146 +287,32 @@ export function run(program, element, runSettings) {
 			}
 
 			// 5. --------------------------------------------------------------
-			// Renderloop
 
-			// DOM rows update: expand lines if necessary
-			// TODO: also benchmark a complete 'innerHTML' rewrite, could be faster?
-			while(element.childElementCount < rows) {
-				const span = document.createElement('span')
-				span.style.display = 'block'
-				element.appendChild(span)
-			}
-
-			// DOM rows update: shorten lines if necessary
-			// https://jsperf.com/innerhtml-vs-removechild/15
-			while(element.childElementCount > rows) {
-				element.removeChild(element.lastChild)
-			}
-
-			// Set the most used styles to the container
-			element.style.backgroundColor = settings.background
-			element.style.color = settings.color
-			element.style.fontWeight = settings.weight
-
-			// Count the number of rows which will be updated
-			// (for debugging purposes)
-			updatedRowNum = 0
-
-			// In case of a window resize the backbuffer gets 'emptied',
-			// forcing a repaint of all the rows
-			// (in certain edge cases this is required)
-			if (contextResized) backBuffer.length = 0
-
-			// A bit of a cumbersome render-loop…
-			// A few notes: the fastest way I found to render the image
-			// is by manually write the markup into the parent node via .innerHTML;
-			// creating a node via .createElement and then popluate it resulted
-			// remarkably slower (even if more elegant for the CSS handling below).
 			try {
-				for (let j=0; j<rows; j++) {
-
-					const offs = j * cols
-
-					// This check is faster than to force update the DOM.
-					// Buffers can be manually modified in pre, main and after
-					// with semi-arbitrary values…
-					// It is necessary to keep track of the previous state
-					// and specifically check if a change in style
-					// or char happened on the whole row.
-					let rowNeedsUpdate = false
-					for (let i=0; i<cols; i++) {
-						const idx = i + offs
-						const newCell = buffers.state[idx]
-						const oldCell = backBuffer[idx]
-						if (!isSameCell(newCell, oldCell)) {
-							if (rowNeedsUpdate == false) updatedRowNum++
-							rowNeedsUpdate = true
-							backBuffer[idx] = {...newCell}
-						}
-					}
-
-					// Skip row if update is not necessary
-					if (rowNeedsUpdate == false) continue
-
-					let html = '' // Accumulates the markup
-					let prevCell = defaultCell
-					let tagIsOpen = false
-					for (let i=0; i<cols; i++) {
-						const currCell = buffers.state[i + offs] || {...defaultCell, char : EMPTY_CELL}
-
-						// Undocumented feature:
-						// possible to inject some custom HTML (for example <a>) into the renderer.
-						// It can be inserted before the char or after the char (beginHTML, endHTML)
-						// and this is a very hack…
-						if (currCell.beginHTML) {
-							if (tagIsOpen) {
-								html += '</span>'
-								prevCell = defaultCell
-								tagIsOpen = false
-							}
-							html += currCell.beginHTML
-						}
-
-						// If there is a change in style a new span has to be inserted
-						if (!isSameCellStyle(currCell, prevCell)) {
-							// Close the previous tag
-							if (tagIsOpen) html += '</span>'
-
-							const c = currCell.color === settings.color ? null : currCell.color
-							const b = currCell.background === settings.background ? null : currCell.background
-							const w = currCell.weight === settings.weight ? null : currCell.weight
-
-							// Accumulate the CSS inline attribute.
-							let css = ''
-							if (c) css += 'color:' + c + ';'
-							if (b) css += 'background:' + b + ';'
-							if (w) css += 'font-weight:' + w + ';'
-							if (css) css = ' style="' + css + '"'
-							html += '<span' + css + '>'
-							tagIsOpen = true
-						}
-						html += currCell.char
-						prevCell = currCell
-
-						// Add closing tag, in case
-						if (currCell.endHTML) {
-							if (tagIsOpen) {
-								html += '</span>'
-								prevCell = defaultCell
-								tagIsOpen = false
-							}
-							html += currCell.endHTML
-						}
-
-					}
-					if (tagIsOpen) html += '</span>'
-
-					// Write the row
-					element.childNodes[j].innerHTML = html
-				}
+				render(context, buffers, settings)
 			} catch (error){
 				cancelAnimationFrame(af)
 				reject({ message : '---- Error in renderloop', error })
 			}
 
-			// 7. --------------------------------------------------------------
+			// 6. --------------------------------------------------------------
 			// Post render event
 			// Useful for frame export, etc.
 			// TODO: should the whole pipeline be treated like this?
 			eventQueue.push('postRender')
 
-			// 8. --------------------------------------------------------------
+			// 7. --------------------------------------------------------------
 			// Queued events
-			try {
-				while (eventQueue.length > 0) {
-					const type = eventQueue.shift()
-					if (type && typeof program[type] == 'function') {
+			while (eventQueue.length > 0) {
+				const type = eventQueue.shift()
+				if (type && typeof program[type] == 'function') {
+					try {
 						program[type](context, cursor, buffers)
+					} catch (error){
+						cancelAnimationFrame(af)
+						reject({ message : '---- Error in ' + type, error })
 					}
 				}
-			} catch (error){
-				cancelAnimationFrame(af)
-				reject({ message : '---- Error in customEvent', error })
 			}
 
 			// The end of the first frame is reached:
@@ -454,24 +324,6 @@ export function run(program, element, runSettings) {
 
 // -- Helpers ------------------------------------------------------------------
 
-// Compares two cells
-function isSameCell(cellA, cellB) {
-	if (typeof cellA != 'object')              return false
-	if (typeof cellB != 'object')              return false
-	if (cellA.char !== cellB.char)             return false
-	if (cellA.weight !== cellB.weight)         return false
-	if (cellA.color !== cellB.color)           return false
-	if (cellA.background !== cellB.background) return false
-	return true
-}
-
-// Compares two cells for style only
-function isSameCellStyle(cellA, cellB) {
-	if (cellA.weight !== cellB.weight)         return false
-	if (cellA.color !== cellB.color)           return false
-	if (cellA.background !== cellB.background) return false
-	return true
-}
 
 // Disables selection for an HTML element
 function disableSelect(el){

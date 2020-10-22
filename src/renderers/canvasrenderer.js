@@ -8,7 +8,7 @@
 export const canvas = document.createElement('canvas')
 const ctx = canvas.getContext('2d')
 
-export function render(context, cursor, buffers, settings) {
+export function render(context, buffers, settings) {
 
 	const scale = 2.0
 

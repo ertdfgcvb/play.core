@@ -204,7 +204,7 @@ export function drawInfo(context, cursor, buffers, style){
 	info += 'frame       ' + context.frame + '\n'
 	info += 'time        ' + Math.floor(context.time) + '\n'
 	info += 'size        ' + context.cols + '×' + context.rows + '\n'
-	info += 'row repaint ' + context.runtime.updatedRowNum + '\n'
+	// info += 'row repaint ' + context.runtime.updatedRowNum + '\n'
 	info += 'font aspect ' + context.metrics.aspect.toFixed(2) + '\n'
 	info += 'cursor      ' + Math.floor(cursor.x) + ',' + Math.floor(cursor.y) + '\n'
 	// NOTE: width and height can be a float in case of user zoom
