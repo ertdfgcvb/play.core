@@ -1,6 +1,6 @@
 /**
 @module    textrenderer.js
-@desc      renders the buffer to a PRE element
+@desc      renders to a text element
 @cathegory renderer
 */
 

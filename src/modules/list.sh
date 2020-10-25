@@ -68,4 +68,5 @@ function write {
 
 echo $(write "public")
 echo $(write "internal")
+echo $(write "renderer")
 

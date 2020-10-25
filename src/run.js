@@ -2,9 +2,11 @@
 Runner
 */
 
-import FPS from './fps.js'
-import storage from './storage.js'
-import { render } from './renderers/textrenderer.js'
+// Both available renderers are imported
+import { render as renderT } from './core/textrenderer.js'
+import { render as renderC} from './core/canvasrenderer.js'
+import FPS from './core/fps.js'
+import storage from './core/storage.js'
 
 // Default settings for the program runner.
 // They can be overwritten by the parameters of the runner
@@ -31,6 +33,7 @@ const defaultSettings = {
 // The program object should contain at least a main(), pre() or post() function.
 export function run(program, element, runSettings) {
 
+
 	// Everything is wrapped inside a promise which will reject
 	// in case of some errors (try / catch).
 	// If the program reaches the bottom of the first frame the promise is resolved.
@@ -55,6 +58,13 @@ export function run(program, element, runSettings) {
 			storage.restore(LOCAL_STORAGE_KEY_STATE, state)
 			state.cycle++ // Keep track of the cycle count for debugging purposes
 		}
+
+		// Choose the renderer:
+		// If the parent element is a canvas the canvas renderer is selected,
+		// for any other type a text node (PRE or any othe text node)
+		// is expected and the text renderer is used.
+
+		const render = element.nodeName == 'CANVAS' ? renderC : renderT
 
 		// Eventqueue
 		// Stores events and pops them at the end of the renderloop
@@ -87,6 +97,7 @@ export function run(program, element, runSettings) {
 			pointer.pressed = false
 			eventQueue.push('pointerUp')
 		})
+
 
 		// const CSSInfo = getCSSInfo(element)
 
@@ -185,6 +196,7 @@ export function run(program, element, runSettings) {
 			} else {
 				return
 			}
+
 
 			// Context data
 			const rect = element.getBoundingClientRect()
@@ -296,12 +308,6 @@ export function run(program, element, runSettings) {
 			}
 
 			// 6. --------------------------------------------------------------
-			// Post render event
-			// Useful for frame export, etc.
-			// TODO: should the whole pipeline be treated like this?
-			eventQueue.push('postRender')
-
-			// 7. --------------------------------------------------------------
 			// Queued events
 			while (eventQueue.length > 0) {
 				const type = eventQueue.shift()
@@ -414,7 +420,7 @@ export function calcMetrics(el) {
 	const lineHeight = parseFloat(style.getPropertyValue('line-height'))
 	const fontSize   = parseFloat(style.getPropertyValue('font-size'))
 
-	const c = document.createElement('canvas')
+	const c = el.nodeName == 'CANVAS' ? el : document.createElement('canvas')
 	const ctx = c.getContext("2d")
 	ctx.font = fontSize + 'px ' + fontFamily
 
