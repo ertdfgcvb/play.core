@@ -3,8 +3,8 @@ Runner
 */
 
 // Both available renderers are imported
-import { render as renderT } from './core/textrenderer.js'
-import { render as renderC} from './core/canvasrenderer.js'
+import { textRenderer   } from './core/textrenderer.js'
+import { canvasRenderer } from './core/canvasrenderer.js'
 import FPS from './core/fps.js'
 import storage from './core/storage.js'
 
@@ -12,16 +12,17 @@ import storage from './core/storage.js'
 // They can be overwritten by the parameters of the runner
 // or as a settings object exported by the program (in this order).
 const defaultSettings = {
-	restoreState : false, // will store the "state" object in local storage
-	                      // this is handy for live-coding situations
-	cols         : 0,     // number of columns, 0 is equivalent to 'auto'
-	rows         : 0,     // number of columns, 0 is equivalent to 'auto'
-	once         : false, // if set to true the renderer will run only once
-	fps          : 30,    // fps capping
-	background   : 'white',
+	restoreState : false,   // will store the "state" object in local storage
+	                        // this is handy for live-coding situations
+	cols         : 0,       // number of columns, 0 is equivalent to 'auto'
+	rows         : 0,       // number of columns, 0 is equivalent to 'auto'
+	once         : false,   // if set to true the renderer will run only once
+	fps          : 30,      // fps capping
+	renderer     : 'text',  // can be 'canvas', anything else falls back to 'text'
+	background   : 'white', // default style of the target element
 	color        : 'black',
 	weight       : '400',
-	allowSelect  : false  // allows selection of the rendered element
+	allowSelect  : false    // allows selection of the rendered element
 }
 
 // Program runner.
@@ -64,7 +65,18 @@ export function run(program, element, runSettings) {
 		// for any other type a text node (PRE or any othe text node)
 		// is expected and the text renderer is used.
 
-		const render = element.nodeName == 'CANVAS' ? renderC : renderT
+		let renderFn
+		if (settings.renderer == 'canvas') {
+		 	if (element.nodeName == 'CANVAS') {
+				console.info("Using canvas renderer.")
+				renderFn = canvasRenderer
+			} else {
+				console.warn("This renderer canvas expects a CANVAS element.")
+			}
+		} else {
+			console.info("Using text renderer.")
+				renderFn = textRenderer
+		}
 
 		// Eventqueue
 		// Stores events and pops them at the end of the renderloop
@@ -137,24 +149,23 @@ export function run(program, element, runSettings) {
 		// Submitted: https://bugs.webkit.org/show_bug.cgi?id=217047
 		let metrics
 		document.fonts.ready.then((e) => {
-			/*
+			// Run this three times
 			let count = 3
 			;(function __run_thrice__(){
-				if (count-- > 0) {
-					metrics = calcMetrics(element)
+				if (--count > 0) {
 					requestAnimationFrame(__run_thrice__)
 				} else {
 					// element.style.lineHeight = Math.ceil(metrics.lineHeightf) + 'px'
 					// console.log(`Using font faimily: ${ci.fontFamily} @ ${ci.fontSize}/${ci.lineHeight}`)
 					// console.log(`Metrics: cellWidth: ${metrics.cellWidth}, lineHeightf: ${metrics.lineHeightf}`)
 					// Finally Boot!
+					metrics = calcMetrics(element)
 					requestAnimationFrame(loop)
 				}
 			})()
-			*/
-			// NOTE: seems to work better with the updated calcMetrics / canvas mode
-			metrics = calcMetrics(element)
-			requestAnimationFrame(loop)
+			// Ideal mode:
+			// metrics = calcMetrics(element)
+			// requestAnimationFrame(loop)
 		})
 
 		// Time sample to calculate precise offset
@@ -301,7 +312,7 @@ export function run(program, element, runSettings) {
 			// 5. --------------------------------------------------------------
 
 			try {
-				render(context, buffers, settings)
+				renderFn(context, buffers, settings)
 			} catch (error){
 				cancelAnimationFrame(af)
 				reject({ message : '---- Error in renderloop', error })

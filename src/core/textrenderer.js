@@ -6,7 +6,7 @@
 
 const backBuffer = []
 
-export function render(context, buffers, settings){
+export function textRenderer(context, buffers, settings){
 	const rows = context.rows
 	const cols = context.cols
 	const element = context.parentInfo.element
