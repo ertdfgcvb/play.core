@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+	<meta charset="utf-8">
+	<title>Promise chain</title>
+</head>
+<body>
+
+<script type="module">
+
+	function a() {
+		//return new Promise((resolve, reject) => {
+		const err = []
+
+		try {
+			const c = 3
+			c = 4
+		} catch (e) {
+			console.log('xxx')
+			console.log(e)
+		}
+		console.log("end of a")
+	}
+
+	a()
+
+
+	// a().then(r => {
+	// 	console.log(r)
+	// }).catch(err => {
+	// 	console.log(err)
+	// })
+
+</script>
+
+</body>
+</html>
