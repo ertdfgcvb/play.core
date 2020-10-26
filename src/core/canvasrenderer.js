@@ -35,8 +35,10 @@ export function canvasRenderer(context, buffers, settings) {
 	// Only the 'rendered' area has a solid color.
 	const ctx = canvas.getContext('2d')
 	ctx.clearRect(0, 0, canvas.width, canvas.height)
+
 	ctx.fillStyle = bg
-	ctx.fillRect(0, 0, cw * c, ch * r)
+	ctx.fillRect(0, 0, cw * c * scale, ch * r * scale)
+
 	ctx.save()
 	ctx.scale(scale, scale)
 

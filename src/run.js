@@ -20,7 +20,7 @@ const defaultSettings = {
 	background   : 'white', // default styles of the target element
 	color        : 'black',
 	weight       : '400',
-	allowSelect  : false    // allows selection of the rendered element
+	allowSelect  : false,   // allows selection of the rendered element
 	restoreState : false,   // will store the "state" object in local storage
 	                        // this is handy for live-coding situations
 }
@@ -68,14 +68,14 @@ export function run(program, element, runSettings) {
 		let renderFn
 		if (settings.renderer == 'canvas') {
 		 	if (element.nodeName == 'CANVAS') {
-				console.info("Using canvas renderer.")
+				// console.info("Using canvas renderer.")
 				renderFn = canvasRenderer
 			} else {
-				console.warn("This renderer canvas expects a CANVAS element.")
+				console.warn("This renderer expects a CANVAS target element.")
 			}
 		} else {
-			console.info("Using text renderer.")
-				renderFn = textRenderer
+			// console.info("Using text renderer.")
+			renderFn = textRenderer
 		}
 
 		// Eventqueue
