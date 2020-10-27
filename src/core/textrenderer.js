@@ -6,9 +6,9 @@
 
 const backBuffer = []
 
+let cols, rows
 export function textRenderer(context, buffers, settings){
-	const rows = context.rows
-	const cols = context.cols
+
 	const element = context.parentInfo.element
 
 	// Set the most used styles to the container
