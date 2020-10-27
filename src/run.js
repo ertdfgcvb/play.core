@@ -35,10 +35,10 @@ const defaultSettings = {
 export function run(program, element, runSettings) {
 
 
-	// Everything is wrapped inside a promise which will reject
-	// in case of some errors (try / catch).
+	// Everything is wrapped inside a promise;
+	// in case of errors in ‘program’ it will reject without reaching the bottom.
 	// If the program reaches the bottom of the first frame the promise is resolved.
-	return new Promise(function(resolve, reject) {
+	return new Promise(function(resolve) {
 		// Merge of user- and default settings
 		const settings = {...defaultSettings, ...runSettings, ...program.settings}
 
@@ -194,19 +194,19 @@ export function run(program, element, runSettings) {
 		// Main program loop
 		function loop(t) {
 
-			// Run once or many times depending on settings.once
-			const af = settings.once ? null : requestAnimationFrame(loop)
-
 			// Timing
 			const delta = t - timeSample
-			if (delta > interval) {
-				timeSample = t - delta % interval   // adjust timeSample
-				state.time = t + timeOffset         // increment time + initial offs
-				state.frame++                       // increment frame counter
-				storage.store(LOCAL_STORAGE_KEY_STATE, state)  // store state
-			} else {
+			if (delta < interval) {
+				// Skip the frame
+				if (!settings.once) requestAnimationFrame(loop)
 				return
+			} else {
+				timeSample = t - delta % interval // adjust timeSample
+				state.time = t + timeOffset       // increment time + initial offs
+				state.frame++                     // increment frame counter
+				storage.store(LOCAL_STORAGE_KEY_STATE, state) // store state
 			}
+
 
 
 			// Context data
@@ -256,41 +256,26 @@ export function run(program, element, runSettings) {
 
 			// 1. --------------------------------------------------------------
 			// Call pre(), if defined
-			try {
-				if (typeof program.pre == 'function') {
-					program.pre(context, cursor, buffers)
-				}
-			} catch (error){
-				cancelAnimationFrame(af)
-				reject({ message : '---- Error in pre()', error })
+			if (typeof program.pre == 'function') {
+				program.pre(context, cursor, buffers)
 			}
 
 			// 2. --------------------------------------------------------------
 			// Call main(), if defined
-			try {
-				if (typeof program.main == 'function') {
-					for (let j=0; j<rows; j++) {
-						const offs = j * cols
-						for (let i=0; i<cols; i++) {
-							const idx = i + offs
-							buffers.state[idx] = program.main({x:i, y:j, index:idx}, context, cursor, buffers)
-						}
+			if (typeof program.main == 'function') {
+				for (let j=0; j<rows; j++) {
+					const offs = j * cols
+					for (let i=0; i<cols; i++) {
+						const idx = i + offs
+						buffers.state[idx] = program.main({x:i, y:j, index:idx}, context, cursor, buffers)
 					}
 				}
-			} catch (error){
-				cancelAnimationFrame(af)
-				reject({ message : '---- Error in main()', error })
 			}
 
 			// 3. --------------------------------------------------------------
 			// Call post(), if defined
-			try {
-				if (typeof program.post == 'function') {
-					program.post(context, cursor, buffers)
-				}
-			} catch (error){
-				cancelAnimationFrame(af)
-				reject({ message : '---- Error in post()', error })
+			if (typeof program.post == 'function') {
+				program.post(context, cursor, buffers)
 			}
 
 			// 4. --------------------------------------------------------------
@@ -310,30 +295,23 @@ export function run(program, element, runSettings) {
 			}
 
 			// 5. --------------------------------------------------------------
-
-			try {
-				renderFn(context, buffers, settings)
-			} catch (error){
-				cancelAnimationFrame(af)
-				reject({ message : '---- Error in renderloop', error })
-			}
+			renderFn(context, buffers, settings)
 
 			// 6. --------------------------------------------------------------
 			// Queued events
 			while (eventQueue.length > 0) {
 				const type = eventQueue.shift()
 				if (type && typeof program[type] == 'function') {
-					try {
-						program[type](context, cursor, buffers)
-					} catch (error){
-						cancelAnimationFrame(af)
-						reject({ message : '---- Error in ' + type, error })
-					}
+					program[type](context, cursor, buffers)
 				}
 			}
 
-			// The end of the first frame is reached:
-			// the promise can be resolved
+			// 7. --------------------------------------------------------------
+			// Loop
+			if (!settings.once) requestAnimationFrame(loop)
+
+			// The end of the first frame is reached without errors
+			// the promise can be resolved.
 			resolve(true)
 		}
 	})
