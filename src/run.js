@@ -34,7 +34,6 @@ const defaultSettings = {
 // The program object should contain at least a main(), pre() or post() function.
 export function run(program, element, runSettings) {
 
-
 	// Everything is wrapped inside a promise;
 	// in case of errors in ‘program’ it will reject without reaching the bottom.
 	// If the program reaches the bottom of the first frame the promise is resolved.
@@ -307,7 +306,7 @@ export function run(program, element, runSettings) {
 			}
 
 			// 7. --------------------------------------------------------------
-			// Loop
+			// Loop (eventually)
 			if (!settings.once) requestAnimationFrame(loop)
 
 			// The end of the first frame is reached without errors
