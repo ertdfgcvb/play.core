@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+	<meta charset="utf-8">
+	<title>fonts.ready bug</title>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100&display=swap" rel="stylesheet">
+	<!-- alternative load:
+	<style>@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100&display=swap');</style>
+	-->
+	<style type="text/css" media="screen">
+		span {
+			/*font-family: monospace;*/
+			/*font-family: monospace, monospace;*/
+			font-family: 'Roboto Mono', monospace;
+		}
+	</style>
+</head>
+<body>
+
+	Console output only.<br>
+	<a href="https://bugs.webkit.org/show_bug.cgi?id=217047">bugs.webkit.org/show_bug.cgi?id=217047</a>
+
+	<!--
+	***************************************
+	Safari / WebKit
+	***************************************
+
+	This test measures the width of a span element filled with 100 'X'
+	It needs to be run twice:
+
+	RUN 1)
+	Empty the caches (CMD-OPT-E) and reload the page
+	The output in the console is something similar:
+	a 1155.47   <--  what happens here?
+	                 maybe the monospace, monospace issue?
+	                 https://stackoverflow.com/questions/38781089/font-family-monospace-monospace
+	b 963.28    <--  incorect size! (this is the size of 'monospace' and not 'Roboto Mono')
+
+	RUN 2)
+	Reload the page, the output is now:
+	a 960.16    <--  correct size (on second reload the fonts are probably cached)
+	b 960.16    <--  correct size (finally the expected value)
+
+
+	There are two VERY strange fixes for this issue:
+
+	FIX A)
+	remove type="module" from the <script> tag
+
+	FIX B)
+	comment line 67 (leave the test element displayed)
+	-->
+
+	<script type="module">
+
+		console.log('a ' + calcWidth().toFixed(2))
+
+		document.fonts.ready.then(()=>{
+			console.log('b ' +  calcWidth().toFixed(2))
+		})
+
+		function calcWidth(el) {
+
+			const test = document.createElement('span')
+			document.body.appendChild(test) // Must be visible!
+
+			test.innerHTML = ''.padStart(100, 'X')
+			const w = test.getBoundingClientRect().width
+			test.innerHTML += '<br>Measured width: ' + w.toFixed(2) + '<br>'
+
+			document.body.removeChild(test) // If this line is commented the measure works on the first run!
+
+			return w
+		}
+
+	</script>
+</body>
+</html

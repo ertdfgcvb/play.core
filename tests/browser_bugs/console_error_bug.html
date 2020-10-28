@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+	<meta charset="utf-8">
+	<title>Console error bug</title>
+</head>
+<body>
+
+	Console output only.<br>
+	<a href="https://bugs.webkit.org/show_bug.cgi?id=218275">bugs.webkit.org/show_bug.cgi?id=218275</a>
+
+	<!--
+	***************************************
+	Safari / WebKit
+	***************************************
+
+	When the script is of type="module" the line number
+	of the error won’t be printed to the console.
+	Check the console for the two errors.
+	-->
+
+	<script>
+		function a( // <-- some syntax error here
+	</script>
+
+	<script type="module">
+		function b( // <-- some syntax error here
+	</script>
+</body>
+</html>
