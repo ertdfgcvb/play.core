@@ -7,7 +7,7 @@ https://twitter.com/ntsutae/status/1292115106763960327
 [header]
 */
 
-const pattern = "└┧─┨┕┪┖┫┘┩┙┪━"
+const pattern = '└┧─┨┕┪┖┫┘┩┙┪━'
 
 export function main(coord, context, cursor, buffers){
 	const t1 = Math.floor(context.frame / 2)
@@ -20,7 +20,7 @@ export function main(coord, context, cursor, buffers){
 	return pattern[c]
 }
 
-import { drawInfo } from "/src/modules/drawbox.js"
+import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers){
     drawInfo(context, cursor, buffers, { shadowStyle : 'gray' })
 }
