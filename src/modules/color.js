@@ -96,41 +96,41 @@ export function int2rgb(int) {
 
 // https://www.c64-wiki.com/wiki/Color
 const _C64 = [
-	{ int : 0x000000, name : 'black' },
-	{ int : 0xffffff, name : 'white' },
-	{ int : 0x880000, name : 'red' },
-	{ int : 0xaaffee, name : 'cyan' },
-	{ int : 0xcc44cc, name : 'violet' },
-	{ int : 0x00cc55, name : 'green' },
-	{ int : 0x0000aa, name : 'blue' },
-	{ int : 0xeeee77, name : 'yellow' },
-	{ int : 0xdd8855, name : 'orange' },
-	{ int : 0x664400, name : 'brown' },
-	{ int : 0xff7777, name : 'lightred' },
-	{ int : 0x333333, name : 'darkgrey' },
-	{ int : 0x777777, name : 'grey' },
-	{ int : 0xaaff66, name : 'lightgreen' },
-	{ int : 0x0088ff, name : 'lightblue' },
-	{ int : 0xbbbbbb, name : 'lightgrey' }
+	{ int : 0x000000, name : 'black' },       //  0
+	{ int : 0xffffff, name : 'white' },       //  1
+	{ int : 0x880000, name : 'red' },         //  2
+	{ int : 0xaaffee, name : 'cyan' },        //  3
+	{ int : 0xcc44cc, name : 'violet' },      //  4
+	{ int : 0x00cc55, name : 'green' },       //  5
+	{ int : 0x0000aa, name : 'blue' },        //  6
+	{ int : 0xeeee77, name : 'yellow' },      //  7
+	{ int : 0xdd8855, name : 'orange' },      //  8
+	{ int : 0x664400, name : 'brown' },       //  9
+	{ int : 0xff7777, name : 'lightred' },    // 10
+	{ int : 0x333333, name : 'darkgrey' },    // 11
+	{ int : 0x777777, name : 'grey' },        // 12
+	{ int : 0xaaff66, name : 'lightgreen' },  // 13
+	{ int : 0x0088ff, name : 'lightblue' },   // 14
+	{ int : 0xbbbbbb, name : 'lightgrey' }    // 15
 ]
 
 const _CGA = [
-	{ int : 0x000000, name : 'black' },
-	{ int : 0x0000aa, name : 'blue' },
-	{ int : 0x00aa00, name : 'green' },
-	{ int : 0x00aaaa, name : 'cyan' },
-	{ int : 0xaa0000, name : 'red' },
-	{ int : 0xaa00aa, name : 'magenta' },
-	{ int : 0xaa5500, name : 'brown' },
-	{ int : 0xaaaaaa, name : 'lightgray' },
-	{ int : 0x555555, name : 'darkgray' },
-	{ int : 0x5555ff, name : 'lightblue' },
-	{ int : 0x55ff55, name : 'lightgreen' },
-	{ int : 0x55ffff, name : 'lightcyan' },
-	{ int : 0xff5555, name : 'lightred' },
-	{ int : 0xff55ff, name : 'lightmagenta' },
-	{ int : 0xffff55, name : 'yellow' },
-	{ int : 0xffffff, name : 'white' }
+	{ int : 0x000000, name : 'black' },        //  0
+	{ int : 0x0000aa, name : 'blue' },         //  1
+	{ int : 0x00aa00, name : 'green' },        //  2
+	{ int : 0x00aaaa, name : 'cyan' },         //  3
+	{ int : 0xaa0000, name : 'red' },          //  4
+	{ int : 0xaa00aa, name : 'magenta' },      //  5
+	{ int : 0xaa5500, name : 'brown' },        //  6
+	{ int : 0xaaaaaa, name : 'lightgray' },    //  7
+	{ int : 0x555555, name : 'darkgray' },     //  8
+	{ int : 0x5555ff, name : 'lightblue' },    //  9
+	{ int : 0x55ff55, name : 'lightgreen' },   // 10
+	{ int : 0x55ffff, name : 'lightcyan' },    // 11
+	{ int : 0xff5555, name : 'lightred' },     // 12
+	{ int : 0xff55ff, name : 'lightmagenta' }, // 13
+	{ int : 0xffff55, name : 'yellow' },       // 14
+	{ int : 0xffffff, name : 'white' }         // 15
 ]
 
 // https://developer.mozilla.org/en-US/docs/Web/CSS/color_value
