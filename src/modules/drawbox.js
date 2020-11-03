@@ -182,8 +182,12 @@ export function drawBox(text, style, buffers, target){
 	}
 
 	// Txt
-	mergeText(text, x1+s.paddingX, y1+s.paddingY, buffers, target)
-
+	mergeText({
+		text,
+		color: style.color,
+		background: style.background,
+		weight: style.weght
+	}, x1+s.paddingX, y1+s.paddingY, buffers, target)
 }
 
 // -- Utility for some info output ---------------------------------------------

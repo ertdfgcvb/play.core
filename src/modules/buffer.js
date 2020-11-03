@@ -72,13 +72,28 @@ export function mergeRect(val, x, y, w, h, buffers, target) {
 	}
 }
 
-export function mergeText(txt, x, y, buffers, target) {
+// Merges a textObj in the form of:
+//	{
+// 		text : 'abc\ndef',
+// 		color : 'red',
+// 		weight : '400',
+// 		background : 'black'
+//	}
+// or just as a string into the target buffer (or buffers.state)
+export function mergeText(textObj, x, y, buffers, target) {
 	let col = x
 	let row = y
-	txt.split('\n').forEach((line, lineNum) => {
+
+	// if textObj is s a string convert it to an obj
+	const text = typeof textObj == "string" ? textObj : textObj.text
+	const color = textObj.color
+	const background = textObj.background
+	const weight = textObj.weight
+
+	text.split('\n').forEach((line, lineNum) => {
 		line.split('').forEach((char, charNum) => {
 			col = x + charNum
-			merge({char}, col, row, buffers, target)
+			merge({char, color, background, weight}, col, row, buffers, target)
 		})
 		row++
 	})
