@@ -14,3 +14,6 @@ export function main(){
 
 // Shortest:
 // export let main=o=>'?'
+
+// Shortesssst:
+// export let main=o=>0
