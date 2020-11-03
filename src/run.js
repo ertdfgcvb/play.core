@@ -17,9 +17,9 @@ const defaultSettings = {
 	once         : false,   // if set to true the renderer will run only once
 	fps          : 30,      // fps capping
 	renderer     : 'text',  // can be 'canvas', anything else falls back to 'text'
-	background   : 'white', // default styles of the target element
-	color        : 'black',
-	weight       : '400',
+	background   : '',      // default styles of the target element
+	color        : '',
+	weight       : '',
 	allowSelect  : false,   // allows selection of the rendered element
 	restoreState : false,   // will store the "state" object in local storage
 	                        // this is handy for live-coding situations
