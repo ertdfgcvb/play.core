@@ -6,7 +6,7 @@
 TODO: add full desc
 */
 
-import { map } from "./num.js"
+import { map } from './num.js'
 import { ImageBuffer } from './imagebuffer.js'
 import Load from './load.js'
 
@@ -29,8 +29,9 @@ function load(path){
 		source.getContext('2d').drawImage(img, 0, 0)
 		ib.resize(source.width, source.height)
 		ib.copy()
+	}).catch(err => {
+		console.warn('There was an error loading image ' + path + '.')
 	})
 
 	return ib
 }
-
