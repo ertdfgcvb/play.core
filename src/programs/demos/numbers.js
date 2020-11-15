@@ -3,21 +3,21 @@
 @title  Numbers
 @desc   Fun with BigInts
 [header]
-?fullscre
 */
 
 import { map } from '/src/modules/num.js'
 import { CGA } from '/src/modules/color.js'
 
+export const settings = {
+	background : 'black'
+}
+
+// Remove some colors (backwards, in place) from the CGA palette
 CGA.splice(10, 1)
 //CGA.splice(6, 1)
 CGA.splice(4, 1)
 CGA.splice(2, 1)
 CGA.splice(0, 1)
-
-export const settings = {
-	background : 'black'
-}
 
 const numbers = [
 	488162862,
@@ -32,14 +32,12 @@ const numbers = [
 	488080430
 ]
 
-// Read a bit of a BigInt (probably slow?)
-const bit = (n, k) => n >> k & 1
-
 const numX = 5 // number width
 const numY = 6 // number height
-
 const spacingX = 2 // spacing, after scale
 const spacingY = 1
+
+const bit = (n, k) => n >> k & 1
 
 export function main(coord, context, cursor, buffers){
 

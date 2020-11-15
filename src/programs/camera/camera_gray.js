@@ -15,7 +15,7 @@ const cam = Camera.init()
 const density = sort(' .x?▂▄▆█', 'Simple Console', false)
 
 export function pre(context, cursor, buffers){
-	cam.cover(context).normalize().mirrorX().write(buffers.data)
+	cam.cover(context).normalize().mirrorX().writeTo(buffers.data)
 }
 
 export function main(coord, context, cursor, buffers){

@@ -33,7 +33,7 @@ const c = cam.init() // The camera module returns an ImageBuffer object
 
 export function pre(asciiContext, pointer, buffers) {
 	const scale = 1.5 // zoom in slightly
-	c.cover(asciiContext, scale).normalize().mirrorX().write(buffers.data)
+	c.cover(asciiContext, scale, scale).normalize().mirrorX().write(buffers.data)
 }
 
 */
@@ -48,7 +48,7 @@ export const TYPE_RGBAG = Symbol()
 export const MODE_COVER = Symbol()
 export const MODE_FIT   = Symbol()
 
-const black = {
+const BLACK = {
 	r    : 0,
 	g    : 0,
 	b    : 0,
@@ -59,71 +59,61 @@ const black = {
 export class ImageBuffer {
 
 	// 0. ----------------------------------------------------------------------
-
-	constructor(sourceCanvas){
-		this.sourceCanvas = sourceCanvas
+	constructor(source){
+		this.source = source
 		this.canvas = document.createElement("canvas")
 		// A flat buffer to store image data
-		// in the form of {r, g, b, [a]} or
+		// in the form of {r, g, b, [a], gray}
 		this.buffer = []
-		this.type = TYPE_EMPTY
 	}
 
 	// 1a + 1b -----------------------------------------------------------------
+	resize(dWidth=this.source.width, dHeight=this.source.height){
+		this.canvas.width = dWidth
+		this.canvas.height = dHeight
+		return this
+	}
 
 	// Resizes the destination canvas to the size of the ascii context
 	// and covers it with the source image.
 	// An otional scaling factor can be passed.
-	cover(context, scale={x:1, y:1}) {
+	cover(context, scaleX=1, scaleY=1) {
 		// Adjust the target canvas
-		this.canvas.width = context.cols
-		this.canvas.height = context.rows
-		centerImage(this.sourceCanvas, this.canvas, scale, context.metrics.aspect, MODE_COVER, false)
-
+		this.resize(context.cols, context.rows)
+		centerImage(this.source, this.canvas, {x:scaleX, y:scaleY}, context.metrics.aspect, MODE_COVER, false)
 		toBuffer(this.canvas, this.buffer)
-		this.type = TYPE_RGBAG
 		return this
 	}
 
 	// Resizes the destination canvas to the size of the ascii context
 	// and fits the source image in it.
 	// An otional scaling factor can be passed.
-	fit(context, scale={x:1, y:1}) {
+	fit(context, scaleX=1, scaleY=1) {
 		// Adjust the target canvas
-		this.canvas.width = context.cols
-		this.canvas.height = context.rows
-
-		centerImage(this.sourceCanvas, this.canvas, scale, context.metrics.aspect, MODE_FIT, false)
-
+		this.resize(context.cols, context.rows)
+		centerImage(this.source, this.canvas, {x:scaleX, y:scaleY}, context.metrics.aspect, MODE_FIT, false)
 		toBuffer(this.canvas, this.buffer)
-		this.type = TYPE_RGBAG
 		return this
 	}
 
 	// Copy of source to dest, doesn't take in account the ascii context aspect ratio and size
-	copy(w, h) {
-		this.canvas.width  = w || this.sourceCanvas.width
-		this.canvas.height = h || this.sourceCanvas.height
-
+	copy(sx=0, sy=0, sWidth=this.source.width, sHeight=this.source.height, dx=0, dy=0, dWidth=this.canvas.width, dHeight=this.canvas.height) {
 		const ctx = this.canvas.getContext('2d')
 		// ctx.fillStyle = 'black'
 		// ctx.fillRect(0, 0, w, h)
-		ctx.drawImage(this.sourceCanvas, 0, 0, this.canvas.width, this.canvas.height)
+		ctx.drawImage(this.source, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
 
 		toBuffer(this.canvas, this.buffer)
-		this.type = TYPE_RGBAG
 		return this
 	}
 
 	// 2. ----------------------------------------------------------------------
 
-	mirrorX(buf){
-		if (this.type == TYPE_EMPTY) return // TODO: warn?
-
+	mirrorX(){
 		const w = this.canvas.width
 		const h = this.canvas.height
+		const buf = this.buffer
 
-		buf = buf || this.buffer
 		// Width and height are obtained from the canvas… not super safe
 		for (let j=0; j<h; j++) {
 			for (let i=0; i<w/2; i++) {
@@ -137,23 +127,19 @@ export class ImageBuffer {
 		return this
 	}
 
-	normalize(buf){
-		if (this.type == TYPE_EMPTY) return // TODO: warn?
-		buf = buf || this.buffer
-		normalizeGray(this.buffer, buf, 0.0, 1.0)
+	normalize(){
+		normalizeGray(this.buffer, this.buffer, 0.0, 1.0)
 		return this
 	}
 
-	quantize(palette, buf) {
-		if (this.type == TYPE_EMPTY) return // TODO: warn?
-		buf = buf || this.buffer
-		paletteQuantize(this.buffer, buf, palette)
+	quantize(palette) {
+		paletteQuantize(this.buffer, this.buffer, palette)
 		return this
 	}
 
 	// 3. ----------------------------------------------------------------------
 
-	write(buf){
+	writeTo(buf){
 		if (Array.isArray(buf)) {
 			for (let i=0; i<this.buffer.length; i++) buf[i] = this.buffer[i]
 		}
@@ -164,9 +150,18 @@ export class ImageBuffer {
 		return this.buffer
 	}
 
+	get(x, y){
+		if (x < 0 || x >= this.canvas.width) return BLACK
+		if (y < 0 || y >= this.canvas.height) return BLACK
+		return this.buffer[x + y * this.canvas.width]
+	}
+
 	sampleGray(sx, sy){
-	  	const x  = sx * this.canvas.width - 0.5
-	  	const y  = sy * this.canvas.height - 0.5
+		const w = this.canvas.width
+		const h = this.canvas.height
+
+	  	const x  = sx * w - 0.5
+	  	const y  = sy * h - 0.5
 
 		let l = Math.floor(x)
   		let b = Math.floor(y)
@@ -175,22 +170,14 @@ export class ImageBuffer {
   		const lr = x - l
   		const bt = y - b
 
-  		l = clamp(l, 0, this.canvas.width - 1)  // left
-  		r = clamp(r, 0, this.canvas.width - 1)  // right
-  		b = clamp(b, 0, this.canvas.height - 1) // borrom
-  		t = clamp(t, 0, this.canvas.height - 1) // top
+  		l = clamp(l, 0, w - 1) // left
+  		r = clamp(r, 0, w - 1) // right
+  		b = clamp(b, 0, h - 1) // bottom
+  		t = clamp(t, 0, h - 1) // top
 
   		const p1 = mix(this.get(l, b).gray, this.get(r, b).gray, lr)
   		const p2 = mix(this.get(l, t).gray, this.get(r, t).gray, lr)
   		return mix(p1, p2, bt)
-	}
-
-	get(x, y){
-		if (this.type == TYPE_EMPTY)          return black
-		if (x < 0 || x >= this.canvas.width)  return black
-		if (y < 0 || y >= this.canvas.height) return black
-
-		return this.buffer[x + y * this.canvas.width]
 	}
 
 	// Debug -------------------------------------------------------------------
@@ -207,12 +194,12 @@ export class ImageBuffer {
 
 // Helpers ---------------------------------------------------------------------
 
-function centerImage(sourceCanvas, targetCanvas, scale={x:1, y:1}, aspectAdjust=1, mode=MODE_COVER, mirrorX=false){
-	const type = sourceCanvas.nodeName
+function centerImage(source, targetCanvas, scale={x:1, y:1}, aspectAdjust=1, mode=MODE_COVER, mirrorX=false){
+	const type = source.nodeName
 
 	// Source size and aspect
-	const sw = type == 'VIDEO' ? sourceCanvas.videoWidth : sourceCanvas.width
-	const sh = type == 'VIDEO' ? sourceCanvas.videoHeight : sourceCanvas.height
+	const sw = type == 'VIDEO' ? source.videoWidth : source.width
+	const sh = type == 'VIDEO' ? source.videoHeight : source.height
 	const sa = sw / sh
 
 	// Target size and aspect
@@ -255,7 +242,7 @@ function centerImage(sourceCanvas, targetCanvas, scale={x:1, y:1}, aspectAdjust=
 	ctx.save()
 	ctx.translate(tw/2, th/2)
 	ctx.scale(mirrorX ? -sx : sx, sy) // flip for mirror mode
-	ctx.drawImage(sourceCanvas, -dw/2, -dh/2, dw, dh)
+	ctx.drawImage(source, -dw/2, -dh/2, dw, dh)
 	ctx.restore()
 }
 

@@ -27,11 +27,10 @@ export function pre(context, cursor, buffers){
 		rows : context.rows * 2
 	}
 	// Adjust the scale to compensate
-	const adjustedScale = {
-		x:1,
-		y:2
-	}
-	cam.cover({...context, ...newSize}, adjustedScale).quantize(pal).mirrorX().write(buffers.data)
+	const sX = 0.75
+	const sY = 1.5
+
+	cam.cover({...context, ...newSize}, sX, sY).quantize(pal).mirrorX().writeTo(buffers.data)
 }
 
 export function main(coord, context, cursor, buffers){

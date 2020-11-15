@@ -27,7 +27,7 @@ pal.push(rgb(100, 255, 255))
 export function pre(context, cursor, buffers){
 	// Add a zoom effect
 	const scale = map(Math.sin(context.time * 0.001), -1, 1, 1, 3)
-	cam.cover(context, {x:scale, y:scale}).mirrorX().quantize(pal).write(buffers.data)
+	cam.cover(context, scale, scale).mirrorX().quantize(pal).writeTo(buffers.data)
 }
 
 export function main(coord, context, cursor, buffers){
