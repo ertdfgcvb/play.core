@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------
 Meta-Enter   : run
-Meta-S       : save a new version (locally, with permalink)
 Meta-Period  : show/hide editor
+Meta-S       : save a new version (locally, with permalink)
 Meta-Shift-U : upload a version to the server (needs author and title tags)
 ---------------------------------------------------------------------------
 Type ?help
