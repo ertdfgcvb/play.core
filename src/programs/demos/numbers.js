@@ -32,8 +32,8 @@ const numbers = [
 	488080430
 ]
 
-const numX = 5 // number width
-const numY = 6 // number height
+const numX = 5     // number width
+const numY = 6     // number height
 const spacingX = 2 // spacing, after scale
 const spacingY = 1
 

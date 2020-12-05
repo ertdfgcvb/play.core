@@ -1,7 +1,7 @@
 /**
-FPS
-Frames-per-second-counter class.
-Can exist on mutliple instances of the runner because of inner state.
+@module    fps
+@desc      Frames-per-second-counter class.
+@cathegory core
 */
 
 export default class FPS {
