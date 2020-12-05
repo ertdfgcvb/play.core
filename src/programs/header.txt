@@ -2,9 +2,7 @@
 Meta-Enter   : run
 Meta-S       : save a new version (locally, with permalink)
 Meta-Period  : show/hide editor
-Meta-Shift-U : upload a version to the server (needs @name and @title tags)
-Meta can be the Cmd, Opt, Alt or Ctrl key.
-Use Ctrl-Enter (or Opt-Enter) on macOS to avoid inserting a new line.
+Meta-Shift-U : upload a version to the server (needs author and title tags)
 ---------------------------------------------------------------------------
 Type ?help
      anywhere (or edit the previous line)
