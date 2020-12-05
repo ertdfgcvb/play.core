@@ -9,8 +9,6 @@ import FPS from './core/fps.js'
 import storage from './core/storage.js'
 import VERSION from './core/version.js'
 
-console.log('Runner version: ' + VERSION)
-
 // Default settings for the program runner.
 // They can be overwritten by the parameters of the runner
 // or as a settings object exported by the program (in this order).
