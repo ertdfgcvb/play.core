@@ -417,7 +417,7 @@ function getCSSInfo(el){
 // Returns an immutable (frozen) object.
 
 export function calcMetrics(el) {
-	const style = window.getComputedStyle(el)
+	const style = getComputedStyle(el)
 
 	const fontFamily = style.getPropertyValue('font-family')
 	const lineHeight = parseFloat(style.getPropertyValue('line-height'))
