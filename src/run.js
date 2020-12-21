@@ -124,7 +124,6 @@ export function run(program, element, runSettings) {
 			eventQueue.push('pointerUp')
 		})
 
-
 		// const CSSInfo = getCSSInfo(element)
 
 		element.style.fontStrech = 'normal'
@@ -154,7 +153,6 @@ export function run(program, element, runSettings) {
 			requestAnimationFrame(loop)
 		})
 		*/
-
 
 		// Metrics need to be calculated
 		// Even with the "fonts.ready" the font may STILL not be loaded yet
@@ -220,8 +218,6 @@ export function run(program, element, runSettings) {
 				state.frame++                     // increment frame counter
 				storage.store(LOCAL_STORAGE_KEY_STATE, state) // store state
 			}
-
-
 
 			// Context data
 			const rect = element.getBoundingClientRect()
@@ -332,7 +328,6 @@ export function run(program, element, runSettings) {
 }
 
 // -- Helpers ------------------------------------------------------------------
-
 
 // Disables selection for an HTML element
 function disableSelect(el){
