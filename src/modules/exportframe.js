@@ -5,13 +5,8 @@
 
 Exports a frame as image.
 Expects the canvas renderer as the active renderer.
-This is a sort of hack, adapted from:
-https://github.com/eligrey/FileSaver.js
-
 Tested on Safari, FF, Chrome
 */
-
-
 
 export function exportFrame(context, filename, from=1, to=from) {
 
@@ -48,7 +43,8 @@ export function exportFrame(context, filename, from=1, to=from) {
 }
 
 // The hack: creates an anchor with a 'download' attribute
-// and then emits a click event. Works well enough!
+// and then emits a click event.
+// See: https://github.com/eligrey/FileSaver.js
 function saveAs (blob, name) {
 	const a = document.createElement('a')
 	a.download = name

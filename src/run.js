@@ -60,22 +60,36 @@ export function run(program, element, runSettings) {
 			state.cycle++ // Keep track of the cycle count for debugging purposes
 		}
 
-		// Choose the renderer:
+		// If element is not provided create a default element based
+		// on the renderer settings.
+		// Then choose the renderer:
 		// If the parent element is a canvas the canvas renderer is selected,
 		// for any other type a text node (PRE or any othe text node)
 		// is expected and the text renderer is used.
-
 		let renderFn
-		if (settings.renderer == 'canvas') {
-		 	if (element.nodeName == 'CANVAS') {
-				// console.info("Using canvas renderer.")
+		if (!element) {
+			if (settings.renderer == 'canvas') {
+				element = document.createElement('canvas')
 				renderFn = canvasRenderer
 			} else {
-				console.warn("This renderer expects a CANVAS target element.")
+				element = document.createElement('pre')
+				renderFn = textRenderer
 			}
+			document.body.appendChild(element)
 		} else {
-			// console.info("Using text renderer.")
-			renderFn = textRenderer
+			if (settings.renderer == 'canvas') {
+				if (element.nodeName != 'CANVAS') {
+					renderFn = canvasRenderer
+				} else {
+					console.warn("This renderer expects a CANVAS target element.")
+				}
+			} else {
+				if (element.nodeName != 'CANVAS') {
+					renderFn = textRenderer
+				} else {
+					console.warn("This renderer expects a text target element.")
+				}
+			}
 		}
 
 		// Eventqueue
@@ -295,7 +309,7 @@ export function run(program, element, runSettings) {
 			}
 
 			// 5. --------------------------------------------------------------
-			renderFn(context, buffers, settings)
+			if (typeof renderFn == 'function') renderFn(context, buffers, settings)
 
 			// 6. --------------------------------------------------------------
 			// Queued events
