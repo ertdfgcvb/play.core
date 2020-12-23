@@ -1,7 +1,7 @@
 /**
-@module    sort.js
-@desc      Sorts a set of characters by brightness
-@cathegory public
+@module   sort.js
+@desc     Sorts a set of characters by brightness
+@category public
 
 Paints chars on a temporary canvas and counts the pixels.
 This could be done once and then stored / hardcoded.

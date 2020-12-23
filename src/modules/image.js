@@ -1,7 +1,7 @@
 /**
-@module    image.js
-@desc      Image loader and helper
-@cathegory public
+@module   image.js
+@desc     Image loader and helper
+@category public
 
 TODO: add full desc
 */

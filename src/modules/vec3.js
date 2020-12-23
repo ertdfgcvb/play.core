@@ -1,7 +1,7 @@
 /**
-@module    vec3.js
-@desc      3D vector helper functions
-@cathegory public
+@module   vec3.js
+@desc     3D vector helper functions
+@category public
 
 - No vector class (a 'vector' is just any object with {x, y, z})
 - The functions never modify the original object.

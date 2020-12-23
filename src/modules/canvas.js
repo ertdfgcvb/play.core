@@ -1,7 +1,7 @@
 /**
-@module    canvas.js
-@desc      A wrapper for a canvas element
-@cathegory internal
+@module   canvas.js
+@desc     A wrapper for a canvas element
+@category internal
 
 A canvas 'wrapper' class. The purpose is to offer a ready to use buffer
 (a "pixel" array of {r, g, b, a, (gray)} objects) of the same size

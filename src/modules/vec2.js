@@ -1,7 +1,7 @@
 /**
-@module    vec2.js
-@desc      2D vector helper functions
-@cathegory public
+@module   vec2.js
+@desc     2D vector helper functions
+@category public
 
 - No vector class (a 'vector' is just any object with {x, y})
 - The functions never modify the original object.

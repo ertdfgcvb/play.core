@@ -1,7 +1,7 @@
 /**
-@module    loader.js
-@desc      Various file type loader, returns a Promise
-@cathegory internal
+@module   loader.js
+@desc     Various file type loader, returns a Promise
+@category internal
 
 TODO: add full desc
 */

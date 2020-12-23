@@ -1,7 +1,7 @@
 /**
-@module    textrenderer.js
-@desc      renders to a text element
-@cathegory renderer
+@module   textrenderer.js
+@desc     renders to a text element
+@category renderer
 */
 
 const backBuffer = []

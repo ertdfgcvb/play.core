@@ -1,7 +1,7 @@
 /**
-@module    exportframe.js
-@desc      Exports a single frame (or a range) to an image
-@cathegory public
+@module   exportframe.js
+@desc     Exports a single frame (or a range) to an image
+@category public
 
 Exports a frame as image.
 Expects the canvas renderer as the active renderer.

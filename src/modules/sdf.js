@@ -1,7 +1,7 @@
 /**
-@module    sdf.js
-@desc      Some signed distance functions
-@cathegory public
+@module   sdf.js
+@desc     Some signed distance functions
+@category public
 
 SDF functions ported from the almighty Inigo Quilezles:
 https://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm

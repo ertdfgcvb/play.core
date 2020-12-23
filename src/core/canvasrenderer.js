@@ -1,7 +1,7 @@
 /**
-@module    canvasrenderer.js
-@desc      renders to canvas
-@cathegory renderer
+@module   canvasrenderer.js
+@desc     renders to canvas
+@category renderer
 */
 
 

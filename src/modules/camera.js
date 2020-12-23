@@ -1,7 +1,7 @@
 /**
-@module    camera.js
-@desc      Webcam init and helper
-@cathegory public
+@module   camera.js
+@desc     Webcam init and helper
+@category public
 
 TODO: add full desc
 */

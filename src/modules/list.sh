@@ -26,9 +26,9 @@ function write {
 
 	for file in $SCRIPT_PATH/*.js; do
 
-		CATHEGORY=$(sed -En 's/^@cathegory[ \t](.*)$/\1/p' $file)
+		CATEGORY=$(sed -En 's/^@category[ \t](.*)$/\1/p' $file)
 
-		if [ $var == "$CATHEGORY" ];
+		if [ $var == "$CATEGORY" ];
 		then
 			# The path in $file is the full path:
 			# ./play.core/src/modules/[folder]/[file].js
@@ -40,7 +40,7 @@ function write {
 			FIRST=0
 			printf "\t"
 			printf "<div>"
-			printf "$(trim $CATHEGORY)"
+			printf "$(trim $CATEGORY)"
 			printf "</div>"
 			printf "\n"
 		else

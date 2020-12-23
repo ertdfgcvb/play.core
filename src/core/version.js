@@ -1,7 +1,7 @@
 /**
-@module    version.js
-@desc      Runner version string
-@cathegory core
+@module   version.js
+@desc     Runner version string
+@category core
 */
 
 export default '1.0'

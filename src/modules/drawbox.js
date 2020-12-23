@@ -1,7 +1,7 @@
 /**
-@module    drawbox.js
-@desc      Draw text boxes with optional custom styles
-@cathegory public
+@module   drawbox.js
+@desc     Draw text boxes with optional custom styles
+@category public
 
 A style object can be passed to override the default style:
 

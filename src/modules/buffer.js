@@ -1,7 +1,7 @@
 /**
-@module    buffer.js
-@desc      Safe buffer helpers, mostly for internal use
-@cathegory internal
+@module   buffer.js
+@desc     Safe buffer helpers, mostly for internal use
+@category internal
 
 Safe set() and get() functions, rect() and text() ‘drawing’ helpers.
 

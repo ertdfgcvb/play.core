@@ -1,7 +1,7 @@
 /**
-@module    string.js
-@desc      String helpers
-@cathegory internal
+@module   string.js
+@desc     String helpers
+@category internal
 */
 
 // Wraps a string to a specific width.
