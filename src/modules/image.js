@@ -6,8 +6,7 @@
 TODO: add full desc
 */
 
-import { map } from './num.js'
-import { ImageBuffer } from './imagebuffer.js'
+import Canvas from './canvas.js'
 import Load from './load.js'
 
 export default {
@@ -20,18 +19,15 @@ function load(path){
 	source.width = 1
 	source.height = 1
 
-	const ib = new ImageBuffer(source)
+	const can = new Canvas()
 
 	Load.image(path).then( img => {
 		console.log('Image ' + path + ' loaded. Size: ' + img.width + '×' + img.height)
-		source.width = img.width
-		source.height = img.height
-		source.getContext('2d').drawImage(img, 0, 0)
-		ib.resize(source.width, source.height)
-		ib.copy()
+		can.resize(img.width, img.height)
+		can.copy(img)
 	}).catch(err => {
 		console.warn('There was an error loading image ' + path + '.')
 	})
 
-	return ib
+	return can
 }

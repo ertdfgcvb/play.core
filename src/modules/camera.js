@@ -3,15 +3,16 @@
 @desc     Webcam init and helper
 @category public
 
-TODO: add full desc
+Initializes a user-facing camera, returns a video element (initialised asynchronously).
+
 */
 
 export default { init }
 
 let video
-function init(){
+function init(callback){
 	// Avoid double init of video object
-	video = video || getUserMedia()
+	video = video || getUserMedia(callback)
 	return video
 }
 

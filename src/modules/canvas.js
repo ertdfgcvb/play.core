@@ -44,10 +44,17 @@ export default class Canvas {
 
 	constructor(sourceCanvas){
 		this.canvas = sourceCanvas || document.createElement("canvas")
+
+		// Initialize the canvas as a black 1x1 image so it can be used
+		this.canvas.width = 1
+		this.canvas.height = 1
+		this.ctx = this.canvas.getContext('2d')
+		this.ctx.putImageData(this.ctx.createImageData(1, 1), 0, 0);
+
 		// A flat buffer to store image data
 		// in the form of {r, g, b, [a], gray}
 		this.pixels = []
-		this.ctx = this.canvas.getContext('2d')
+		this.loadPixels()
 	}
 
 	// -- Functions that act on the canvas -------------------------------------
