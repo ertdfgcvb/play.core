@@ -1,11 +1,11 @@
 /**
 @module   canvas.js
 @desc     A wrapper for a canvas element
-@category internal
+@category public
 
-A canvas 'wrapper' class. The purpose is to offer a ready to use buffer
-(a "pixel" array of {r, g, b, a, (gray)} objects) of the same size
-of the ASCII context.
+A canvas 'wrapper' class.
+The purpose is to offer a ready to use buffer (a "pixel" array
+of {r, g, b, a, (gray)} objects) of the same size of the ASCII context.
 Some convenience functions are provided.
 
 Four main functions are implemented to copy a source (canvas, video, image)
@@ -297,10 +297,10 @@ function toGray(r, g, b) {
 function paletteQuantize(arrayIn, arrayOut, palette) {
 	arrayOut = arrayOut || []
 
-	// euclidean:
+	// Euclidean:
 	// const distFn = (a, b) => Math.pow(a.r - b.r, 2) + Math.pow(a.g - b.g, 2) + Math.pow(a.b - b.b, 2)
 
-	// redmean:
+	// Redmean:
 	// https://en.wikipedia.org/wiki/Color_difference
 	const distFn = (a, b) => {
 		const r = (a.r + b.r) * 0.5

@@ -3,63 +3,59 @@
 @desc     Various file type loader, returns a Promise
 @category internal
 
-TODO: add full desc
+Example:
+
+import Load from './load.js'
+
+// Usage: load different file types with one callback
+Promise.all([
+    Load.text('assets/1/text.txt'),
+    Load.image('assets/1/blocks.png'),
+    Load.image('assets/1/colors.png'),
+    Load.json('data.json'),
+]).then(function(res) {
+    console.log('Everything has loaded!')
+    console.log(res)
+}).catch(function() {
+    console.log('Error')
+})
+
+// Usage: load a single resource
+Load.image('assets/1/colors.png').then( img => {
+    console.log(`Image has loaded, size is: ${img.width}x${img.height}`)
+})
+
 */
 
-function image (path) {
+export default { json, image, text }
 
-    return new Promise(function(resolve, reject) {
+function image (url) {
+    return new Promise((resolve, reject) => {
         const img = new Image()
-        img.src = path
         img.onload = () => resolve(img)
         img.onerror = () => {
-            console.log('Loader: error loading image ' + path)
+            console.log('Loader: error loading image ' + url)
             resolve(img)
         }
+        img.src = url
     })
 }
 
-function text (path) {
-
-    return fetch(path).then(function(response) {
+function text (url) {
+    return fetch(url).then( response => {
         return response.text()
-    }).catch(function(){
-        console.log('Loader: error loading text ' + path)
+    }).catch( err => {
+        console.log('Loader: error loading text ' + url)
         return ''
     })
 }
 
-function json (path) {
-
-    return fetch(path).then(function(response) {
+function json (url) {
+    return fetch(url).then( response => {
         return response.json()
-    }).catch(function(){
-        console.log('Loader: error loading json ' + path)
+    }).catch( err => {
+        console.log('Loader: error loading json ' + url)
         return {}
     })
 }
-
-
-export default {
-    json,
-    image,
-    text
-}
-
-
-/* ------------------------------------------------------------
-
-    Usage:  Load different file types with one callback
-    Promise.all([
-        Load.txt('assets/1/text.txt'),
-        Load.img('assets/1/blocks.png'),
-        Load.img('assets/1/colors.png'),
-    ]).then(function(res) {
-        console.log('Everything has loaded!');
-        console.log(res);
-    }).catch(function() {
-        console.log('Error');
-    });
-
-*/
 
