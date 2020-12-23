@@ -7,15 +7,24 @@
 
 import { sort } from '/src/modules/sort.js'
 import Camera from '/src/modules/camera.js'
+import Canvas from '/src/modules/canvas.js'
 
 const cam = Camera.init()
+const can = new Canvas()
 // For a debug view uncomment the following line:
-// cam.display(document.body, 10, 10)
+// can.display(document.body, 10, 10)
 
 const density = sort(' .x?▂▄▆█', 'Simple Console', false)
 
 export function pre(context, cursor, buffers){
-	cam.cover(context).normalize().mirrorX().writeTo(buffers.data)
+	const a = context.metrics.aspect
+
+	// The canvas is resized so that 1 cell -> 1 pixel
+	can.resize(context.cols, context.rows)
+	// The cover() function draws an image (cam) to the canvas covering
+	// the whole frame. The aspect ratio can be adjusted with the second
+	// parameter.
+	can.cover(cam, a).mirrorX().normalize().writeTo(buffers.data)
 }
 
 export function main(coord, context, cursor, buffers){
@@ -29,3 +38,4 @@ import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers){
 	drawInfo(context, cursor, buffers)
 }
+

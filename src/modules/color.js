@@ -13,6 +13,9 @@ css : 'rgb(255,0,0)'
 CSS1 and CSS3 palettes are exported as maps
 C64 and CGA palettes are exported as arrays
 
+Most of the times colors are ready to use as in CSS:
+this means r,g,b have 0-255 range but alpha 0-1
+
 Colors in exported palettes are augmented to:
 {
 	name : 'red',
@@ -154,7 +157,7 @@ const _CSS1 = [
 ]
 
 const _CSS2 = [..._CSS1,
-	{int : 0x800080, name :'orange'}
+	{int : 0xffa500, name :'orange'}
 ]
 
 const _CSS3 = [..._CSS2,

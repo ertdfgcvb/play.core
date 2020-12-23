@@ -110,4 +110,3 @@ export function mergeText(textObj, x, y, buffers, target) {
 		last   : get(col, row, buffers)
 	}
 }
-

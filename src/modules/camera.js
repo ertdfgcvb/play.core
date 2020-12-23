@@ -6,20 +6,13 @@
 TODO: add full desc
 */
 
-import { map } from "./num.js"
-import { ImageBuffer } from './imagebuffer.js'
+export default { init }
 
-let video, imgbuf
-
-export default {
-	init
-}
-
+let video
 function init(){
 	// Avoid double init of video object
 	video = video || getUserMedia()
-	imgbuf = imgbuf || new ImageBuffer(video)
-	return imgbuf
+	return video
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia

@@ -7,10 +7,12 @@
 
 import { CSS3 } from '/src/modules/color.js'
 import Camera from '/src/modules/camera.js'
+import Canvas from '/src/modules/canvas.js'
 
 const cam = Camera.init()
+const can = new Canvas()
 // For a debug view uncomment the following line:
-// cam.display(document.body, 10, 10)
+// can.display(document.body, 10, 10)
 
 // Palette for quantization
 const pal = []
@@ -21,16 +23,13 @@ pal.push(CSS3.black)
 pal.push(CSS3.lightblue)
 
 export function pre(context, cursor, buffers){
-	// Double the height of the camera image
-	const newSize = {
-		cols : context.cols,
-		rows : context.rows * 2
-	}
-	// Adjust the scale to compensate
-	const sX = 0.75
-	const sY = 1.5
+	const a = context.metrics.aspect
 
-	cam.cover({...context, ...newSize}, sX, sY).quantize(pal).mirrorX().writeTo(buffers.data)
+	// The canvas is resized to the double of the height of the context
+	can.resize(context.cols, context.rows * 2)
+
+	// Also the aspect ratio needs to be doubled
+	can.cover(cam, a * 2).quantize(pal).mirrorX().writeTo(buffers.data)
 }
 
 export function main(coord, context, cursor, buffers){
