@@ -1,7 +1,7 @@
 /**
 @author ertdfgcvb
 @title  Numbers
-@desc   Fun with BigInts
+@desc   Fun with integers
 [header]
 */
 
@@ -19,7 +19,7 @@ CGA.splice(4, 1)
 CGA.splice(2, 1)
 CGA.splice(0, 1)
 
-const numbers = [
+const ints = [
 	488162862,
 	147460255,
 	487657759,
@@ -62,7 +62,7 @@ export function main(coord, context, cursor, buffers){
 	let char
 
 	if (nx < numX && ny < numY) {
-		char = bit(numbers[num], (numX - nx - 1) + (numY - ny - 1) * numX)
+		char = bit(ints[num], (numX - nx - 1) + (numY - ny - 1) * numX)
 	} else {
 		char = 0
 	}
