@@ -57,6 +57,14 @@ export default class Canvas {
 		this.loadPixels()
 	}
 
+	get width() {
+		return this.canvas.width
+	}
+
+	get height() {
+		return this.canvas.height
+	}
+
 	// -- Functions that act on the canvas -------------------------------------
 
 	resize(dWidth, dHeight){

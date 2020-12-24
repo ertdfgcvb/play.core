@@ -199,8 +199,11 @@ export function run(program, element, runSettings) {
 		// in runtime.
 		// NOTE: extra size infos will be attached at each frame update.
 		const buffers = {
-			state : [],
-			data  : []  // user data
+			state  : [],
+			data   : [], // user data
+			cols   : 0,
+			rows   : 0,
+			length : 0
 		}
 
 		// Main program loop
