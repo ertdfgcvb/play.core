@@ -157,7 +157,7 @@ export default class Canvas {
 	}
 
 	// Sample value at coord (0-1)
-	sample(sx, sy){
+	sample(sx, sy, gray=false){
 		const w = this.canvas.width
 		const h = this.canvas.height
 
@@ -176,9 +176,16 @@ export default class Canvas {
   		b = clamp(b, 0, h - 1) // bottom
   		t = clamp(t, 0, h - 1) // top
 
-  		const p1 = mixColors(this.get(l, b), this.get(r, b), lr)
-  		const p2 = mixColors(this.get(l, t), this.get(r, t), lr)
-  		return mixColors(p1, p2, bt)
+  		// Avoid 9 extra interpolations if only gray is needed
+  		if (gray) {
+	  		const p1 = mix(this.get(l, b).gray, this.get(r, b).gray, lr)
+	  		const p2 = mix(this.get(l, t).gray, this.get(r, t).gray, lr)
+	  		return mix(p1, p2, bt)
+	  	} else {
+	  		const p1 = mixColors(this.get(l, b), this.get(r, b), lr)
+	  		const p2 = mixColors(this.get(l, t), this.get(r, t), lr)
+	  		return mixColors(p1, p2, bt)
+	  	}
 	}
 
 	// Read

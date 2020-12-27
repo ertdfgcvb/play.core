@@ -9,6 +9,8 @@ export function canvasRenderer(context, buffers, settings) {
 
 	const canvas = context.parentInfo.element
 
+
+
 	const scale = devicePixelRatio
 
 	const c = context.cols
@@ -18,9 +20,18 @@ export function canvasRenderer(context, buffers, settings) {
 	const cw = m.cellWidth
 	const ch = Math.round(m.lineHeight)
 
+	// Fixed size, to allow precise export
+	if (settings.canvasSize) {
+		canvas.width  = settings.canvasSize.width * scale
+		canvas.height = settings.canvasSize.height * scale
+		canvas.style.width  = settings.canvasSize.width + 'px'
+		canvas.style.height = settings.canvasSize.height + 'px'
+	}
 	// Stretch the canvas to the container width
-	canvas.width = context.parentInfo.width * scale
-	canvas.height = context.parentInfo.height * scale
+	else {
+		canvas.width  = context.parentInfo.width * scale
+		canvas.height = context.parentInfo.height * scale
+	}
 
 	const ff = ' ' + m.fontSize + 'px ' + m.fontFamily
 	const bg = settings && settings.background ? settings.background : 'white'
@@ -34,13 +45,21 @@ export function canvasRenderer(context, buffers, settings) {
 	// (fractions of cellWidth and lineHeight).
 	// Only the 'rendered' area has a solid color.
 	const ctx = canvas.getContext('2d')
-	ctx.clearRect(0, 0, canvas.width, canvas.height)
-
+	//ctx.clearRect(0, 0, canvas.width, canvas.height)
 	ctx.fillStyle = bg
-	ctx.fillRect(0, 0, cw * c * scale, ch * r * scale)
+	ctx.fillRect(0, 0, canvas.width, canvas.height)
 
 	ctx.save()
 	ctx.scale(scale, scale)
+
+	// Custom settings: it’s possible to center the canvas
+	if (settings.canvasOffset) {
+		const offs = settings.canvasOffset
+		const ox = Math.round(offs.x == 'auto' ? (canvas.width / scale - c * cw) / 2 : offs.x)
+		const oy = Math.round(offs.y == 'auto' ? (canvas.height / scale - r * ch) / 2 : offs.y)
+		ctx.translate(ox, oy)
+	}
+
 
 	ctx.fillStyle = fg
 	ctx.textBaseline = 'top'

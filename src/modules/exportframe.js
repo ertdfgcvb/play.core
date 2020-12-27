@@ -5,7 +5,7 @@
 
 Exports a frame as image.
 Expects the canvas renderer as the active renderer.
-Tested on Safari, FF, Chrome.
+Tested on Safari, FF, Chrome
 */
 
 export function exportFrame(context, filename, from=1, to=from) {

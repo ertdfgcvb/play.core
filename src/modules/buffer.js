@@ -23,8 +23,8 @@ the value is just written directly into the buffer.
 // Safe get function to read from a buffer
 export function get(x, y, buffers, target) {
 	target = target || buffers.state
-	if (x < 0 || x >= buffers.cols) return
-	if (y < 0 || y >= buffers.rows) return
+	if (x < 0 || x >= buffers.cols) return {}
+	if (y < 0 || y >= buffers.rows) return {}
 	const i = x + y * buffers.cols
 	return target[i]
 }

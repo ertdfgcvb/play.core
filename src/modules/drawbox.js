@@ -66,6 +66,17 @@ const borderStyles = {
 		right       : '║',
 		bg          : ' ',
 	},
+	fat : {
+		topleft     : '█' ,
+		topright    : '█',
+		bottomright : '█',
+		bottomleft  : '█',
+		top         : '▀',
+		bottom      : '▄',
+		left        : '█',
+		right       : '█',
+		bg          : ' ',
+	},
 	none : {
 		topleft     : ' ',
 		topright    : ' ',
@@ -171,10 +182,10 @@ export function drawBox(text, style, buffers, target){
 	mergeRect({ char : border.right }, x2, y1+1, 1, h-2, buffers, target)
 
 	// Shadows
-	const ox = s.shadowX
-	const oy = s.shadowY
 	const ss = shadowStyles[s.shadowStyle] || shadowStyles['none']
 	if (ss !== shadowStyles['none']) {
+		const ox = s.shadowX
+		const oy = s.shadowY
 		// Shadow Bottom
 		mergeRect(ss, x1+ox, y2+1, w, oy, buffers, target)
 		// Shadow Right
