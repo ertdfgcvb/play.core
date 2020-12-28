@@ -106,7 +106,7 @@ export function mergeText(textObj, x, y, buffers, target) {
 	// - the first an last chars
 	return {
 		offset : {col, row},
-		first  : get(x, y, buffers),
-		last   : get(col, row, buffers)
+		first  : get(x, y, buffers, target),
+		last   : get(col, row, buffers, target)
 	}
 }
