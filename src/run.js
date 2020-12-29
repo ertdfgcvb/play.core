@@ -98,17 +98,16 @@ export function run(program, element, runSettings) {
 
 		// Input pointer updated by DOM evenets
 		const pointer = {
-			x       : 0,
-			y       : 0,
-			px      : 0, // NOTE: px and py are unused for now
-			py      : 0,
-			pressed : false
+			x        : 0,
+			y        : 0,
+			pressed  : false,
+			px       : 0,
+			py       : 0,
+			ppressed : false,
 		}
 
 		element.addEventListener('pointermove', e => {
 			const rect = element.getBoundingClientRect()
-			pointer.px = pointer.x
-			pointer.py = pointer.y
 			pointer.x = e.clientX - rect.left
 			pointer.y = e.clientY - rect.top
 			eventQueue.push('pointerMove')
@@ -253,6 +252,11 @@ export function run(program, element, runSettings) {
 				x       : pointer.x / metrics.cellWidth,
 				y       : pointer.y / metrics.lineHeight,
 				pressed : pointer.pressed,
+				pre : {
+					x       : pointer.px / metrics.cellWidth,
+					y       : pointer.py / metrics.lineHeight,
+					pressed : pointer.ppressed,
+				}
 			})
 
 			// Update buffer attributes
@@ -320,6 +324,12 @@ export function run(program, element, runSettings) {
 			}
 
 			// 7. --------------------------------------------------------------
+			// Store pointer .pre
+			pointer.px = pointer.x
+			pointer.py = pointer.y
+			pointer.ppressed = pointer.pressed
+
+			// 8. --------------------------------------------------------------
 			// Loop (eventually)
 			if (!settings.once) requestAnimationFrame(loop)
 
