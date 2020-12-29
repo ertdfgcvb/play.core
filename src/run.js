@@ -252,7 +252,7 @@ export function run(program, element, runSettings) {
 				x       : pointer.x / metrics.cellWidth,
 				y       : pointer.y / metrics.lineHeight,
 				pressed : pointer.pressed,
-				pre : {
+				p : { // state of previous frame
 					x       : pointer.px / metrics.cellWidth,
 					y       : pointer.py / metrics.lineHeight,
 					pressed : pointer.ppressed,
