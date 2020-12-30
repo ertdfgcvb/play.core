@@ -4,12 +4,9 @@
 @category renderer
 */
 
-
 export function canvasRenderer(context, buffers, settings) {
 
 	const canvas = context.parentInfo.element
-
-
 
 	const scale = devicePixelRatio
 

@@ -1,0 +1,25 @@
+/**
+@author ertdfgcvb
+@title  How to log
+@desc   Console output inside the main() loop
+[header]
+*/
+
+const { abs, floor, max} = Math
+
+export function main(coord, context, cursor, buffers) {
+
+	const x = abs(coord.x - cursor.x) * context.metrics.aspect
+	const y = abs(coord.y - cursor.y)
+	const dist = floor(max(x, y) + context.frame * 0.3)
+
+	// Sometimes it’s useful to inspect values from inside the main loop.
+	// The main() function is called every frame for every cell:
+	// the console will be flooded with data very quickly!
+	// Output can be limited to one cell and every 10 frames, for example:
+	if (coord.index == 100 && context.frame % 10 == 0) {
+		console.log("dist = " + dist)
+	}
+
+	return '.-=:abc123?xyz*;%+,'[dist % 19]
+}
