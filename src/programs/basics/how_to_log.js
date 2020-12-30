@@ -9,9 +9,9 @@ const { abs, floor, max} = Math
 
 export function main(coord, context, cursor, buffers) {
 
-	const x = abs(coord.x - cursor.x) * context.metrics.aspect
-	const y = abs(coord.y - cursor.y)
-	const dist = floor(max(x, y) + context.frame * 0.3)
+	const x = abs(coord.x - cursor.x)
+	const y = abs(coord.y - cursor.y) / context.metrics.aspect
+	const dist = floor(max(x, y) + context.frame)
 
 	// Sometimes it’s useful to inspect values from inside the main loop.
 	// The main() function is called every frame for every cell:
@@ -21,5 +21,5 @@ export function main(coord, context, cursor, buffers) {
 		console.log("dist = " + dist)
 	}
 
-	return '.-=:abc123?xyz*;%+,'[dist % 19]
+	return '.-=:abc123?xyz*;%+,'[dist % 30]
 }
