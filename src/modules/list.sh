@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Script to generate a list of all the projects
+
 # Trims a string
 function trim {
 	local var="$*"
@@ -10,7 +12,6 @@ function trim {
 	printf '%s' "$var"
 }
 
-# Script to generate a list of all the projects
 
 SCRIPT_PATH=${0%/*}    # path to this script
 

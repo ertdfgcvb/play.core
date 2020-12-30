@@ -2,8 +2,6 @@
 @module   num.js
 @desc     Some GLSL functions ported to JS
 @category public
-
-TODO: add description
 */
 
 export default {

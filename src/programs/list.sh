@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Script to generate a list of all the projects,
+# will be inserted in the manual page
+
 # Trims a string
 function trim {
 	local var="$*"
@@ -9,8 +12,6 @@ function trim {
 	var="${var%"${var##*[![:space:]]}"}"
 	printf '%s' "$var"
 }
-
-# Script to generate a list of all the projects
 
 SCRIPT_PATH=${0%/*}    # path to this script
 

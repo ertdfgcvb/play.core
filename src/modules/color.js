@@ -5,7 +5,7 @@
 
 Colors can be defined as:
 
-rgb : {r:255, g:0, b:0}
+rgb : { r:255, g:0, b:0 }
 int : 16711680 (0xff0000)
 hex : '#FF0000'
 css : 'rgb(255,0,0)'
@@ -56,24 +56,19 @@ export function rgb2css(rgb) {
 	return `rgba(${rgb.r},${rgb.g},${rgb.b},${rgb.a})`
 }
 
-// Convert {r,g,b} values to '#RRGGBBAA'
+// Convert {r,g,b} values to '#RRGGBB' or '#RRGGBBAA'
 export function rgb2hex(rgb) {
-	let r = (rgb.r).toString(16)
-  	if (r.length < 2) r = '0' + r
 
-	let g = (rgb.g).toString(16)
-  	if (g.length < 2) g = '0' + g
-
-	let b = (rgb.b).toString(16)
-  	if (b.length < 2) b = '0' + b
+	let r = (rgb.r).toString(16).padStart(2, '0')
+	let g = (rgb.g).toString(16).padStart(2, '0')
+	let b = (rgb.b).toString(16).padStart(2, '0')
 
   	// Alpha not set
-	if (rgb.a === undefined || rgb.a === 1.0) {
+	if (rgb.a === undefined) {
 		return '#' + r + g + b
 	}
 
-	let a = Math.round(rgb.a * 255).toString(16)
-  	if (a.length < 2) a = '0' + a
+	let a = Math.round(rgb.a * 255).toString(16).padStart(2, '0')
 	return '#' + r + g + b + a
 }
 
@@ -89,7 +84,6 @@ export function int2rgb(int) {
 		r : int >> 16 & 0xff,
 		g : int >>  8 & 0xff,
 		b : int       & 0xff
-
 	}
 }
 

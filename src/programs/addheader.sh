@@ -31,7 +31,7 @@ echo "${PURPLE}Writing headers...${NC}"
 cd $SCRIPT_PATH
 
 EXPR_1="/\[header\]/r header.txt" # Insert the contents of _header.txt after [header]
-EXPR_2="/\[header\]/d"             # Delete the line with [header]
+EXPR_2="/\[header\]/d"            # Delete the line with [header]
 
 for folder in `find ./ -mindepth 1 -type d`; do
 	# echo "creating $TARGET_PATH/$folder..."

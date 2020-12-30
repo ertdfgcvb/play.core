@@ -3,8 +3,8 @@
 @desc     Webcam init and helper
 @category public
 
-Initializes a user-facing camera, returns a video element (initialised asynchronously).
-
+Initializes a user-facing camera,
+returns a video element (initialised asynchronously).
 */
 
 export default { init }
