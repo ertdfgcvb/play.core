@@ -1,7 +1,10 @@
 # play.core
 
 Core files, example and demos of the live-code ASCII playground:  
-[https://play.ertdfgcvb.xyz](play.ertdfgcvb.xyz)
+[play.ertdfgcvb.xyz](https://play.ertdfgcvb.xyz)
 
-Manual:  
-[https://play.ertdfgcvb.xyz/abc.html](play.ertdfgcvb.xyz/abc.html)
+Examples and demos:  
+[play.ertdfgcvb.xyz/abc.html#source:examples](https://play.ertdfgcvb.xyz/abc.html#source:examples)
+
+Playground manual, API and resources:  
+[play.ertdfgcvb.xyz/abc.html](https://play.ertdfgcvb.xyz/abc.html)
