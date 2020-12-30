@@ -41,7 +41,7 @@
 
 		fun = functions[step]
 
-		function loop(t){
+		function loop(t) {
 
 			const af = requestAnimationFrame(loop)
 
@@ -79,8 +79,8 @@
 		// Direct write to innerHTML
 		function baseline(target, frame) {
 			let html = ''
-			for (let j=0; j<rows; j++){
-				for (let i=0; i<cols; i++){
+			for (let j=0; j<rows; j++) {
+				for (let i=0; i<cols; i++) {
 					const idx = (i + j * rows + frame) % chars.length
 					html += chars[idx]
 				}
@@ -95,8 +95,8 @@
 		// Direct write to innerHTML
 		function a(target, frame) {
 			let html = ''
-			for (let j=0; j<rows; j++){
-				for (let i=0; i<cols; i++){
+			for (let j=0; j<rows; j++) {
+				for (let i=0; i<cols; i++) {
 					const idx = (i + j * rows + frame) % chars.length
 					html += `<span>${chars[idx % chars.length]}</span>`
 				}
@@ -111,8 +111,8 @@
 		// Direct write to innerHTML
 		function b(target, frame) {
 			let html = ''
-			for (let j=0; j<rows; j++){
-				for (let i=0; i<cols; i++){
+			for (let j=0; j<rows; j++) {
+				for (let i=0; i<cols; i++) {
 					const idx = (i + j * rows + frame)
 					const style = `color:${colors[idx % colors.length]};background-color:${colors[(idx+1) % colors.length]};`
 					html += `<span style="${style}">${chars[idx % chars.length]}</span>`
@@ -126,7 +126,7 @@
 
 		// Direct write to innerHTML of each span
 		// Re-use of <spans>
-		const r = new Array(rows).fill(null).map(function(e){
+		const r = new Array(rows).fill(null).map(function(e) {
 			const span = document.createElement('span')
 			span.style.display = 'block'
 			return span
@@ -135,23 +135,23 @@
 		function c(target, frame) {
 			if (frame == 0) {
 				target.innerHTML = ''
-				for (let j=0; j<rows; j++){
+				for (let j=0; j<rows; j++) {
 					target.appendChild(r[j])
 				}
 			}
-			// for (let j=0; j<rows; j++){
+			// for (let j=0; j<rows; j++) {
 			// 	r[j].style.display = 'none'
 			// }
-			for (let j=0; j<rows; j++){
+			for (let j=0; j<rows; j++) {
 				let html = ''
-				for (let i=0; i<cols; i++){
+				for (let i=0; i<cols; i++) {
 					const idx = (i + j * rows + frame)
 					const style = `color:${colors[idx % colors.length]};background-color:${colors[(idx+1) % colors.length]};`
 					html += `<span style="${style}">${chars[idx % chars.length]}</span>`
 				}
 				r[j].innerHTML = html
 			}
-			// for (let j=0; j<rows; j++){
+			// for (let j=0; j<rows; j++) {
 			// 	r[j].style.display = 'block'
 			// }
 		}
@@ -166,9 +166,9 @@
 
 		function d(target, frame) {
 			p.innerHTML = ''
-			for (let j=0; j<rows; j++){
+			for (let j=0; j<rows; j++) {
 			//	let html = ''
-				for (let i=0; i<cols; i++){
+				for (let i=0; i<cols; i++) {
 					const idx = (i + j * rows + frame)
 					const style = `color:${colors[idx % colors.length]};background-color:${colors[(idx+1) % colors.length]};`
 					p.innerHTML += `<span style="${style}">${chars[idx % chars.length]}</span>`
@@ -179,7 +179,7 @@
 			}
 			target.innerHTML = ''
 			target.appendChild(fragment)
-			// for (let j=0; j<rows; j++){
+			// for (let j=0; j<rows; j++) {
 			// 	r[j].style.display = 'block'
 			// }
 		}

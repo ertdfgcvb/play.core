@@ -5,7 +5,7 @@
 [header]
 */
 
-export function main(){
+export function main() {
 	return '?'
 }
 

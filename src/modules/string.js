@@ -8,7 +8,7 @@
 // Doesn’t break words and keeps trailing line breaks.
 // Counts lines and maxWidth (can be greater than width).
 // If no width is passed the function just measures the 'box' of the text.
-export function wrap(string, width=0){
+export function wrap(string, width=0) {
 
 	if (width==0) return measure(string)
 
@@ -21,7 +21,7 @@ export function wrap(string, width=0){
 	for (const p of paragraphs) {
 		const chunks = p.split(' ')
 		let len = 0
-		for(const word of chunks){
+		for(const word of chunks) {
 			// First word
 			if (len == 0) {
 				out += word

@@ -12,7 +12,7 @@ const density = sort('/\\MXYZabc!?=-. ', 'Simple Console', false)
 
 export const settings = { fps : 60 }
 
-export function main(coord, context, cursor, buffer){
+export function main(coord, context, cursor, buffer) {
 	const t  = context.time * 0.002
     const m = Math.min(context.cols, context.rows)
     const a = context.metrics.aspect

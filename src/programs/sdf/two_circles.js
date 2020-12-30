@@ -10,7 +10,7 @@ import { sub, vec2 } from '/src/modules/vec2.js'
 
 const density = '#WX?*:÷×+=-· '
 
-export function main(coord, context, cursor, buffers){
+export function main(coord, context, cursor, buffers) {
 	const t = context.time
     const m = Math.min(context.cols, context.rows)
     const a = context.metrics.aspect
@@ -44,7 +44,7 @@ export function main(coord, context, cursor, buffers){
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffers){
+export function post(context, cursor, buffers) {
 	drawInfo(context, cursor, buffers)
 }
 
@@ -52,7 +52,7 @@ export function post(context, cursor, buffers){
 // and pass it to the main function as a global or as object in buffers.data
 /*
 const p = vec2(0, 0)
-export function pre(context, cursor, buffers){
+export function pre(context, cursor, buffers) {
    	const m = Math.min(context.cols, context.rows)
     const a = context.metrics.aspect
 	p.x = 2.0 * (cursor.x - context.cols / 2) / m * a,

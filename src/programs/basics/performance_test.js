@@ -11,7 +11,7 @@ export const settings = { fps : 60 }
 
 const { cos } = Math
 
-export function main(coord, context, cursor){
+export function main(coord, context, cursor) {
 
 	// Hold the mouse button to switch the direction
 	// of the gradient and observe the drop in FPS.
@@ -39,6 +39,6 @@ export function main(coord, context, cursor){
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffers){
+export function post(context, cursor, buffers) {
 	drawInfo(context, cursor, buffers)
 }

@@ -12,7 +12,7 @@ const pattern = 'ABCxyz01═|+:. '
 // Character coordinates are passed in coord {x, y, index}.
 // The function must return a single character or, alternatively, an object:
 // {char, color, background, weight}.
-export function main(coord, context, cursor, buffers){
+export function main(coord, context, cursor, buffers) {
 	const t = context.time * 0.0001
 	const x = coord.x
 	const y = coord.y
@@ -28,7 +28,7 @@ import { drawInfo } from '/src/modules/drawbox.js'
 
 // This function is called after the main loop and is useful
 // to manipulate the buffers; in this case with a window overlay.
-export function post(context, cursor, buffers){
+export function post(context, cursor, buffers) {
 	// An extra object can be passed to drawInfo to alter the default style
 	drawInfo(context, cursor, buffers, {
 		color : 'white', background : 'royalblue', shadowStyle : 'gray'

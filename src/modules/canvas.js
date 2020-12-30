@@ -42,7 +42,7 @@ const WHITE = { r:255, g:255, b:255, a:1, gray:1 }
 
 export default class Canvas {
 
-	constructor(sourceCanvas){
+	constructor(sourceCanvas) {
 		this.canvas = sourceCanvas || document.createElement("canvas")
 
 		// Initialize the canvas as a black 1x1 image so it can be used
@@ -67,7 +67,7 @@ export default class Canvas {
 
 	// -- Functions that act on the canvas -------------------------------------
 
-	resize(dWidth, dHeight){
+	resize(dWidth, dHeight) {
 		this.canvas.width = dWidth
 		this.canvas.height = dHeight
 		this.pixels.length = 0
@@ -120,7 +120,7 @@ export default class Canvas {
 
 	// -- Functions that act directly on the pixel array -----------------------
 
-	mirrorX(){
+	mirrorX() {
 		const w = this.canvas.width
 		const h = this.canvas.height
 		const buf = this.pixels
@@ -137,7 +137,7 @@ export default class Canvas {
 		return this
 	}
 
-	normalize(){
+	normalize() {
 		normalizeGray(this.pixels, this.pixels, 0.0, 1.0)
 		return this
 	}
@@ -150,14 +150,14 @@ export default class Canvas {
 	// -- Getters (pixel array) ------------------------------------------------
 
 	// Get color at coord
-	get(x, y){
+	get(x, y) {
 		if (x < 0 || x >= this.canvas.width) return BLACK
 		if (y < 0 || y >= this.canvas.height) return BLACK
 		return this.pixels[x + y * this.canvas.width]
 	}
 
 	// Sample value at coord (0-1)
-	sample(sx, sy, gray=false){
+	sample(sx, sy, gray=false) {
 		const w = this.canvas.width
 		const h = this.canvas.height
 
@@ -189,7 +189,7 @@ export default class Canvas {
 	}
 
 	// Read
-	loadPixels(){
+	loadPixels() {
 		// New data could be shorter,
 		// empty without loosing the ref.
 		this.pixels.length = 0
@@ -213,7 +213,7 @@ export default class Canvas {
 
 	// -- Helpers --------------------------------------------------------------
 
-	writeTo(buf){
+	writeTo(buf) {
 		if (Array.isArray(buf)) {
 			for (let i=0; i<this.pixels.length; i++) buf[i] = this.pixels[i]
 		}
@@ -223,7 +223,7 @@ export default class Canvas {
 	// Debug -------------------------------------------------------------------
 
 	// Attaches the canvas to a target element for debug purposes
-	display(target, x=0, y=0){
+	display(target, x=0, y=0) {
 		target = target || document.body
 		this.canvas.style.position = "absolute"
 		this.canvas.style.left = x + "px"
@@ -255,7 +255,7 @@ function getElementSize(source) {
 }
 
 
-function centerImage(sourceCanvas, targetCanvas, scaleX=1, scaleY=1, mode=MODE_CENTER){
+function centerImage(sourceCanvas, targetCanvas, scaleX=1, scaleY=1, mode=MODE_CENTER) {
 
 	// Source size
 	const s = getElementSize(sourceCanvas)
@@ -350,7 +350,7 @@ function paletteQuantize(arrayIn, arrayOut, palette) {
 }
 
 // Normalizes the gray component (auto levels)
-function normalizeGray(arrayIn, arrayOut, lower=0.0, upper=1.0){
+function normalizeGray(arrayIn, arrayOut, lower=0.0, upper=1.0) {
 	arrayOut = arrayOut || []
 
 	let min = Number.MAX_VALUE

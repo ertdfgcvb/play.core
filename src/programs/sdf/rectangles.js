@@ -10,7 +10,7 @@ import { sdBox, opSmoothUnion } from '/src/modules/sdf.js'
 
 let density = '▚▀abc|/:÷×+-=?*· '
 
-export function main(coord, context, cursor, buffers){
+export function main(coord, context, cursor, buffers) {
 
 	const t = context.time
     const m = Math.max(context.cols, context.rows)
@@ -40,7 +40,7 @@ export function main(coord, context, cursor, buffers){
 	return density[index]
 }
 
-function transform(p, trans, rot){
+function transform(p, trans, rot) {
 	const s = Math.sin(-rot)
 	const c = Math.cos(-rot)
 	const dx = p.x - trans.x
@@ -52,6 +52,6 @@ function transform(p, trans, rot){
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffers){
+export function post(context, cursor, buffers) {
 	drawInfo(context, cursor, buffers)
 }

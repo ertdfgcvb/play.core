@@ -16,7 +16,7 @@ const can = new Canvas()
 
 const density = sort(' .x?▂▄▆█', 'Simple Console', false)
 
-export function pre(context, cursor, buffers){
+export function pre(context, cursor, buffers) {
 	const a = context.metrics.aspect
 
 	// The canvas is resized so that 1 cell -> 1 pixel
@@ -27,7 +27,7 @@ export function pre(context, cursor, buffers){
 	can.cover(cam, a).mirrorX().normalize().writeTo(buffers.data)
 }
 
-export function main(coord, context, cursor, buffers){
+export function main(coord, context, cursor, buffers) {
 	// Coord also contains the index of each cell:
 	const color = buffers.data[coord.index]
 	const index = Math.floor(color.gray * (density.length-1))
@@ -35,7 +35,7 @@ export function main(coord, context, cursor, buffers){
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffers){
+export function post(context, cursor, buffers) {
 	drawInfo(context, cursor, buffers)
 }
 

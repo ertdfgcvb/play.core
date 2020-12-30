@@ -18,7 +18,7 @@ let cols, rows
 
 const noise = valueNoise()
 
-export function pre(context, cursor, buffers){
+export function pre(context, cursor, buffers) {
 
 	// Shorthand
 	const buf = buffers.data
@@ -55,7 +55,7 @@ export function pre(context, cursor, buffers){
 	}
 }
 
-export function main(coord, context, cursor, buffers){
+export function main(coord, context, cursor, buffers) {
 	const u = buffers.data[coord.index]
 	if (u === 0) return // Inserts a space
 
@@ -125,6 +125,6 @@ function valueNoise() {
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffers){
+export function post(context, cursor, buffers) {
 	drawInfo(context, cursor, buffers)
 }

@@ -5,7 +5,7 @@
 */
 
 export default class FPS {
-	constructor(){
+	constructor() {
 		this.frames = 0
 		this.ptime = 0
 		this.fps = 0

@@ -5,7 +5,7 @@
 [header]
 */
 
-export function main(coord, context, cursor){
+export function main(coord, context, cursor) {
 	// The cursor coordinates contain the cell
 	const x = Math.floor(cursor.x) // column of the cell hovered
 	const y = Math.floor(cursor.y) // row of the cell hovered
@@ -16,7 +16,7 @@ export function main(coord, context, cursor){
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffers){
+export function post(context, cursor, buffers) {
 	drawInfo(context, cursor, buffers, {
 		color : 'white', background : 'royalblue', shadowStyle : 'gray'
 	})

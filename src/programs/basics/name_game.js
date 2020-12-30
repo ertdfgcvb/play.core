@@ -15,7 +15,7 @@ export const settings = {
 
 const TAU = Math.PI * 2
 
-export function main(coord, context){
+export function main(coord, context) {
 	const a = context.frame * 0.05
 	const f = Math.floor((1 - Math.cos(a)) * 10) + 1
 	const g = Math.floor(a / TAU) % 10 + 1

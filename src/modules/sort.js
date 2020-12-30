@@ -9,7 +9,7 @@ The fontFamily paramter needs to be set because it's used by the canvas element
 to draw the correct font.
 */
 
-export function sort(charSet, fontFamily, ascending = false){
+export function sort(charSet, fontFamily, ascending = false) {
 
 	const size = 30
 	const ctx = document.createElement('canvas').getContext('2d')
@@ -27,7 +27,7 @@ export function sort(charSet, fontFamily, ascending = false){
 	}
 
 	let out = []
-	for (let i=0; i<charSet.length; i++){
+	for (let i=0; i<charSet.length; i++) {
 		ctx.fillStyle = 'black'
 		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 		ctx.fillStyle = 'rgb(255,255,255)'

@@ -165,7 +165,7 @@ export function neg(v, out) {
 }
 
 // Rotates a vector
-export function rot(a, ang, out){
+export function rot(a, ang, out) {
 	out = out || vec2(0, 0)
 
 	const s = Math.sin(ang)

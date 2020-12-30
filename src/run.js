@@ -138,7 +138,7 @@ export function run(program, element, runSettings) {
 		// But a definition of the font via CSS is preferable and more flexible.
 		/*
 		var font = new FontFace('Simple Console', 'url(/css/fonts/simple/SimpleConsole-Light.woff)', { style: 'normal', weight: 400 })
-		font.load().then(function(f){
+		font.load().then(function(f) {
 			document.fonts.add(f)
 		  	element.style.fontFamily = font.family
 		  	element.fontVariantLigatures = 'none'
@@ -162,7 +162,7 @@ export function run(program, element, runSettings) {
 		document.fonts.ready.then((e) => {
 			// Run this three times
 			let count = 3
-			;(function __run_thrice__(){
+			;(function __run_thrice__() {
 				if (--count > 0) {
 					requestAnimationFrame(__run_thrice__)
 				} else {
@@ -343,7 +343,7 @@ export function run(program, element, runSettings) {
 // -- Helpers ------------------------------------------------------------------
 
 // Disables selection for an HTML element
-function disableSelect(el){
+function disableSelect(el) {
 	el.style.userSelect = 'none'
 	el.style.webkitUserSelect = 'none' // for Safari on mac and iOS
 	el.style.mozUserSelect = 'none'    // for mobile FF
@@ -359,7 +359,7 @@ function enableSelect(el) {
 }
 
 // Copies the content of an element to the clipboard
-export function copyContent(el){
+export function copyContent(el) {
 	// Store selection default
 	const selectionEnabled = !el.dataset.selectionEnabled == 'false'
 
@@ -410,7 +410,7 @@ export function calcMetrics(el) {
 }
 
 // Returns some CSS info
-function getCSSInfo(el){
+function getCSSInfo(el) {
 	const style = window.getComputedStyle(el)
 	return Object.freeze({
 		fontFamily : style.getPropertyValue('font-family'),

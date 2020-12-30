@@ -22,7 +22,7 @@ pal.push(CSS3.white)
 pal.push(CSS3.black)
 pal.push(CSS3.lightblue)
 
-export function pre(context, cursor, buffers){
+export function pre(context, cursor, buffers) {
 	const a = context.metrics.aspect
 
 	// The canvas is resized to the double of the height of the context
@@ -32,7 +32,7 @@ export function pre(context, cursor, buffers){
 	can.cover(cam, a * 2).quantize(pal).mirrorX().writeTo(buffers.data)
 }
 
-export function main(coord, context, cursor, buffers){
+export function main(coord, context, cursor, buffers) {
 	// Coord also contains the index of each cell:
 	const idx   = coord.y * context.cols * 2 + coord.x
 	const upper = buffers.data[idx]
@@ -46,7 +46,7 @@ export function main(coord, context, cursor, buffers){
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffers){
+export function post(context, cursor, buffers) {
 	drawInfo(context, cursor, buffers)
 }
 

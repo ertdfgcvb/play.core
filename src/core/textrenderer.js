@@ -7,7 +7,7 @@
 const backBuffer = []
 
 let cols, rows
-export function textRenderer(context, buffers, settings){
+export function textRenderer(context, buffers, settings) {
 
 	const element = context.parentInfo.element
 

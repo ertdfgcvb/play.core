@@ -10,11 +10,11 @@ https://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
 import { clamp, mix } from "./num.js"
 import { length, sub, dot, mulN } from "./vec2.js"
 
-export function sdCircle(p, radius){ // vec2, float
+export function sdCircle(p, radius) { // vec2, float
 	return length(p) - radius
 }
 
-export function sdBox(p, size){     // vec2, vec2
+export function sdBox(p, size) {     // vec2, vec2
 	const d = {
 		x : Math.abs(p.x) - size.x,
 		y : Math.abs(p.y) - size.y,

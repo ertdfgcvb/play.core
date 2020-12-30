@@ -48,7 +48,7 @@ export function pre(context, cursor, buffers) {
 		buffers.data[0] = []
 		buffers.data[1] = []
 		// Initialize with some random state
-		for (let i=0; i<len; i++){
+		for (let i=0; i<len; i++) {
 			const v = Math.random() > 0.5 ? 1 : 0
 			buffers.data[0][i] = v
 			buffers.data[1][i] = v
@@ -66,8 +66,8 @@ export function pre(context, cursor, buffers) {
 		const cx = Math.floor(cursor.x) // cursor has float values
 		const cy = Math.floor(cursor.y * 2)
 		const s = 5
-		for (let y=cy-s; y<=cy+s; y++){
-			for (let x=cx-s; x<=cx+s; x++){
+		for (let y=cy-s; y<=cy+s; y++) {
+			for (let x=cx-s; x<=cx+s; x++) {
 				const val = Math.random() < 0.5 ? 1 : 0
 				set(val, x, y, w, h, prev)
 			}
@@ -76,7 +76,7 @@ export function pre(context, cursor, buffers) {
 
 	// Update the automata
 	for (let y=0; y<h; y++) {
-		for (let x=0; x<w; x++){
+		for (let x=0; x<w; x++) {
 			const current = get(x, y, w, h, prev)
 			const neighbors =
 				get(x - 1, y - 1, w, h, prev) +
@@ -116,7 +116,7 @@ export function main(coord, context, cursor, buffers) {
 
 // Draw some info
 import { drawBox } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffers){
+export function post(context, cursor, buffers) {
 
 	const buff = buffers.data[(context.frame + 1) % 2]
 	const numCells = buff.reduce((a, b) => a + b, 0)

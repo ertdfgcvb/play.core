@@ -137,7 +137,7 @@ const defaultTextBoxStyle = {
 import { wrap, measure } from './string.js'
 import { merge, setRect, mergeRect, mergeText } from './buffer.js'
 
-export function drawBox(text, style, buffers, target){
+export function drawBox(text, style, buffers, target) {
 
 	const s = {...defaultTextBoxStyle, ...style}
 
@@ -212,7 +212,7 @@ const defaultInfoStyle = {
 	borderStyle : 'round',
 }
 
-export function drawInfo(context, cursor, buffers, style){
+export function drawInfo(context, cursor, buffers, style) {
 
 	let info = ''
 	info += 'FPS         ' + Math.round(context.runtime.fps) + '\n'

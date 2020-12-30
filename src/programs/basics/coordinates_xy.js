@@ -5,7 +5,7 @@
 [header]
 */
 
-export function main(coord, context, cursor, buffers){
-	const char = String.fromCharCode((coord.y + coord.x) % 32 + 60)
+export function main(coord, context, cursor, buffers) {
+	const char = String.fromCharCode((coord.y + coord.x) % 62 + 65)
 	return char
 }

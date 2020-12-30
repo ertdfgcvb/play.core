@@ -13,7 +13,7 @@ all the gaps.
 
 export const settings = { background : 'whitesmoke' }
 
-export function pre(context, cursor, buffers){
+export function pre(context, cursor, buffers) {
 
 	const TAU = Math.PI * 2
 
@@ -78,7 +78,7 @@ export function pre(context, cursor, buffers){
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffers){
+export function post(context, cursor, buffers) {
 	drawInfo(context, cursor, buffers, {
 		color : 'white', background : 'royalblue', shadowStyle : 'gray'
 	})

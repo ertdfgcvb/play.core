@@ -12,7 +12,7 @@ const density = '#ABC|/:÷×+-=?*· '
 
 const { PI, sin, cos, exp, abs } = Math
 
-export function main(coord, context, cursor, buffer){
+export function main(coord, context, cursor, buffer) {
 	const t = context.time * 0.001 + 10
     const m = Math.min(context.cols, context.rows)
     const a = context.metrics.aspect
@@ -31,7 +31,7 @@ export function main(coord, context, cursor, buffer){
 	let d = Number.MAX_VALUE
 
 	const num = 12
-	for (let i=0; i<num; i++){
+	for (let i=0; i<num; i++) {
 		const r = map(cos(t * 0.95 * (i + 1) / (num + 1)), -1, 1, 0.1, 0.3)
 		const x = map(cos(t * 0.23 * (i / num * PI + PI)), -1, 1, -1.2, 1.2)
 		const y = map(sin(t * 0.37 * (i / num * PI + PI)), -1, 1, -1.2, 1.2)
@@ -47,7 +47,7 @@ export function main(coord, context, cursor, buffer){
 	return density[index]
 }
 
-function transform(p, trans, rot){
+function transform(p, trans, rot) {
 	const s = sin(-rot)
 	const c = cos(-rot)
 	const dx = p.x - trans.x

@@ -17,7 +17,7 @@ export default {
 }
 
 // Maps a value v from range 'in' to range 'out'
-export function map(v, inA, inB, outA, outB){
+export function map(v, inA, inB, outA, outB) {
 	return outA + (outB - outA) * ((v - inA) / (inB - inA))
 }
 
@@ -41,7 +41,7 @@ export function sign(n) {
 }
 
 // GLSL mix
-export function mix(v1, v2, a){
+export function mix(v1, v2, a) {
 	return v1 * (1 - a) + v2 * a
 }
 

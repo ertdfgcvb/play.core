@@ -76,7 +76,7 @@ export function pre(context, cursor) {
 	}
 }
 
-export function main(coord, context, cursor){
+export function main(coord, context, cursor) {
 	const t = context.time * 0.01
 	const m = min(context.cols, context.rows)
     const a = context.metrics.aspect
@@ -111,7 +111,7 @@ export function main(coord, context, cursor){
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffers){
+export function post(context, cursor, buffers) {
 	drawInfo(context, cursor, buffers)
 }
 

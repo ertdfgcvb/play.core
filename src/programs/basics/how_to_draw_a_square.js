@@ -11,14 +11,14 @@ import { map } from '/src/modules/num.js'
 export const settings = { fps : 60 }
 
 // Function to measure a distance to a square
-export function box(p, size){
+export function box(p, size) {
 	const dx = Math.max(Math.abs(p.x) - size.x, 0)
 	const dy = Math.max(Math.abs(p.y) - size.y, 0)
 	// return the distance from the point
 	return Math.sqrt(dx * dx + dy * dy)
 }
 
-export function main(coord, context, cursor, buffers){
+export function main(coord, context, cursor, buffers) {
     const t = context.time
     const m = Math.min(context.cols, context.rows)
     const a = context.metrics.aspect
@@ -51,7 +51,7 @@ export function main(coord, context, cursor, buffers){
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffers){
+export function post(context, cursor, buffers) {
 	drawInfo(context, cursor, buffers, {
 		color : 'white', background : 'royalblue', shadowStyle : 'gray'
 	})

@@ -32,17 +32,17 @@ Colors in exported palettes are augmented to:
 */
 
 // Convert r,g,b,a values to {r,g,b,a}
-export function rgb(r,g,b,a=1.0){
+export function rgb(r,g,b,a=1.0) {
 	return {r,g,b,a}
 }
 
 // Convert r,g,b,a values to {r,g,b,a}
-export function hex(r,g,b,a=1.0){
+export function hex(r,g,b,a=1.0) {
 	return rgb2hex({r,g,b,a})
 }
 
 // Convert r,g,b,a values to 'rgb(r,g,b,a)'
-export function css(r,g,b,a=1.0){
+export function css(r,g,b,a=1.0) {
 	if (a === 1.0) return `rgb(${r},${g},${b})`
 	// CSS3 (in CSS4 we could return rgb(r g b a))
 	return `rgba(${r},${g},${b},${a})`}

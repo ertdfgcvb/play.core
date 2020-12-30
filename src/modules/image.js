@@ -13,7 +13,7 @@ export default {
 	load
 }
 
-function load(path){
+function load(path) {
 
 	const source = document.createElement('canvas')
 	source.width = 1
