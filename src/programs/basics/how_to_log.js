@@ -5,7 +5,7 @@
 [header]
 */
 
-const { abs, floor, max} = Math
+const { abs, floor, max } = Math
 
 export function main(coord, context, cursor, buffers) {
 
