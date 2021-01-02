@@ -156,6 +156,11 @@ export default class Canvas {
 		return this.pixels[x + y * this.canvas.width]
 	}
 
+	// Get color at coord (faster, not secure)
+	fget(x,y) {
+		return this.pixels[x + y * this.canvas.width]
+	}
+
 	// Sample value at coord (0-1)
 	sample(sx, sy, gray=false) {
 		const w = this.canvas.width
@@ -178,12 +183,12 @@ export default class Canvas {
 
   		// Avoid 9 extra interpolations if only gray is needed
   		if (gray) {
-	  		const p1 = mix(this.get(l, b).gray, this.get(r, b).gray, lr)
-	  		const p2 = mix(this.get(l, t).gray, this.get(r, t).gray, lr)
+	  		const p1 = mix(this.fget(l, b).gray, this.fget(r, b).gray, lr)
+	  		const p2 = mix(this.fget(l, t).gray, this.fget(r, t).gray, lr)
 	  		return mix(p1, p2, bt)
 	  	} else {
-	  		const p1 = mixColors(this.get(l, b), this.get(r, b), lr)
-	  		const p2 = mixColors(this.get(l, t), this.get(r, t), lr)
+	  		const p1 = mixColors(this.fget(l, b), this.fget(r, b), lr)
+	  		const p2 = mixColors(this.fget(l, t), this.fget(r, t), lr)
 	  		return mixColors(p1, p2, bt)
 	  	}
 	}
