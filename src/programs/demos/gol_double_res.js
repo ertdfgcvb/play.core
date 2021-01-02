@@ -38,15 +38,15 @@ let cols, rows
 const data = []
 
 // The automata is computed in a single step and stored in the 'data' buffer
-export function pre(context, cursor, buffers) {
+export function pre(context, cursor, buffer) {
 
-	// The window has been resized (or “init”), reset the buffers:
+	// The window has been resized (or “init”), reset the buffer:
 	if (cols != context.cols || rows != context.rows) {
 		cols = context.cols
 		rows = context.rows
 		const len = context.cols * context.rows	* 2 // double height
 
-		// We need two buffers (store them in the user 'data' array)
+		// We need two buffer (store them in the user 'data' array)
 		data[0] = []
 		data[1] = []
 		// Initialize with some random state
@@ -57,7 +57,7 @@ export function pre(context, cursor, buffers) {
 		}
 	}
 
-	// Update the buffers
+	// Update the buffer
 	const prev = data[ context.frame % 2]
 	const curr = data[(context.frame + 1) % 2]
 	const w = cols
@@ -101,7 +101,7 @@ export function pre(context, cursor, buffers) {
 }
 
 // Just a renderer
-export function main(coord, context, cursor, buffers) {
+export function main(coord, context, cursor, buffer) {
 	// Current buffer
 	const curr = data[(context.frame + 1) % 2]
 
@@ -118,7 +118,7 @@ export function main(coord, context, cursor, buffers) {
 
 // Draw some info
 import { drawBox } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffers) {
+export function post(context, cursor, buffer) {
 
 	const buff = data[(context.frame + 1) % 2]
 	const numCells = buff.reduce((a, b) => a + b, 0)
@@ -133,6 +133,6 @@ export function post(context, cursor, buffers) {
 		color       : 'black',
 		borderStyle : 'double',
 		shadowStyle : 'gray'
-	}, buffers)
+	}, buffer)
 }
 

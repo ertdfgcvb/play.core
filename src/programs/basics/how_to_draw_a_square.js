@@ -18,7 +18,7 @@ export function box(p, size) {
 	return Math.sqrt(dx * dx + dy * dy)
 }
 
-export function main(coord, context, cursor, buffers) {
+export function main(coord, context, cursor, buffer) {
     const t = context.time
     const m = Math.min(context.cols, context.rows)
     const a = context.metrics.aspect
@@ -51,8 +51,8 @@ export function main(coord, context, cursor, buffers) {
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffers) {
-	drawInfo(context, cursor, buffers, {
+export function post(context, cursor, buffer) {
+	drawInfo(context, cursor, buffer, {
 		color : 'white', background : 'royalblue', shadowStyle : 'gray'
 	})
 }

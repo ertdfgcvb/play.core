@@ -13,11 +13,11 @@ let prevFrame;
 let initialized = false;
 let width, height;
 
-export function pre(context, cursor, buffers) {
+export function pre(context, cursor, buffer) {
 	if (!initialized) {
 		const length = context.cols * context.rows
 		for (let i = 0; i < length; i++) {
-			buffers[i] = {char : Math.random() > 0.5 ? '▒' : ' '};
+			buffer[i] = {char : Math.random() > 0.5 ? '▒' : ' '};
 		}
 		initialized = true;
 		width = context.cols;
@@ -26,11 +26,11 @@ export function pre(context, cursor, buffers) {
 
 	// Use the spread operator to copy the previous frame
 	// You must make a copy, otherwise `prevFrame` will be updated prematurely
-	prevFrame = [...buffers];
+	prevFrame = [...buffer];
 
 }
 
-export function main(coord, context, cursor, buffers) {
+export function main(coord, context, cursor, buffer) {
 	if (cursor.pressed) {
 		if (dist(coord, cursor) < 3) {
 			return Math.random() > 0.5 ? '▒' : ' ';

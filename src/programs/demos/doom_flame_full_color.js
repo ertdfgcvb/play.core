@@ -34,9 +34,9 @@ let cols, rows
 
 const data = []
 
-export function pre(context, cursor, buffers) {
+export function pre(context, cursor, buffer) {
 
-	// Detect resize (and reset buffers, in case)
+	// Detect resize (and reset buffer, in case)
 	if (cols != context.cols || rows != context.rows) {
 		cols = context.cols
 		rows = context.rows
@@ -68,7 +68,7 @@ export function pre(context, cursor, buffers) {
 	}
 }
 
-export function main(coord, context, cursor, buffers) {
+export function main(coord, context, cursor, buffer) {
 
 	const u = data[coord.index]
 	const v = flame[clamp(u, 0, flame.length-1)]
@@ -142,6 +142,6 @@ function valueNoise() {
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffers) {
-	drawInfo(context, cursor, buffers)
+export function post(context, cursor, buffer) {
+	drawInfo(context, cursor, buffer)
 }

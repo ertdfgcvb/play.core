@@ -39,7 +39,7 @@ const spacingY = 1
 
 const bit = (n, k) => n >> k & 1
 
-export function main(coord, context, cursor, buffers) {
+export function main(coord, context, cursor, buffer) {
 
 	const f = context.frame
 

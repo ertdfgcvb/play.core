@@ -20,7 +20,7 @@ function polygon(center, edges, time) {
 	return smoothstep(0.3, 0.31, c);
 }
 
-export function main(coord, context, cursor, buffers){
+export function main(coord, context, cursor, buffer){
 	const m = max(context.cols, context.rows)
     const a = context.metrics.aspect
 
@@ -55,7 +55,7 @@ export function main(coord, context, cursor, buffers){
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffers){
-	drawInfo(context, cursor, buffers)
+export function post(context, cursor, buffer){
+	drawInfo(context, cursor, buffer)
 }
 

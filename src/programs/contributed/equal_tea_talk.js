@@ -31,7 +31,7 @@ const blank = {
 	weight     : '100',
 }
 
-export function main(coord, context, cursor, buffers){
+export function main(coord, context, cursor, buffer){
 	const t = context.time * 0.0001
 
 	// compute resolution to fit geometry, not the screen
@@ -109,8 +109,7 @@ export function main(coord, context, cursor, buffers){
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
-
-export function post(context, cursor, buffers){
-	//drawInfo(context, cursor, buffers)
-	//console.log(JSON.stringify(buffers))
+export function post(context, cursor, buffer){
+	//drawInfo(context, cursor, buffer)
+	//console.log(JSON.stringify(buffer))
 }

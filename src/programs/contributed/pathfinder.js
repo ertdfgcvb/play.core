@@ -30,11 +30,11 @@ export const settings = {
 
 const roads = '┃━┏┓┗┛┣┫┳┻╋';
 
-export function pre(context, cursor, buffers) {
+export function pre(context, cursor, buffer) {
 	if (!initialized) {
 		const length = context.cols * context.rows
 		for (let i = 0; i < length; i++) {
-			buffers[i] = Math.random() < 0.001 ? {
+			buffer[i] = Math.random() < 0.001 ? {
 				char: choose(roads),
 				color: 'white'
 			} : ' ';
@@ -48,14 +48,14 @@ export function pre(context, cursor, buffers) {
 
 	// Use the spread operator to copy the previous frame
 	// You must make a copy, otherwise `prevFrame` will be updated prematurely
-	prevFrame = [...buffers];
+	prevFrame = [...buffer];
 }
 
 function choose(list) {
 	return list.charAt(Math.floor(Math.random() * list.length))
 }
 
-export function main(coord, context, cursor, buffers) {
+export function main(coord, context, cursor, buffer) {
 	const {x, y} = coord;
 	if (cursor.pressed &&
 			Math.floor(cursor.x) == x &&

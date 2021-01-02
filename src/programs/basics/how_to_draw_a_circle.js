@@ -7,7 +7,7 @@
 
 import { length } from '/src/modules/vec2.js'
 
-export function main(coord, context, cursor, buffers) {
+export function main(coord, context, cursor, buffer) {
 
 	// Used to fix screen aspect
 	const m = Math.min(context.cols, context.rows)
@@ -28,7 +28,7 @@ export function main(coord, context, cursor, buffers) {
 
 // Draw some info
 import { drawBox } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffers) {
+export function post(context, cursor, buffer) {
 	// Apply some rounding
 	const ar = cursor.pressed ? (''+context.metrics.aspect).substr(0, 8) : 1
 
@@ -46,5 +46,5 @@ export function post(context, cursor, buffers) {
 	}
 
 	// Finally draw the box
-    drawBox(text, style, buffers, context.cols, context.rows)
+    drawBox(text, style, buffer, context.cols, context.rows)
 }

@@ -8,7 +8,7 @@ const chars = "█▓▒░ ".split('')
 
 import { fract } from "/src/modules/num.js"
 
-export function main(coord, context, cursor, buffers){
+export function main(coord, context, cursor, buffer){
 	const t = context.time * 0.002
 	const x = coord.x
 	const y = coord.y

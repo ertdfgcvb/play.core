@@ -11,7 +11,7 @@ const pattern = '└┧─┨┕┪┖┫┘┩┙┪━'
 
 export const settings = { weight: 700 }
 
-export function main(coord, context, cursor, buffers) {
+export function main(coord, context, cursor, buffer) {
 	const t1 = Math.floor(context.frame / 2)
 	const t2 = Math.floor(context.frame / 128)
 	const x = coord.x
@@ -23,7 +23,7 @@ export function main(coord, context, cursor, buffers) {
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffers) {
-    drawInfo(context, cursor, buffers, { shadowStyle : 'gray' })
+export function post(context, cursor, buffer) {
+    drawInfo(context, cursor, buffer, { shadowStyle : 'gray' })
 }
 

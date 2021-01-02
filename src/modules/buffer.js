@@ -5,19 +5,12 @@
 
 Safe set() and get() functions, rect() and text() ‘drawing’ helpers.
 
-Buffers are 1D arrays for 2D data so at least a ‘width’ parameter
-has to be known to correctly access the array.
+Buffers are 1D arrays for 2D data, a ‘width’ and a 'height' parameter
+have to be known (and passed to the functions) to correctly / safely access
+the array.
 
-Data is written or read from the default ‘buffers.state’ array
-but an optional ‘target’ can be passed.
-Read some value from the user-data buffer:
+const v = get(10, 10, buffer, cols, rows)
 
-const v = get(10, 10, buffers, bufers.data)
-
-(width and height are still obtained from the ‘buffers’ object)
-
-NOTE: set() is slightly faster than merge() as no testing is done,
-the value is just written directly into the buffer.
 */
 
 // Safe get function to read from a buffer
@@ -35,7 +28,6 @@ export function get(x, y, target, targetCols, targetRows) {
 // { char, color, background, weight }
 // which can overwrite the buffer (set) or partially merged (merge)
 export function set(val, x, y, target, targetCols, targetRows) {
-	target = target || buffers.state
 	if (x < 0 || x >= targetCols) return
 	if (y < 0 || y >= targetRows) return
 	const i = x + y * targetCols
@@ -43,7 +35,6 @@ export function set(val, x, y, target, targetCols, targetRows) {
 }
 
 export function merge(val, x, y, target, targetCols, targetRows) {
-	target = target || buffers.state
 	if (x < 0 || x >= targetCols) return
 	if (y < 0 || y >= targetRows) return
 	const i = x + y * targetCols
@@ -63,7 +54,6 @@ export function setRect(val, x, y, w, h, target, targetCols, targetRows) {
 }
 
 export function mergeRect(val, x, y, w, h, target, targetCols, targetRows) {
-	target = target || buffers.state
 	for (let j=y; j<y+h; j++ ) {
 		for (let i=x; i<x+w; i++ ) {
 			merge(val, i, j, target, targetCols, targetRows)
@@ -78,7 +68,7 @@ export function mergeRect(val, x, y, w, h, target, targetCols, targetRows) {
 // 		weight : '400',
 // 		background : 'black'
 //	}
-// or just as a string into the target buffer (or buffers.state)
+// or just as a string into the target buffer.
 export function mergeText(textObj, x, y, target, targetCols, targetRows) {
 	let col = x
 	let row = y

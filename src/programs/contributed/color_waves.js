@@ -6,7 +6,7 @@
 
 const chars = '¯\_(ツ)_/¯.::.ᕦ(ò_óˇ)ᕤ '.split('')
 
-export function main(coord, context, cursor, buffers){
+export function main(coord, context, cursor){
 	const t = context.time * 0.0001
 
 	const x = coord.x
@@ -29,6 +29,6 @@ export function main(coord, context, cursor, buffers){
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffers){
-	drawInfo(context, cursor, buffers)
+export function post(context, cursor, buffer){
+	drawInfo(context, cursor, buffer)
 }

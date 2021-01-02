@@ -14,11 +14,11 @@ function newParticle() {
 	return 'sand'.charAt(Math.random() * 4)
 }
 
-export function pre(context, cursor, buffers) {
+export function pre(context, cursor, buffer) {
 	if (!initialized) {
 		const length = context.cols * context.rows
 		for (let i = 0; i < length; i++) {
-			buffers[i] = {char : Math.random() > 0.5 ? newParticle() : ' '};
+			buffer[i] = {char : Math.random() > 0.5 ? newParticle() : ' '};
 		}
 		initialized = true;
 
@@ -28,10 +28,10 @@ export function pre(context, cursor, buffers) {
 
 	// Use the spread operator to copy the previous frame
 	// You must make a copy, otherwise `prevFrame` will be updated prematurely
-	prevFrame = [...buffers];
+	prevFrame = [...buffer];
 }
 
-export function main(coord, context, cursor, buffers) {
+export function main(coord, context, cursor, buffer) {
 	if (cursor.pressed) {
 		if (dist(coord, cursor) < 3) {
 			return {

@@ -9,7 +9,7 @@
 const pattern = '|▁|▂|▃|▄|▅|▆|▇|▆|▅|▄|▃|▂'
 
 // Resize the browser window to modify the pattern.
-export function main(coord, context, cursor, buffers) {
+export function main(coord, context) {
 	const i = coord.index % pattern.length
 	return pattern[i]
 }

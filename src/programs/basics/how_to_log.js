@@ -7,7 +7,7 @@
 
 const { abs, floor, max } = Math
 
-export function main(coord, context, cursor, buffers) {
+export function main(coord, context, cursor, buffer) {
 
 	const x = abs(coord.x - cursor.x)
 	const y = abs(coord.y - cursor.y) / context.metrics.aspect

@@ -26,9 +26,9 @@ pal.push(rgb(100, 255, 255))
 //pal.push(rgb(255, 182, 193))
 //pal.push(rgb(255, 255, 255))
 
-const data = []
+export const data = []
 
-export function pre(context, cursor, buffers) {
+export function pre(context, cursor, buffer, data) {
 	const a = context.metrics.aspect
 
 	// The canvas is resized so that 1 cell -> 1 pixel
@@ -39,7 +39,7 @@ export function pre(context, cursor, buffers) {
 	can.cover(cam, a).mirrorX().quantize(pal).writeTo(data)
 }
 
-export function main(coord, context, cursor, buffers) {
+export function main(coord, context, cursor, buffer, data) {
 	// Coord also contains the index of each cell
 	const color = data[coord.index]
 	// Add some chars to the output
@@ -53,6 +53,6 @@ export function main(coord, context, cursor, buffers) {
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffers) {
-	drawInfo(context, cursor, buffers)
+export function post(context, cursor, buffer) {
+	drawInfo(context, cursor, buffer)
 }

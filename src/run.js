@@ -42,7 +42,7 @@ export function run(program, element, runSettings) {
 		// Merge of user- and default settings
 		const settings = {...defaultSettings, ...runSettings, ...program.settings}
 
-		const userData = program.data || {}
+		const userData = program.data || {}
 
 		// State is stored in local storage and will loaded on program launch
 		// if settings.restoreState == true.

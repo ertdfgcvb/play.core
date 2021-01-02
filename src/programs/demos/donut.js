@@ -13,7 +13,7 @@ all the gaps.
 
 export const settings = { background : 'whitesmoke' }
 
-export function pre(context, cursor, buffers) {
+export function pre(context, cursor, buffer) {
 
 	const TAU = Math.PI * 2
 
@@ -35,10 +35,10 @@ export function pre(context, cursor, buffers) {
 	const cB = Math.cos(B)
 	const sB = Math.sin(B)
 
-	// Reset buffers
+	// Reset buffer
 	const num = width * height
 	for(let k=0; k<num; k++) {
-		buffers[k] = k % width == width-1 ? '\n' : ' ' // buffer
+		buffer[k] = k % width == width-1 ? '\n' : ' ' // buffer
 		z[k] = 0                                 // z buffer
 	}
 
@@ -70,15 +70,15 @@ export function pre(context, cursor, buffers) {
 			const N = 0 | (8*((st*sA-sp*ct*cA)*cB-sp*ct*sA-st*cA-cp*ct*sB))
 			if(y<height && y>=0 && x>=0 && x<width && D>z[o]) {
 				z[o] = D
-				buffers[o] = '.,-~:;=!*#$@'[N > 0 ? N : 0]
+				buffer[o] = '.,-~:;=!*#$@'[N > 0 ? N : 0]
 			}
 		}
 	}
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffers) {
-	drawInfo(context, cursor, buffers, {
+export function post(context, cursor, buffer) {
+	drawInfo(context, cursor, buffer, {
 		color : 'white', background : 'royalblue', shadowStyle : 'gray'
 	})
 }
