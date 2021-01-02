@@ -22,6 +22,9 @@ pal.push(CSS3.white)
 pal.push(CSS3.black)
 pal.push(CSS3.lightblue)
 
+// A custom data object/array can be exported and will be passed
+// as a refernce in the functions.
+// Alternatively it can be accessed directly.
 export const data = []
 
 export function pre(context, cursor, buffer, data) {
