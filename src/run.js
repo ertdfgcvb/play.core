@@ -42,6 +42,8 @@ export function run(program, element, runSettings) {
 		// Merge of user- and default settings
 		const settings = {...defaultSettings, ...runSettings, ...program.settings}
 
+		const userData = program.data || {}
+
 		// State is stored in local storage and will loaded on program launch
 		// if settings.restoreState == true.
 		// The purpose of this is to live edit the code without resetting
@@ -192,18 +194,9 @@ export function run(program, element, runSettings) {
 		// A cell with no value at all is just a space
 		const EMPTY_CELL = ' '
 
-		// Buffers needed for the final DOM rendering,
+		// Buffer needed for the final DOM rendering,
 		// each array entry represents a cell.
-		// An extra data buffer for ‘user data’ is provided and can be modified
-		// in runtime.
-		// NOTE: extra size infos will be attached at each frame update.
-		const buffers = {
-			state  : [],
-			data   : [], // user data
-			cols   : 0,
-			rows   : 0,
-			length : 0
-		}
+		const buffer = []
 
 		// Main program loop
 		function loop(t) {
@@ -259,11 +252,6 @@ export function run(program, element, runSettings) {
 				}
 			})
 
-			// Update buffer attributes
-			buffers.cols = cols
-			buffers.rows = rows
-			buffers.length = cols * rows
-
 			// Default cellstyle inserted in case of undefined / null
 			const defaultCell = Object.freeze({
 				color      : settings.color,
@@ -274,7 +262,7 @@ export function run(program, element, runSettings) {
 			// 1. --------------------------------------------------------------
 			// Call pre(), if defined
 			if (typeof program.pre == 'function') {
-				program.pre(context, cursor, buffers)
+				program.pre(context, cursor, buffer, userData)
 			}
 
 			// 2. --------------------------------------------------------------
@@ -284,7 +272,7 @@ export function run(program, element, runSettings) {
 					const offs = j * cols
 					for (let i=0; i<cols; i++) {
 						const idx = i + offs
-						buffers.state[idx] = program.main({x:i, y:j, index:idx}, context, cursor, buffers)
+						buffer[idx] = program.main({x:i, y:j, index:idx}, context, cursor, buffer, userData)
 					}
 				}
 			}
@@ -292,7 +280,7 @@ export function run(program, element, runSettings) {
 			// 3. --------------------------------------------------------------
 			// Call post(), if defined
 			if (typeof program.post == 'function') {
-				program.post(context, cursor, buffers)
+				program.post(context, cursor, buffer, userData)
 			}
 
 			// 4. --------------------------------------------------------------
@@ -300,7 +288,7 @@ export function run(program, element, runSettings) {
 			// (the buffer can contain a single char or a cell object)
 			const num = rows * cols
 			for (let i=0; i<num; i++) {
-				const out = buffers.state[i]
+				const out = buffer[i]
 				const cell = typeof out == 'object' ? {...defaultCell, ...out} : {...defaultCell, char : out}
 				// Make sure that char is set:
 				// undefined, null and '' (empty string) should be rendered as EMPTY_CELL
@@ -308,18 +296,18 @@ export function run(program, element, runSettings) {
 				if (!Boolean(cell.char) && cell.char !== 0) cell.char = EMPTY_CELL
 				// Chop in case of string (+ convert in case of number):
 				cell.char = (cell.char + '')[0]
-				buffers.state[i] = cell
+				buffer[i] = cell
 			}
 
 			// 5. --------------------------------------------------------------
-			if (typeof renderFn == 'function') renderFn(context, buffers, settings)
+			if (typeof renderFn == 'function') renderFn(context, buffer, settings)
 
 			// 6. --------------------------------------------------------------
 			// Queued events
 			while (eventQueue.length > 0) {
 				const type = eventQueue.shift()
 				if (type && typeof program[type] == 'function') {
-					program[type](context, cursor, buffers)
+					program[type](context, cursor, buffer, userData)
 				}
 			}
 

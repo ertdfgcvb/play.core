@@ -4,7 +4,7 @@
 @category renderer
 */
 
-export function canvasRenderer(context, buffers, settings) {
+export function canvasRenderer(context, buffer, settings) {
 
 	const canvas = context.parentInfo.element
 
@@ -63,7 +63,7 @@ export function canvasRenderer(context, buffers, settings) {
 
 	for (let j=0; j<r; j++) {
 		for (let i=0; i<c; i++) {
-			const cell = buffers.state[j * c + i]
+			const cell = buffer[j * c + i]
 			const x = i * cw
 			const y = j * ch
 			if (cell.background && cell.background != bg) {

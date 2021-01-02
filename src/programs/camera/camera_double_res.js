@@ -22,6 +22,8 @@ pal.push(CSS3.white)
 pal.push(CSS3.black)
 pal.push(CSS3.lightblue)
 
+const data = []
+
 export function pre(context, cursor, buffers) {
 	const a = context.metrics.aspect
 
@@ -29,14 +31,14 @@ export function pre(context, cursor, buffers) {
 	can.resize(context.cols, context.rows * 2)
 
 	// Also the aspect ratio needs to be doubled
-	can.cover(cam, a * 2).quantize(pal).mirrorX().writeTo(buffers.data)
+	can.cover(cam, a * 2).quantize(pal).mirrorX().writeTo(data)
 }
 
 export function main(coord, context, cursor, buffers) {
 	// Coord also contains the index of each cell:
 	const idx   = coord.y * context.cols * 2 + coord.x
-	const upper = buffers.data[idx]
-	const lower = buffers.data[idx + context.cols]
+	const upper = data[idx]
+	const lower = data[idx + context.cols]
 
 	return {
 		char       :'▄',

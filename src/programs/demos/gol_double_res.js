@@ -35,6 +35,8 @@ function get(x, y, w, h, buf) {
 // Some state to detect window resize / init
 let cols, rows
 
+const data = []
+
 // The automata is computed in a single step and stored in the 'data' buffer
 export function pre(context, cursor, buffers) {
 
@@ -45,19 +47,19 @@ export function pre(context, cursor, buffers) {
 		const len = context.cols * context.rows	* 2 // double height
 
 		// We need two buffers (store them in the user 'data' array)
-		buffers.data[0] = []
-		buffers.data[1] = []
+		data[0] = []
+		data[1] = []
 		// Initialize with some random state
 		for (let i=0; i<len; i++) {
 			const v = Math.random() > 0.5 ? 1 : 0
-			buffers.data[0][i] = v
-			buffers.data[1][i] = v
+			data[0][i] = v
+			data[1][i] = v
 		}
 	}
 
 	// Update the buffers
-	const prev = buffers.data[ context.frame % 2]
-	const curr = buffers.data[(context.frame + 1) % 2]
+	const prev = data[ context.frame % 2]
+	const curr = data[(context.frame + 1) % 2]
 	const w = cols
 	const h = rows * 2
 
@@ -101,7 +103,7 @@ export function pre(context, cursor, buffers) {
 // Just a renderer
 export function main(coord, context, cursor, buffers) {
 	// Current buffer
-	const curr = buffers.data[(context.frame + 1) % 2]
+	const curr = data[(context.frame + 1) % 2]
 
 	// Upper and lower half
 	const idx = coord.x + coord.y * 2 * context.cols
@@ -118,7 +120,7 @@ export function main(coord, context, cursor, buffers) {
 import { drawBox } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffers) {
 
-	const buff = buffers.data[(context.frame + 1) % 2]
+	const buff = data[(context.frame + 1) % 2]
 	const numCells = buff.reduce((a, b) => a + b, 0)
 
 	let text = ''

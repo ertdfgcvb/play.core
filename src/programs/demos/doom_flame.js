@@ -18,17 +18,17 @@ let cols, rows
 
 const noise = valueNoise()
 
+const data = []
+
 export function pre(context, cursor, buffers) {
 
-	// Shorthand
-	const buf = buffers.data
 
 	// Detect resize (and reset buffers, in case)
 	if (cols != context.cols || rows != context.rows) {
 		cols = context.cols
 		rows = context.rows
-		buf.length = cols * rows // Don't loose reference
-		buf.fill(0)
+		data.length = cols * rows // Don't loose reference
+		data.fill(0)
 	}
 
 	// Fill the floor with some noise
@@ -37,26 +37,26 @@ export function pre(context, cursor, buffers) {
 		const last = cols * (rows - 1)
 		for (let i=0; i<cols; i++) {
 			const val = floor(map(noise(i * 0.05, t), 0, 1, 5, 40))
-			buf[last + i] = min(val, buf[last + i] + 2)
+			data[last + i] = min(val, data[last + i] + 2)
 		}
 	} else {
 		const cx = floor(cursor.x)
 		const cy = floor(cursor.y)
-		buf[cx + cy * cols] = rndi(5, 50)
+		data[cx + cy * cols] = rndi(5, 50)
 	}
 
 	// Propagate towards the ceiling with some randomness
-	for (let i=0; i<buf.length; i++) {
+	for (let i=0; i<data.length; i++) {
 		const row = floor(i / cols)
 		const col = i % cols
   		const dest = row * cols + clamp(col + rndi(-1, 1), 0, cols-1)
   		const src = min(rows-1, row + 1) * cols + col
-  		buf[dest] = max(0, buf[src]-rndi(0, 2))
+  		data[dest] = max(0, data[src]-rndi(0, 2))
 	}
 }
 
 export function main(coord, context, cursor, buffers) {
-	const u = buffers.data[coord.index]
+	const u = data[coord.index]
 	if (u === 0) return // Inserts a space
 
 	return {

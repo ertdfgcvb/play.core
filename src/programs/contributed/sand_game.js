@@ -16,8 +16,9 @@ function newParticle() {
 
 export function pre(context, cursor, buffers) {
 	if (!initialized) {
-		for (let i = 0; i < buffers.length; i++) {
-			buffers.state[i] = {char : Math.random() > 0.5 ? newParticle() : ' '};
+		const length = context.cols * context.rows
+		for (let i = 0; i < length; i++) {
+			buffers[i] = {char : Math.random() > 0.5 ? newParticle() : ' '};
 		}
 		initialized = true;
 
@@ -25,10 +26,9 @@ export function pre(context, cursor, buffers) {
 		height = context.rows;
 	}
 
-
 	// Use the spread operator to copy the previous frame
 	// You must make a copy, otherwise `prevFrame` will be updated prematurely
-	prevFrame = [...buffers.state];
+	prevFrame = [...buffers];
 }
 
 export function main(coord, context, cursor, buffers) {
@@ -77,8 +77,6 @@ export function main(coord, context, cursor, buffers) {
 			weight: 900
 		}
 	}
-
-
 
 	let char = ' '
 	if (alive(me)) {

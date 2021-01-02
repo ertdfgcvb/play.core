@@ -7,7 +7,7 @@
 const backBuffer = []
 
 let cols, rows
-export function textRenderer(context, buffers, settings) {
+export function textRenderer(context, buffer, settings) {
 
 	const element = context.parentInfo.element
 
@@ -50,7 +50,7 @@ export function textRenderer(context, buffers, settings) {
 		const offs = j * cols
 
 		// This check is faster than to force update the DOM.
-		// Buffers can be manually modified in pre, main and after
+		// Buffer can be manually modified in pre, main and after
 		// with semi-arbitrary values…
 		// It is necessary to keep track of the previous state
 		// and specifically check if a change in style
@@ -58,7 +58,7 @@ export function textRenderer(context, buffers, settings) {
 		let rowNeedsUpdate = false
 		for (let i=0; i<cols; i++) {
 			const idx = i + offs
-			const newCell = buffers.state[idx]
+			const newCell = buffer[idx]
 			const oldCell = backBuffer[idx]
 			if (!isSameCell(newCell, oldCell)) {
 				if (rowNeedsUpdate == false) updatedRowNum++
@@ -74,7 +74,7 @@ export function textRenderer(context, buffers, settings) {
 		let prevCell = {} //defaultCell
 		let tagIsOpen = false
 		for (let i=0; i<cols; i++) {
-			const currCell = buffers.state[i + offs] //|| {...defaultCell, char : EMPTY_CELL}
+			const currCell = buffer[i + offs] //|| {...defaultCell, char : EMPTY_CELL}
 			// Undocumented feature:
 			// possible to inject some custom HTML (for example <a>) into the renderer.
 			// It can be inserted before the char or after the char (beginHTML, endHTML)

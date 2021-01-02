@@ -26,6 +26,8 @@ pal.push(rgb(100, 255, 255))
 //pal.push(rgb(255, 182, 193))
 //pal.push(rgb(255, 255, 255))
 
+const data = []
+
 export function pre(context, cursor, buffers) {
 	const a = context.metrics.aspect
 
@@ -34,12 +36,12 @@ export function pre(context, cursor, buffers) {
 	// The cover() function draws an image (cam) to the canvas covering
 	// the whole frame. The aspect ratio can be adjusted with the second
 	// parameter.
-	can.cover(cam, a).mirrorX().quantize(pal).writeTo(buffers.data)
+	can.cover(cam, a).mirrorX().quantize(pal).writeTo(data)
 }
 
 export function main(coord, context, cursor, buffers) {
 	// Coord also contains the index of each cell
-	const color = buffers.data[coord.index]
+	const color = data[coord.index]
 	// Add some chars to the output
 	const index = Math.floor(color.gray * (density.length-1))
 	return {

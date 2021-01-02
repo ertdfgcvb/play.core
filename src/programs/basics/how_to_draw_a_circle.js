@@ -46,5 +46,5 @@ export function post(context, cursor, buffers) {
 	}
 
 	// Finally draw the box
-    drawBox(text, style, buffers)
+    drawBox(text, style, buffers, context.cols, context.rows)
 }

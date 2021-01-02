@@ -21,11 +21,10 @@ the value is just written directly into the buffer.
 */
 
 // Safe get function to read from a buffer
-export function get(x, y, buffers, target) {
-	target = target || buffers.state
-	if (x < 0 || x >= buffers.cols) return {}
-	if (y < 0 || y >= buffers.rows) return {}
-	const i = x + y * buffers.cols
+export function get(x, y, target, targetCols, targetRows) {
+	if (x < 0 || x >= targetCols) return {}
+	if (y < 0 || y >= targetRows) return {}
+	const i = x + y * targetCols
 	return target[i]
 }
 
@@ -35,19 +34,19 @@ export function get(x, y, buffers, target) {
 // The value to be set is a single character or a 'cell' object like:
 // { char, color, background, weight }
 // which can overwrite the buffer (set) or partially merged (merge)
-export function set(val, x, y, buffers, target) {
+export function set(val, x, y, target, targetCols, targetRows) {
 	target = target || buffers.state
-	if (x < 0 || x >= buffers.cols) return
-	if (y < 0 || y >= buffers.rows) return
-	const i = x + y * buffers.cols
+	if (x < 0 || x >= targetCols) return
+	if (y < 0 || y >= targetRows) return
+	const i = x + y * targetCols
 	target[i] = val
 }
 
-export function merge(val, x, y, buffers, target) {
+export function merge(val, x, y, target, targetCols, targetRows) {
 	target = target || buffers.state
-	if (x < 0 || x >= buffers.cols) return
-	if (y < 0 || y >= buffers.rows) return
-	const i = x + y * buffers.cols
+	if (x < 0 || x >= targetCols) return
+	if (y < 0 || y >= targetRows) return
+	const i = x + y * targetCols
 
 	// Flatten:
 	const cell = typeof target[i] == 'object' ? target[i] : { char : target[i] }
@@ -55,19 +54,19 @@ export function merge(val, x, y, buffers, target) {
 	target[i] = { ...cell, ...val }
 }
 
-export function setRect(val, x, y, w, h, buffers, target) {
+export function setRect(val, x, y, w, h, target, targetCols, targetRows) {
 	for (let j=y; j<y+h; j++ ) {
 		for (let i=x; i<x+w; i++ ) {
-			set(val, i, j, buffers, target)
+			set(val, i, j, target, targetCols, targetRows)
 		}
 	}
 }
 
-export function mergeRect(val, x, y, w, h, buffers, target) {
+export function mergeRect(val, x, y, w, h, target, targetCols, targetRows) {
 	target = target || buffers.state
 	for (let j=y; j<y+h; j++ ) {
 		for (let i=x; i<x+w; i++ ) {
-			merge(val, i, j, buffers, target)
+			merge(val, i, j, target, targetCols, targetRows)
 		}
 	}
 }
@@ -80,7 +79,7 @@ export function mergeRect(val, x, y, w, h, buffers, target) {
 // 		background : 'black'
 //	}
 // or just as a string into the target buffer (or buffers.state)
-export function mergeText(textObj, x, y, buffers, target) {
+export function mergeText(textObj, x, y, target, targetCols, targetRows) {
 	let col = x
 	let row = y
 
@@ -93,7 +92,7 @@ export function mergeText(textObj, x, y, buffers, target) {
 	text.split('\n').forEach((line, lineNum) => {
 		line.split('').forEach((char, charNum) => {
 			col = x + charNum
-			merge({char, color, background, weight}, col, row, buffers, target)
+			merge({char, color, background, weight}, col, row, target, targetCols, targetRows)
 		})
 		row++
 	})
@@ -106,7 +105,7 @@ export function mergeText(textObj, x, y, buffers, target) {
 	// - the first an last chars
 	return {
 		offset : {col, row},
-		first  : get(x, y, buffers, target),
-		last   : get(col, row, buffers, target)
+		first  : get(x, y, target, targetCols, targetRows),
+		last   : get(col, row, target, targetCols, targetRows)
 	}
 }

@@ -137,7 +137,7 @@ const defaultTextBoxStyle = {
 import { wrap, measure } from './string.js'
 import { merge, setRect, mergeRect, mergeText } from './buffer.js'
 
-export function drawBox(text, style, buffers, target) {
+export function drawBox(text, style, target, targetCols, targetRows) {
 
 	const s = {...defaultTextBoxStyle, ...style}
 
@@ -165,21 +165,21 @@ export function drawBox(text, style, buffers, target) {
 		color      : s.color,
 		weight     : s.weight,
 		background : s.background
-	}, x1, y1, w, h, buffers, target)
+	}, x1, y1, w, h, target, targetCols, targetRows)
 
 	// Corners
-	merge({ char : border.topleft     }, x1, y1, buffers, target)
-	merge({ char : border.topright    }, x2, y1, buffers, target)
-	merge({ char : border.bottomright }, x2, y2, buffers, target)
-	merge({ char : border.bottomleft  }, x1, y2, buffers, target)
+	merge({ char : border.topleft     }, x1, y1, target, targetCols, targetRows)
+	merge({ char : border.topright    }, x2, y1, target, targetCols, targetRows)
+	merge({ char : border.bottomright }, x2, y2, target, targetCols, targetRows)
+	merge({ char : border.bottomleft  }, x1, y2, target, targetCols, targetRows)
 
 	// Top & Bottom
-	mergeRect({ char : border.top    }, x1+1, y1, w-2, 1, buffers, target)
-	mergeRect({ char : border.bottom }, x1+1, y2, w-2, 1, buffers, target)
+	mergeRect({ char : border.top    }, x1+1, y1, w-2, 1, target, targetCols, targetRows)
+	mergeRect({ char : border.bottom }, x1+1, y2, w-2, 1, target, targetCols, targetRows)
 
 	// Left & Right
-	mergeRect({ char : border.left  }, x1, y1+1, 1, h-2, buffers, target)
-	mergeRect({ char : border.right }, x2, y1+1, 1, h-2, buffers, target)
+	mergeRect({ char : border.left  }, x1, y1+1, 1, h-2, target, targetCols, targetRows)
+	mergeRect({ char : border.right }, x2, y1+1, 1, h-2, target, targetCols, targetRows)
 
 	// Shadows
 	const ss = shadowStyles[s.shadowStyle] || shadowStyles['none']
@@ -187,9 +187,9 @@ export function drawBox(text, style, buffers, target) {
 		const ox = s.shadowX
 		const oy = s.shadowY
 		// Shadow Bottom
-		mergeRect(ss, x1+ox, y2+1, w, oy, buffers, target)
+		mergeRect(ss, x1+ox, y2+1, w, oy, target, targetCols, targetRows)
 		// Shadow Right
-		mergeRect(ss, x2+1, y1+oy, ox, h-oy, buffers, target)
+		mergeRect(ss, x2+1, y1+oy, ox, h-oy, target, targetCols, targetRows)
 	}
 
 	// Txt
@@ -198,7 +198,7 @@ export function drawBox(text, style, buffers, target) {
 		color: style.color,
 		background: style.background,
 		weight: style.weght
-	}, x1+s.paddingX, y1+s.paddingY, buffers, target)
+	}, x1+s.paddingX, y1+s.paddingY, target, targetCols, targetRows)
 }
 
 // -- Utility for some info output ---------------------------------------------
@@ -212,7 +212,7 @@ const defaultInfoStyle = {
 	borderStyle : 'round',
 }
 
-export function drawInfo(context, cursor, buffers, style) {
+export function drawInfo(context, cursor, target, style) {
 
 	let info = ''
 	info += 'FPS         ' + Math.round(context.runtime.fps) + '\n'
@@ -227,5 +227,5 @@ export function drawInfo(context, cursor, buffers, style) {
 
 	const textBoxStyle = {...defaultInfoStyle, ...style}
 
-	drawBox(info, textBoxStyle, buffers)
+	drawBox(info, textBoxStyle, target, context.cols, context.rows)
 }

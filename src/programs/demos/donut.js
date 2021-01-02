@@ -17,7 +17,6 @@ export function pre(context, cursor, buffers) {
 
 	const TAU = Math.PI * 2
 
-	const b = buffers.state
 	const z = []
 	const A = context.time * 0.0015
 	const B = context.time * 0.0017
@@ -39,7 +38,7 @@ export function pre(context, cursor, buffers) {
 	// Reset buffers
 	const num = width * height
 	for(let k=0; k<num; k++) {
-		b[k] = k % width == width-1 ? '\n' : ' ' // buffer
+		buffers[k] = k % width == width-1 ? '\n' : ' ' // buffer
 		z[k] = 0                                 // z buffer
 	}
 
@@ -71,7 +70,7 @@ export function pre(context, cursor, buffers) {
 			const N = 0 | (8*((st*sA-sp*ct*cA)*cB-sp*ct*sA-st*cA-cp*ct*sB))
 			if(y<height && y>=0 && x>=0 && x<width && D>z[o]) {
 				z[o] = D
-				b[o] = '.,-~:;=!*#$@'[N > 0 ? N : 0]
+				buffers[o] = '.,-~:;=!*#$@'[N > 0 ? N : 0]
 			}
 		}
 	}
