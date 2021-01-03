@@ -80,7 +80,7 @@ export function run(program, element, runSettings) {
 			document.body.appendChild(element)
 		} else {
 			if (settings.renderer == 'canvas') {
-				if (element.nodeName != 'CANVAS') {
+				if (element.nodeName == 'CANVAS') {
 					renderFn = canvasRenderer
 				} else {
 					console.warn("This renderer expects a CANVAS target element.")
