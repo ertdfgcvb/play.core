@@ -59,9 +59,9 @@ export function rgb2css(rgb) {
 // Convert {r,g,b} values to '#RRGGBB' or '#RRGGBBAA'
 export function rgb2hex(rgb) {
 
-	let r = (rgb.r).toString(16).padStart(2, '0')
-	let g = (rgb.g).toString(16).padStart(2, '0')
-	let b = (rgb.b).toString(16).padStart(2, '0')
+	let r = Math.round(rgb.r).toString(16).padStart(2, '0')
+	let g = Math.round(rgb.g).toString(16).padStart(2, '0')
+	let b = Math.round(rgb.b).toString(16).padStart(2, '0')
 
   	// Alpha not set
 	if (rgb.a === undefined) {
