@@ -4,7 +4,12 @@
 @category renderer
 */
 
-export function canvasRenderer(context, buffer, settings) {
+export default {
+	preferredElementNodeName : 'CANVAS',
+	render
+}
+
+function render(context, buffer, settings) {
 
 	const canvas = context.parentInfo.element
 

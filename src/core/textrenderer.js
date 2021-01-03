@@ -4,10 +4,16 @@
 @category renderer
 */
 
+export default {
+	preferredElementNodeName : 'PRE',
+	render
+}
+
 const backBuffer = []
 
 let cols, rows
-export function textRenderer(context, buffer, settings) {
+
+function render(context, buffer, settings) {
 
 	const element = context.parentInfo.element
 

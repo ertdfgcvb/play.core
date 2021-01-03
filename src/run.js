@@ -3,11 +3,16 @@ Runner
 */
 
 // Both available renderers are imported
-import { textRenderer   } from './core/textrenderer.js'
-import { canvasRenderer } from './core/canvasrenderer.js'
+import textRenderer from './core/textrenderer.js'
+import canvasRenderer from './core/canvasrenderer.js'
 import FPS from './core/fps.js'
 import storage from './core/storage.js'
 import VERSION from './core/version.js'
+
+const renderers = {
+	'canvas' : canvasRenderer,
+	'text'   : textRenderer
+}
 
 // Default settings for the program runner.
 // They can be overwritten by the parameters of the runner
@@ -68,26 +73,21 @@ export function run(program, element, runSettings) {
 		// If the parent element is a canvas the canvas renderer is selected,
 		// for any other type a text node (PRE or any othe text node)
 		// is expected and the text renderer is used.
-		let renderFn
+		let renderer
 		if (!element) {
-			if (settings.renderer == 'canvas') {
-				element = document.createElement('canvas')
-				renderFn = canvasRenderer
-			} else {
-				element = document.createElement('pre')
-				renderFn = textRenderer
-			}
+			renderer = renderers[settings.renderer] || renderers['text']
+			element = document.createElement(renderer.preferredElementNodeName)
 			document.body.appendChild(element)
 		} else {
 			if (settings.renderer == 'canvas') {
 				if (element.nodeName == 'CANVAS') {
-					renderFn = canvasRenderer
+					renderer = renderers[settings.renderer]
 				} else {
-					console.warn("This renderer expects a CANVAS target element.")
+					console.warn("This renderer expects a canvas target element.")
 				}
 			} else {
 				if (element.nodeName != 'CANVAS') {
-					renderFn = textRenderer
+					renderer = renderers[settings.renderer]
 				} else {
 					console.warn("This renderer expects a text target element.")
 				}
@@ -300,7 +300,7 @@ export function run(program, element, runSettings) {
 			}
 
 			// 5. --------------------------------------------------------------
-			if (typeof renderFn == 'function') renderFn(context, buffer, settings)
+			renderer.render(context, buffer, settings)
 
 			// 6. --------------------------------------------------------------
 			// Queued events
@@ -410,29 +410,44 @@ function getCSSInfo(el) {
 
 // Calcs width (fract), height, aspect of a monospaced char
 // assuming that the CSS font-family is a monospaced font.
-// Returns an immutable (frozen) object.
-
+// Returns a mutable object.
 export function calcMetrics(el) {
+
 	const style = getComputedStyle(el)
 
 	const fontFamily = style.getPropertyValue('font-family')
 	const lineHeight = parseFloat(style.getPropertyValue('line-height'))
 	const fontSize   = parseFloat(style.getPropertyValue('font-size'))
 
+	// NOTE: the created canvas doesn’t seem to be garbage collected (Safari)?
 	const c = el.nodeName == 'CANVAS' ? el : document.createElement('canvas')
 	const ctx = c.getContext("2d")
 	ctx.font = fontSize + 'px ' + fontFamily
 
 	const cellWidth = ctx.measureText(''.padEnd(10, 'x')).width / 10
+	const aspect = cellWidth / lineHeight
 
-	return Object.freeze({
-		aspect : cellWidth / lineHeight,
+	const m = {
+		aspect,
 		cellWidth,
 		lineHeight,
 		fontFamily,
-		fontSize
-	})
+		fontSize,
+		// Semi-hackish way to allow an update of the metrics object.
+		// This may be useful in some situations, for example
+		// responsive layouts with baseline or font change.
+		// NOTE: It’s not an immutable object anymore
+		_update : function() {
+			const tmp = calcMetrics(el)
+			for(var k in tmp) {
+				// NOTE: Object.assign won’t work
+				if (typeof tmp[k] == "number" || typeof tmp[k] == "string") {
+					m[k] = tmp[k]
+				}
+			}
+		}
+	}
+	return m
 }
-
 
 
