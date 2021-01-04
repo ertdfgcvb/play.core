@@ -47,8 +47,6 @@ export function run(program, element, runSettings) {
 		// Merge of user- and default settings
 		const settings = {...defaultSettings, ...runSettings, ...program.settings}
 
-		const userData = program.data || {}
-
 		// State is stored in local storage and will loaded on program launch
 		// if settings.restoreState == true.
 		// The purpose of this is to live edit the code without resetting
@@ -262,7 +260,7 @@ export function run(program, element, runSettings) {
 			// 1. --------------------------------------------------------------
 			// Call pre(), if defined
 			if (typeof program.pre == 'function') {
-				program.pre(context, cursor, buffer, userData)
+				program.pre(context, cursor, buffer)
 			}
 
 			// 2. --------------------------------------------------------------
@@ -272,7 +270,7 @@ export function run(program, element, runSettings) {
 					const offs = j * cols
 					for (let i=0; i<cols; i++) {
 						const idx = i + offs
-						buffer[idx] = program.main({x:i, y:j, index:idx}, context, cursor, buffer, userData)
+						buffer[idx] = program.main({x:i, y:j, index:idx}, context, cursor, buffer)
 					}
 				}
 			}
@@ -280,7 +278,7 @@ export function run(program, element, runSettings) {
 			// 3. --------------------------------------------------------------
 			// Call post(), if defined
 			if (typeof program.post == 'function') {
-				program.post(context, cursor, buffer, userData)
+				program.post(context, cursor, buffer)
 			}
 
 			// 4. --------------------------------------------------------------
@@ -307,7 +305,7 @@ export function run(program, element, runSettings) {
 			while (eventQueue.length > 0) {
 				const type = eventQueue.shift()
 				if (type && typeof program[type] == 'function') {
-					program[type](context, cursor, buffer, userData)
+					program[type](context, cursor, buffer)
 				}
 			}
 
