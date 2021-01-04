@@ -22,12 +22,10 @@ pal.push(CSS3.white)
 pal.push(CSS3.black)
 pal.push(CSS3.lightblue)
 
-// A custom data object/array can be exported and will be passed
-// as a refernce in the functions.
-// Alternatively it can be accessed directly.
-export const data = []
+// Camera data
+const data = []
 
-export function pre(context, cursor, buffer, data) {
+export function pre(context) {
 	const a = context.metrics.aspect
 
 	// The canvas is resized to the double of the height of the context
@@ -37,7 +35,7 @@ export function pre(context, cursor, buffer, data) {
 	can.cover(cam, a * 2).quantize(pal).mirrorX().writeTo(data)
 }
 
-export function main(coord, context, cursor, buffer, data) {
+export function main(coord, context) {
 	// Coord also contains the index of each cell:
 	const idx   = coord.y * context.cols * 2 + coord.x
 	const upper = data[idx]

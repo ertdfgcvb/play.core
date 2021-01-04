@@ -26,9 +26,9 @@ pal.push(rgb(100, 255, 255))
 //pal.push(rgb(255, 182, 193))
 //pal.push(rgb(255, 255, 255))
 
-export const data = []
+const data = []
 
-export function pre(context, cursor, buffer, data) {
+export function pre(context) {
 	const a = context.metrics.aspect
 
 	// The canvas is resized so that 1 cell -> 1 pixel
@@ -39,7 +39,7 @@ export function pre(context, cursor, buffer, data) {
 	can.cover(cam, a).mirrorX().quantize(pal).writeTo(data)
 }
 
-export function main(coord, context, cursor, buffer, data) {
+export function main(coord, context) {
 	// Coord also contains the index of each cell
 	const color = data[coord.index]
 	// Add some chars to the output

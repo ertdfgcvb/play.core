@@ -16,9 +16,9 @@ const can = new Canvas()
 
 const density = sort(' .x?▂▄▆█', 'Simple Console', false)
 
-export const data = []
+const data = []
 
-export function pre(context, cursor, buffer, data) {
+export function pre(context) {
 	const a = context.metrics.aspect
 
 	// The canvas is resized so that 1 cell -> 1 pixel
@@ -29,7 +29,7 @@ export function pre(context, cursor, buffer, data) {
 	can.cover(cam, a).mirrorX().normalize().writeTo(data)
 }
 
-export function main(coord, context, cursor, buffer, data) {
+export function main(coord, context) {
 	// Coord also contains the index of each cell:
 	const color = data[coord.index]
 	const index = Math.floor(color.gray * (density.length-1))
