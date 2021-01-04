@@ -300,7 +300,7 @@ export function run(program, runSettings, userData = {}) {
 
 			// The end of the first frame is reached without errors
 			// the promise can be resolved.
-			resolve(true)
+			resolve(context)
 		}
 	})
 }
