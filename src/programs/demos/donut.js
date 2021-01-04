@@ -38,8 +38,8 @@ export function pre(context, cursor, buffer) {
 	// Reset buffer
 	const num = width * height
 	for(let k=0; k<num; k++) {
-		buffer[k] = k % width == width-1 ? '\n' : ' ' // buffer
-		z[k] = 0                                 // z buffer
+		buffer[k].char = k % width == width-1 ? '\n' : ' ' // buffer
+		z[k] = 0                                           // z buffer
 	}
 
 	// Theta (j) goes around the cross-sectional circle of a torus
@@ -70,7 +70,7 @@ export function pre(context, cursor, buffer) {
 			const N = 0 | (8*((st*sA-sp*ct*cA)*cB-sp*ct*sA-st*cA-cp*ct*sB))
 			if(y<height && y>=0 && x>=0 && x<width && D>z[o]) {
 				z[o] = D
-				buffer[o] = '.,-~:;=!*#$@'[N > 0 ? N : 0]
+				buffer[o].char = '.,-~:;=!*#$@'[N > 0 ? N : 0]
 			}
 		}
 	}
