@@ -53,9 +53,9 @@ export function run(program, runSettings, userData) {
 		// The purpose of this is to live edit the code without resetting
 		// time and the frame counter.
 		const state = {
-			time  :  0, // The time in ms
-			frame : -1, // The frame number (int)
-			cycle :  0  // An cycle count for debugging purposes
+			time  : 0, // The time in ms
+			frame : 0, // The frame number (int)
+			cycle : 0  // An cycle count for debugging purposes
 		}
 
 		// Name of local storage key
@@ -126,40 +126,25 @@ export function run(program, runSettings, userData) {
 			eventQueue.push('pointerUp')
 		})
 
-		// const CSSInfo = getCSSInfo(settings.element)
 
 		settings.element.style.fontStrech = 'normal'
 		if (!settings.allowSelect) disableSelect(settings.element)
-
-		// Variable which holds some font metrics informations.
-		// It’ll be populated after all the fonts are loaded.
-		// See additional notes below.
-		// let metrics (<--- passed optionally as arg.)
 
 		// Method to load a font via the FontFace object.
 		// The load promise works 100% of the times.
 		// But a definition of the font via CSS is preferable and more flexible.
 		/*
+		const CSSInfo = getCSSInfo(settings.element)
 		var font = new FontFace('Simple Console', 'url(/css/fonts/simple/SimpleConsole-Light.woff)', { style: 'normal', weight: 400 })
 		font.load().then(function(f) {
-			document.fonts.add(f)
-		  	settings.element.style.fontFamily = font.family
-		  	settings.element.fontVariantLigatures = 'none'
-			const ci = CSSinfo(settings.element)
-			console.log(`Using font faimily: ${ci.fontFamily} @ ${ci.fontSize}/${ci.lineHeight}`)
-
-			metrics = calcMetrics(settings.element)
-			settings.element.style.lineHeight = Math.ceil(metrics.lineHeightf) + 'px'
-			console.log(`Metrics: cellWidth: ${metrics.cellWidth}, lineHeightf: ${metrics.lineHeightf}`)
-
-			requestAnimationFrame(loop)
+			...
 		})
 		*/
 
-		// Metrics need to be calculated
+		// Metrics needs to be calculated before boot
 		// Even with the "fonts.ready" the font may STILL not be loaded yet
 		// on Safari 13.x and also 14.0.
-		// A (shitty) workaround is to wait 2! rAF and execute calcMetrics twice.
+		// A (shitty) workaround is to wait 3! rAF.
 		// Submitted: https://bugs.webkit.org/show_bug.cgi?id=217047
 		document.fonts.ready.then((e) => {
 			// Run this three times...
@@ -177,6 +162,7 @@ export function run(program, runSettings, userData) {
 			})()
 			// Ideal mode:
 			// metrics = calcMetrics(settings.element)
+			// etc.
 			// requestAnimationFrame(loop)
 		})
 
@@ -323,16 +309,14 @@ export function run(program, runSettings, userData) {
 
 // Build / update the 'context' object (immutable)
 // A bit of spaghetti... but the context object needs to be ready for
-// the boot function and also to be updated
+// the boot function and also to be updated at each frame.
 function getContext(state, settings, metrics, fps) {
-
 	const rect = settings.element.getBoundingClientRect()
 	const cols = settings.cols || Math.floor(rect.width / metrics.cellWidth)
 	const rows = settings.rows || Math.floor(rect.height / metrics.lineHeight)
 	return Object.freeze({
-		// Context info
 		frame : state.frame,
-		time  : state.time,
+		time : state.time,
 		cols,
 		rows,
 		metrics,
@@ -342,7 +326,7 @@ function getContext(state, settings, metrics, fps) {
 		// Runtime & debug data
 		runtime : Object.freeze({
 			cycle : state.cycle,
-			fps   : fps.fps
+			fps : fps.fps
 			// updatedRowNum
 		})
 	})
