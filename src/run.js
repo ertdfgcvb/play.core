@@ -227,7 +227,7 @@ export function run(program, runSettings, userData = {}) {
 			const context = getContext(state, settings, metrics, fps)
 
 			// Cursor update
-			const cursor = Object.freeze({
+			const cursor = {
 				x       : pointer.x / metrics.cellWidth,
 				y       : pointer.y / metrics.lineHeight,
 				pressed : pointer.pressed,
@@ -236,7 +236,7 @@ export function run(program, runSettings, userData = {}) {
 					y       : pointer.py / metrics.lineHeight,
 					pressed : pointer.ppressed,
 				}
-			})
+			}
 
 			// 1. --------------------------------------------------------------
 			// Call pre(), if defined
