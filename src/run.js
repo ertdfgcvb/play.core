@@ -221,7 +221,7 @@ export function run(program, runSettings, userData = {}) {
 			// Snapshot of context data
 			const context = getContext(state, settings, metrics, fps)
 
-			// FPS
+			// FPS update
 			fps.update(t)
 
 			// Timing update
