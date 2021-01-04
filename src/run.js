@@ -204,9 +204,6 @@ export function run(program, runSettings, userData = {}) {
 		const interval = 1000 / settings.fps
 		const timeOffset = state.time
 
-		// Monitor changes in buffer
-		let cols, rows
-
 		// Main program loop
 		function loop(t) {
 
@@ -250,15 +247,9 @@ export function run(program, runSettings, userData = {}) {
 			// 1. --------------------------------------------------------------
 			// Normalize the buffer
 			// NOTE: Only the render data is altered, user data is kept intact
-			if (cols != context.cols || rows != context.rows) {
-				cols = context.cols
-				rows = context.rows
-				const num = cols * rows
-				// Shorten the buffer in case
-				buffer.length = num
-				for (let i=0; i<num; i++) {
-					buffer[i] = {...buffer[i], ...DEFAULT_CELL, char : EMPTY_CELL}
-				}
+			buffer.length = context.cols * context.rows
+			for (let i=0; i<buffer.length; i++) {
+				buffer[i] = {...buffer[i], ...DEFAULT_CELL, char : EMPTY_CELL}
 			}
 
 			// 2. --------------------------------------------------------------
