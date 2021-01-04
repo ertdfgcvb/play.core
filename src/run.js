@@ -204,6 +204,9 @@ export function run(program, runSettings, userData = {}) {
 		const interval = 1000 / settings.fps
 		const timeOffset = state.time
 
+		// Monitor changes in buffer
+		let cols, rows
+
 		// Main program loop
 		function loop(t) {
 
@@ -239,43 +242,52 @@ export function run(program, runSettings, userData = {}) {
 			}
 
 			// 1. --------------------------------------------------------------
+			// Normalize the buffer
+			// NOTE: Only the render data is altered, user data is kept intact
+			if (cols != context.cols || rows != context.rows) {
+				cols = context.cols
+				rows = context.rows
+				const num = cols * rows
+				// Shorten the buffer in case
+				buffer.length = num
+				for (let i=0; i<num; i++) {
+					buffer[i] = {...buffer[i], ...DEFAULT_CELL, char : EMPTY_CELL}
+				}
+			}
+
+			// 2. --------------------------------------------------------------
 			// Call pre(), if defined
 			if (typeof program.pre == 'function') {
 				program.pre(context, cursor, buffer, userData)
 			}
 
-			// 2. --------------------------------------------------------------
+			// 3. --------------------------------------------------------------
 			// Call main(), if defined
 			if (typeof program.main == 'function') {
 				for (let j=0; j<context.rows; j++) {
 					const offs = j * context.cols
 					for (let i=0; i<context.cols; i++) {
 						const idx = i + offs
-						buffer[idx] = program.main({x:i, y:j, index:idx}, context, cursor, buffer, userData)
+						// Override content:
+						// buffer[idx] = program.main({x:i, y:j, index:idx}, context, cursor, buffer, userData)
+						const out = program.main({x:i, y:j, index:idx}, context, cursor, buffer, userData)
+						if (typeof out == 'object') {
+							buffer[idx] = {...buffer[idx], ...out}
+						} else {
+							buffer[idx] = {...buffer[idx], char : out}
+						}
+						// Fix undefined / null / etc.
+						if (!Boolean(buffer[idx].char) && buffer[idx].char !== 0) {
+							buffer[idx].char = EMPTY_CELL
+						}
 					}
 				}
 			}
 
-			// 3. --------------------------------------------------------------
+			// 4. --------------------------------------------------------------
 			// Call post(), if defined
 			if (typeof program.post == 'function') {
 				program.post(context, cursor, buffer, userData)
-			}
-
-			// 4. --------------------------------------------------------------
-			// Normalize the buffer
-			// (the buffer can contain a single char or a cell object)
-			const num = context.rows * context.cols
-			for (let i=0; i<num; i++) {
-				const out = buffer[i]
-				const cell = typeof out == 'object' ? {...DEFAULT_CELL, ...out} : {...DEFAULT_CELL, char : out}
-				// Make sure that char is set:
-				// undefined, null and '' (empty string) should be rendered as EMPTY_CELL
-				// Watch out for special case of 0 (zero).
-				if (!Boolean(cell.char) && cell.char !== 0) cell.char = EMPTY_CELL
-				// Chop in case of string (+ convert in case of number):
-				cell.char = (cell.char + '')[0]
-				buffer[i] = cell
 			}
 
 			// 5. --------------------------------------------------------------
