@@ -218,11 +218,11 @@ export function run(program, runSettings, userData = {}) {
 				return
 			}
 
-			// FPS
-			fps.update(t)
-
 			// Snapshot of context data
 			const context = getContext(state, settings, metrics, fps)
+
+			// FPS
+			fps.update(t)
 
 			// Timing update
 			timeSample = t - delta % interval // adjust timeSample
@@ -242,7 +242,7 @@ export function run(program, runSettings, userData = {}) {
 				}
 			}
 
-			// Pointer previous state
+			// Pointer: store previous state
 			pointer.px = pointer.x
 			pointer.py = pointer.y
 			pointer.ppressed = pointer.pressed
@@ -308,7 +308,7 @@ export function run(program, runSettings, userData = {}) {
 				}
 			}
 
-			// 9. --------------------------------------------------------------
+			// 7. --------------------------------------------------------------
 			// Loop (eventually)
 			if (!settings.once) requestAnimationFrame(loop)
 
