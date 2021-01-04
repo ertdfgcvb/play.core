@@ -176,7 +176,7 @@ export function run(program, runSettings, userData = {}) {
 		const DEFAULT_CELL = Object.freeze({
 			color      : settings.color,
 			background : settings.background,
-			weight     : settings.weight,
+			weight     : settings.weight
 		})
 
 		// Buffer needed for the final DOM rendering,
