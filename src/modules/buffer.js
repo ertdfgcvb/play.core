@@ -66,23 +66,31 @@ export function mergeRect(val, x, y, w, h, target, targetCols, targetRows) {
 // 		text : 'abc\ndef',
 // 		color : 'red',
 // 		weight : '400',
-// 		background : 'black'
+// 		background : 'black',
+//      etc...
 //	}
 // or just as a string into the target buffer.
 export function mergeText(textObj, x, y, target, targetCols, targetRows) {
+	let text, mergeObj
+	// An object has been passed as argument, expect a 'text' field
+	if (typeof textObj == "object") {
+		text = textObj.text
+		// Extract all the fields to be merged...
+		mergeObj = {...textObj}
+		// ...but emove text field
+		delete mergeObj.text
+	}
+	// A string has been passed as argument
+	else {
+		text = textObj
+	}
+
 	let col = x
 	let row = y
-
-	// if textObj is s a string convert it to an obj
-	const text = typeof textObj == "string" ? textObj : textObj.text
-	const color = textObj.color
-	const background = textObj.background
-	const weight = textObj.weight
-
 	text.split('\n').forEach((line, lineNum) => {
 		line.split('').forEach((char, charNum) => {
 			col = x + charNum
-			merge({char, color, background, weight}, col, row, target, targetCols, targetRows)
+			merge({char, ...mergeObj}, col, row, target, targetCols, targetRows)
 		})
 		row++
 	})
