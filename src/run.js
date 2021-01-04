@@ -99,7 +99,7 @@ export function run(program, runSettings, userData = {}) {
 		// TODO: needed?
 		const eventQueue = []
 
-		// Input pointer updated by DOM evenets
+		// Input pointer updated by DOM events
 		const pointer = {
 			x        : 0,
 			y        : 0,
@@ -126,8 +126,10 @@ export function run(program, runSettings, userData = {}) {
 			eventQueue.push('pointerUp')
 		})
 
-
+		// CSS fix
 		settings.element.style.fontStrech = 'normal'
+
+		// Text selection may be annoing in case of interactive programs
 		if (!settings.allowSelect) disableSelect(settings.element)
 
 		// Method to load a font via the FontFace object.
