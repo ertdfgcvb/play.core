@@ -18,6 +18,7 @@ const renderers = {
 // They can be overwritten by the parameters of the runner
 // or as a settings object exported by the program (in this order).
 const defaultSettings = {
+	element      : null,    // target element for output
 	cols         : 0,       // number of columns, 0 is equivalent to 'auto'
 	rows         : 0,       // number of columns, 0 is equivalent to 'auto'
 	once         : false,   // if set to true the renderer will run only once
@@ -38,7 +39,7 @@ const defaultSettings = {
 // Finally, a precalculated metrics object can be passed,
 // otherwise it will be calcualted prior first run.
 // The program object should contain at least a main(), pre() or post() function.
-export function run(program, element, runSettings) {
+export function run(program, runSettings, userData) {
 
 	// Everything is wrapped inside a promise;
 	// in case of errors in ‘program’ it will reject without reaching the bottom.
@@ -71,20 +72,21 @@ export function run(program, element, runSettings) {
 		// If the parent element is a canvas the canvas renderer is selected,
 		// for any other type a text node (PRE or any othe text node)
 		// is expected and the text renderer is used.
+		// TODO: better / more generic renderer init
 		let renderer
-		if (!element) {
+		if (!settings.element) {
 			renderer = renderers[settings.renderer] || renderers['text']
-			element = document.createElement(renderer.preferredElementNodeName)
-			document.body.appendChild(element)
+			settings.element = document.createElement(renderer.preferredElementNodeName)
+			document.body.appendChild(settings.element)
 		} else {
 			if (settings.renderer == 'canvas') {
-				if (element.nodeName == 'CANVAS') {
+				if (settings.element.nodeName == 'CANVAS') {
 					renderer = renderers[settings.renderer]
 				} else {
 					console.warn("This renderer expects a canvas target element.")
 				}
 			} else {
-				if (element.nodeName != 'CANVAS') {
+				if (settings.element.nodeName != 'CANVAS') {
 					renderer = renderers[settings.renderer]
 				} else {
 					console.warn("This renderer expects a text target element.")
@@ -94,6 +96,7 @@ export function run(program, element, runSettings) {
 
 		// Eventqueue
 		// Stores events and pops them at the end of the renderloop
+		// TODO: needed?
 		const eventQueue = []
 
 		// Input pointer updated by DOM evenets
@@ -106,27 +109,27 @@ export function run(program, element, runSettings) {
 			ppressed : false,
 		}
 
-		element.addEventListener('pointermove', e => {
-			const rect = element.getBoundingClientRect()
+		settings.element.addEventListener('pointermove', e => {
+			const rect = settings.element.getBoundingClientRect()
 			pointer.x = e.clientX - rect.left
 			pointer.y = e.clientY - rect.top
 			eventQueue.push('pointerMove')
 		})
 
-		element.addEventListener('pointerdown', e => {
+		settings.element.addEventListener('pointerdown', e => {
 			pointer.pressed = true
 			eventQueue.push('pointerDown')
 		})
 
-		element.addEventListener('pointerup', e => {
+		settings.element.addEventListener('pointerup', e => {
 			pointer.pressed = false
 			eventQueue.push('pointerUp')
 		})
 
-		// const CSSInfo = getCSSInfo(element)
+		// const CSSInfo = getCSSInfo(settings.element)
 
-		element.style.fontStrech = 'normal'
-		if (settings.allowSelect == false) disableSelect(element)
+		settings.element.style.fontStrech = 'normal'
+		if (!settings.allowSelect) disableSelect(settings.element)
 
 		// Variable which holds some font metrics informations.
 		// It’ll be populated after all the fonts are loaded.
@@ -140,13 +143,13 @@ export function run(program, element, runSettings) {
 		var font = new FontFace('Simple Console', 'url(/css/fonts/simple/SimpleConsole-Light.woff)', { style: 'normal', weight: 400 })
 		font.load().then(function(f) {
 			document.fonts.add(f)
-		  	element.style.fontFamily = font.family
-		  	element.fontVariantLigatures = 'none'
-			const ci = CSSinfo(element)
+		  	settings.element.style.fontFamily = font.family
+		  	settings.element.fontVariantLigatures = 'none'
+			const ci = CSSinfo(settings.element)
 			console.log(`Using font faimily: ${ci.fontFamily} @ ${ci.fontSize}/${ci.lineHeight}`)
 
-			metrics = calcMetrics(element)
-			element.style.lineHeight = Math.ceil(metrics.lineHeightf) + 'px'
+			metrics = calcMetrics(settings.element)
+			settings.element.style.lineHeight = Math.ceil(metrics.lineHeightf) + 'px'
 			console.log(`Metrics: cellWidth: ${metrics.cellWidth}, lineHeightf: ${metrics.lineHeightf}`)
 
 			requestAnimationFrame(loop)
@@ -158,33 +161,24 @@ export function run(program, element, runSettings) {
 		// on Safari 13.x and also 14.0.
 		// A (shitty) workaround is to wait 2! rAF and execute calcMetrics twice.
 		// Submitted: https://bugs.webkit.org/show_bug.cgi?id=217047
-		let metrics
 		document.fonts.ready.then((e) => {
-			// Run this three times
+			// Run this three times...
 			let count = 3
 			;(function __run_thrice__() {
 				if (--count > 0) {
 					requestAnimationFrame(__run_thrice__)
 				} else {
-					// element.style.lineHeight = Math.ceil(metrics.lineHeightf) + 'px'
+					// settings.element.style.lineHeight = Math.ceil(metrics.lineHeightf) + 'px'
 					// console.log(`Using font faimily: ${ci.fontFamily} @ ${ci.fontSize}/${ci.lineHeight}`)
 					// console.log(`Metrics: cellWidth: ${metrics.cellWidth}, lineHeightf: ${metrics.lineHeightf}`)
 					// Finally Boot!
-					metrics = calcMetrics(element)
-					requestAnimationFrame(loop)
+					boot()
 				}
 			})()
 			// Ideal mode:
-			// metrics = calcMetrics(element)
+			// metrics = calcMetrics(settings.element)
 			// requestAnimationFrame(loop)
 		})
-
-		// Time sample to calculate precise offset
-		let timeSample = 0
-		// Previous time step to increment state.time (with state.time initial offset)
-		let ptime = 0
-		const interval = 1000 / settings.fps
-		const timeOffset = state.time
 
 		// FPS object (keeps some state for precise FPS measure)
 		const fps = new FPS()
@@ -192,9 +186,35 @@ export function run(program, element, runSettings) {
 		// A cell with no value at all is just a space
 		const EMPTY_CELL = ' '
 
+		// Default cell style inserted in case of undefined / null
+		const DEFAULT_CELL = Object.freeze({
+			color      : settings.color,
+			background : settings.background,
+			weight     : settings.weight,
+		})
+
 		// Buffer needed for the final DOM rendering,
 		// each array entry represents a cell.
 		const buffer = []
+
+		// Metrics object, calc once (below)
+		let metrics
+
+		function boot() {
+			metrics = calcMetrics(settings.element)
+			const context = getContext(state, settings, metrics, fps)
+			if (typeof program.boot == 'function') {
+				program.boot(context, userData, buffer)
+			}
+			requestAnimationFrame(loop)
+		}
+
+		// Time sample to calculate precise offset
+		let timeSample = 0
+		// Previous time step to increment state.time (with state.time initial offset)
+		let ptime = 0
+		const interval = 1000 / settings.fps
+		const timeOffset = state.time
 
 		// Main program loop
 		function loop(t) {
@@ -212,31 +232,11 @@ export function run(program, element, runSettings) {
 				storage.store(LOCAL_STORAGE_KEY_STATE, state) // store state
 			}
 
-			// Context data
-			const rect = element.getBoundingClientRect()
-			const cols = settings.cols || Math.floor(rect.width / metrics.cellWidth)
-			const rows = settings.rows || Math.floor(rect.height / metrics.lineHeight)
+			// FPS
+			fps.update(t)
 
-			const context = Object.freeze({
-				// Context info
-				frame : state.frame,
-				time  : state.time,
-				cols,
-				rows,
-				metrics,
-				// Container
-				parentInfo : Object.freeze({
-					width  : rect.width,
-					height : rect.height,
-					element
-				}),
-				// Runtime & debug data
-				runtime : Object.freeze({
-					cycle : state.cycle,
-					fps   : fps.update(t)
-					// updatedRowNum
-				})
-			})
+			// Context data
+			const context = getContext(state, settings, metrics, fps)
 
 			// Cursor update
 			const cursor = Object.freeze({
@@ -250,13 +250,6 @@ export function run(program, element, runSettings) {
 				}
 			})
 
-			// Default cellstyle inserted in case of undefined / null
-			const defaultCell = Object.freeze({
-				color      : settings.color,
-				background : settings.background,
-				weight     : settings.weight,
-			})
-
 			// 1. --------------------------------------------------------------
 			// Call pre(), if defined
 			if (typeof program.pre == 'function') {
@@ -266,9 +259,9 @@ export function run(program, element, runSettings) {
 			// 2. --------------------------------------------------------------
 			// Call main(), if defined
 			if (typeof program.main == 'function') {
-				for (let j=0; j<rows; j++) {
-					const offs = j * cols
-					for (let i=0; i<cols; i++) {
+				for (let j=0; j<context.rows; j++) {
+					const offs = j * context.cols
+					for (let i=0; i<context.cols; i++) {
 						const idx = i + offs
 						buffer[idx] = program.main({x:i, y:j, index:idx}, context, cursor, buffer)
 					}
@@ -284,10 +277,10 @@ export function run(program, element, runSettings) {
 			// 4. --------------------------------------------------------------
 			// Normalize the buffer
 			// (the buffer can contain a single char or a cell object)
-			const num = rows * cols
+			const num = context.rows * context.cols
 			for (let i=0; i<num; i++) {
 				const out = buffer[i]
-				const cell = typeof out == 'object' ? {...defaultCell, ...out} : {...defaultCell, char : out}
+				const cell = typeof out == 'object' ? {...DEFAULT_CELL, ...out} : {...DEFAULT_CELL, char : out}
 				// Make sure that char is set:
 				// undefined, null and '' (empty string) should be rendered as EMPTY_CELL
 				// Watch out for special case of 0 (zero).
@@ -327,6 +320,33 @@ export function run(program, element, runSettings) {
 }
 
 // -- Helpers ------------------------------------------------------------------
+
+// Build / update the 'context' object (immutable)
+// A bit of spaghetti... but the context object needs to be ready for
+// the boot function and also to be updated
+function getContext(state, settings, metrics, fps) {
+
+	const rect = settings.element.getBoundingClientRect()
+	const cols = settings.cols || Math.floor(rect.width / metrics.cellWidth)
+	const rows = settings.rows || Math.floor(rect.height / metrics.lineHeight)
+	return Object.freeze({
+		// Context info
+		frame : state.frame,
+		time  : state.time,
+		cols,
+		rows,
+		metrics,
+		width : rect.width,
+		height : rect.height,
+		settings,
+		// Runtime & debug data
+		runtime : Object.freeze({
+			cycle : state.cycle,
+			fps   : fps.fps
+			// updatedRowNum
+		})
+	})
+}
 
 // Disables selection for an HTML element
 function disableSelect(el) {
@@ -419,7 +439,7 @@ export function calcMetrics(el) {
 
 	// NOTE: the created canvas doesn’t seem to be garbage collected (Safari)?
 	const c = el.nodeName == 'CANVAS' ? el : document.createElement('canvas')
-	const ctx = c.getContext("2d")
+	const ctx = c.getContext('2d')
 	ctx.font = fontSize + 'px ' + fontFamily
 
 	const cellWidth = ctx.measureText(''.padEnd(10, 'x')).width / 10
@@ -439,7 +459,7 @@ export function calcMetrics(el) {
 			const tmp = calcMetrics(el)
 			for(var k in tmp) {
 				// NOTE: Object.assign won’t work
-				if (typeof tmp[k] == "number" || typeof tmp[k] == "string") {
+				if (typeof tmp[k] == 'number' || typeof tmp[k] == 'string') {
 					m[k] = tmp[k]
 				}
 			}
