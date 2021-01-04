@@ -39,7 +39,7 @@ const defaultSettings = {
 // Finally, a precalculated metrics object can be passed,
 // otherwise it will be calcualted prior first run.
 // The program object should contain at least a main(), pre() or post() function.
-export function run(program, runSettings, userData) {
+export function run(program, runSettings, userData = {}) {
 
 	// Everything is wrapped inside a promise;
 	// in case of errors in ‘program’ it will reject without reaching the bottom.
@@ -239,7 +239,7 @@ export function run(program, runSettings, userData) {
 			// 1. --------------------------------------------------------------
 			// Call pre(), if defined
 			if (typeof program.pre == 'function') {
-				program.pre(context, cursor, buffer)
+				program.pre(context, cursor, buffer, userData)
 			}
 
 			// 2. --------------------------------------------------------------
@@ -249,7 +249,7 @@ export function run(program, runSettings, userData) {
 					const offs = j * context.cols
 					for (let i=0; i<context.cols; i++) {
 						const idx = i + offs
-						buffer[idx] = program.main({x:i, y:j, index:idx}, context, cursor, buffer)
+						buffer[idx] = program.main({x:i, y:j, index:idx}, context, cursor, buffer, userData)
 					}
 				}
 			}
@@ -257,7 +257,7 @@ export function run(program, runSettings, userData) {
 			// 3. --------------------------------------------------------------
 			// Call post(), if defined
 			if (typeof program.post == 'function') {
-				program.post(context, cursor, buffer)
+				program.post(context, cursor, buffer, userData)
 			}
 
 			// 4. --------------------------------------------------------------
