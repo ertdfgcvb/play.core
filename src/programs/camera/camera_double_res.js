@@ -25,7 +25,7 @@ pal.push(CSS3.lightblue)
 // Camera data
 const data = []
 
-export function pre(context) {
+export function pre(context, cursor, buffer) {
 	const a = context.metrics.aspect
 
 	// The canvas is resized to the double of the height of the context
@@ -35,7 +35,7 @@ export function pre(context) {
 	can.cover(cam, a * 2).quantize(pal).mirrorX().writeTo(data)
 }
 
-export function main(coord, context) {
+export function main(coord, context, cursor, buffer) {
 	// Coord also contains the index of each cell:
 	const idx   = coord.y * context.cols * 2 + coord.x
 	const upper = data[idx]

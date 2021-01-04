@@ -11,7 +11,7 @@ export const settings = { fps : 60 }
 
 const { cos } = Math
 
-export function main(coord, context, cursor) {
+export function main(coord, context, cursor, buffer) {
 
 	// Hold the mouse button to switch the direction
 	// of the gradient and observe the drop in FPS.

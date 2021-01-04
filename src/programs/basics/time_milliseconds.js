@@ -12,7 +12,7 @@ const pattern = 'ABCxyz01═|+:. '
 // Character coordinates are passed in coord {x, y, index}.
 // The function must return a single character or, alternatively, an object:
 // {char, color, background, weight}.
-export function main(coord, context) {
+export function main(coord, context, cursor, buffer) {
 	const t = context.time * 0.0001
 	const x = coord.x
 	const y = coord.y

@@ -9,7 +9,7 @@
 // by exporting a 'settings' object (see the manual for details).
 export const settings = { fps : 10 }
 
-export function main(coord, context) {
+export function main(coord, context, cursor, buffer) {
 	const f = context.frame
 	return String.fromCharCode((coord.y + coord.x + f) % 32 + 65)
 }
