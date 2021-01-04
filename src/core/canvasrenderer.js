@@ -9,9 +9,9 @@ export default {
 	render
 }
 
-function render(context, buffer, settings) {
+function render(context, buffer) {
 
-	const canvas = context.parentInfo.element
+	const canvas = context.settings.element
 
 	const scale = devicePixelRatio
 
@@ -22,6 +22,9 @@ function render(context, buffer, settings) {
 	const cw = m.cellWidth
 	const ch = Math.round(m.lineHeight)
 
+	// Shortcut
+	const settings = context.settings
+
 	// Fixed size, to allow precise export
 	if (settings.canvasSize) {
 		canvas.width  = settings.canvasSize.width * scale
@@ -31,8 +34,8 @@ function render(context, buffer, settings) {
 	}
 	// Stretch the canvas to the container width
 	else {
-		canvas.width  = context.parentInfo.width * scale
-		canvas.height = context.parentInfo.height * scale
+		canvas.width  = context.width * scale
+		canvas.height = context.height * scale
 	}
 
 	const ff = ' ' + m.fontSize + 'px ' + m.fontFamily

@@ -13,14 +13,14 @@ const backBuffer = []
 
 let cols, rows
 
-function render(context, buffer, settings) {
+function render(context, buffer) {
 
-	const element = context.parentInfo.element
+	const element = context.settings.element
 
 	// Set the most used styles to the container
-	element.style.backgroundColor = settings.background
-	element.style.color = settings.color
-	element.style.fontWeight = settings.weight
+	element.style.backgroundColor = context.settings.background
+	element.style.color = context.settings.color
+	element.style.fontWeight = context.settings.weight
 
 	// Detect resize
 	if (context.rows != rows || context.cols != cols) {
@@ -99,9 +99,9 @@ function render(context, buffer, settings) {
 				// Close the previous tag
 				if (tagIsOpen) html += '</span>'
 
-				const c = currCell.color === settings.color ? null : currCell.color
-				const b = currCell.background === settings.background ? null : currCell.background
-				const w = currCell.weight === settings.weight ? null : currCell.weight
+				const c = currCell.color === context.settings.color ? null : currCell.color
+				const b = currCell.background === context.settings.background ? null : currCell.background
+				const w = currCell.weight === context.settings.weight ? null : currCell.weight
 
 				// Accumulate the CSS inline attribute.
 				let css = ''
