@@ -52,9 +52,9 @@ export function run(program, element, runSettings) {
 		// The purpose of this is to live edit the code without resetting
 		// time and the frame counter.
 		const state = {
-			time  : 0, // The time in ms
-			frame : 0, // The frame number (int)
-			cycle : 0  // An cycle count for debugging purposes
+			time  :  0, // The time in ms
+			frame : -1, // The frame number (int)
+			cycle :  0  // An cycle count for debugging purposes
 		}
 
 		// Name of local storage key
