@@ -190,7 +190,7 @@ export function run(program, runSettings, userData = {}) {
 			metrics = calcMetrics(settings.element)
 			const context = getContext(state, settings, metrics, fps)
 			if (typeof program.boot == 'function') {
-				program.boot(context, userData, buffer)
+				program.boot(context, buffer, userData)
 			}
 			requestAnimationFrame(loop)
 		}
