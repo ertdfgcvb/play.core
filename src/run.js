@@ -216,18 +216,19 @@ export function run(program, runSettings, userData = {}) {
 				// Skip the frame
 				if (!settings.once) requestAnimationFrame(loop)
 				return
-			} else {
-				timeSample = t - delta % interval // adjust timeSample
-				state.time = t + timeOffset       // increment time + initial offs
-				state.frame++                     // increment frame counter
-				storage.store(LOCAL_STORAGE_KEY_STATE, state) // store state
 			}
 
 			// FPS
 			fps.update(t)
 
-			// Context data
+			// Snapshot of context data
 			const context = getContext(state, settings, metrics, fps)
+
+			// Timing update
+			timeSample = t - delta % interval // adjust timeSample
+			state.time = t + timeOffset       // increment time + initial offs
+			state.frame++                     // increment frame counter
+			storage.store(LOCAL_STORAGE_KEY_STATE, state) // store state
 
 			// Cursor update
 			const cursor = {
@@ -240,6 +241,11 @@ export function run(program, runSettings, userData = {}) {
 					pressed : pointer.ppressed,
 				}
 			}
+
+			// Pointer previous state
+			pointer.px = pointer.x
+			pointer.py = pointer.y
+			pointer.ppressed = pointer.pressed
 
 			// 1. --------------------------------------------------------------
 			// Normalize the buffer
@@ -271,7 +277,7 @@ export function run(program, runSettings, userData = {}) {
 						// Override content:
 						// buffer[idx] = program.main({x:i, y:j, index:idx}, context, cursor, buffer, userData)
 						const out = program.main({x:i, y:j, index:idx}, context, cursor, buffer, userData)
-						if (typeof out == 'object') {
+						if (typeof out == 'object' && out !== null) {
 							buffer[idx] = {...buffer[idx], ...out}
 						} else {
 							buffer[idx] = {...buffer[idx], char : out}
@@ -302,13 +308,7 @@ export function run(program, runSettings, userData = {}) {
 				}
 			}
 
-			// 7. --------------------------------------------------------------
-			// Store pointer .pre
-			pointer.px = pointer.x
-			pointer.py = pointer.y
-			pointer.ppressed = pointer.pressed
-
-			// 8. --------------------------------------------------------------
+			// 9. --------------------------------------------------------------
 			// Loop (eventually)
 			if (!settings.once) requestAnimationFrame(loop)
 
