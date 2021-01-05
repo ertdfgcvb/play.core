@@ -43,7 +43,7 @@ const WHITE = { r:255, g:255, b:255, a:1, gray:1 }
 export default class Canvas {
 
 	constructor(sourceCanvas) {
-		this.canvas = sourceCanvas || document.createElement("canvas")
+		this.canvas = sourceCanvas || document.createElement('canvas')
 
 		// Initialize the canvas as a black 1x1 image so it can be used
 		this.canvas.width = 1
@@ -226,9 +226,9 @@ export default class Canvas {
 	// Attaches the canvas to a target element for debug purposes
 	display(target, x=0, y=0) {
 		target = target || document.body
-		this.canvas.style.position = "absolute"
-		this.canvas.style.left = x + "px"
-		this.canvas.style.top = y + "px"
+		this.canvas.style.position = 'absolute'
+		this.canvas.style.left = x + 'px'
+		this.canvas.style.top = y + 'px'
 		this.canvas.style.width = 'auto'
 		this.canvas.style.height = 'auto'
 		this.canvas.style.zIndex = 10
