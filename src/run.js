@@ -379,48 +379,6 @@ export function copyContent(el) {
 	if (!selectionEnabled) disableSelect(el)
 }
 
-// Old method, see updatd version below:
-/*
-export function calcMetrics(el) {
-	const test = document.createElement('span')
-	el.appendChild(test) // Must be visible!
-
-	const testChar = 'X'
-	const num = 50 // How wide, how high?
-
-	// Metrics H
-	let out = ''
-	for (let i=0; i<num; i++) out += testChar
-	test.innerHTML = out
-	const w = test.getBoundingClientRect().width / num
-
-	// Metrics V
-	out = ''
-	for (let i=0; i<num; i++) out += '<span>' + testChar + '</span><br>'
-	test.innerHTML = out
-	const h = test.getBoundingClientRect().height / num
-
-	// Clean up
-	el.removeChild(test)
-
-	return Object.freeze({
-		cellWidth  : w,
-		lineHeight : h, // should be the same as CSS
-		aspect     : w / h,
-	})
-}
-
-// Returns some CSS info
-function getCSSInfo(el) {
-	const style = window.getComputedStyle(el)
-	return Object.freeze({
-		fontFamily : style.getPropertyValue('font-family'),
-		lineHeight : style.getPropertyValue('line-height'),
-		fontSize   : style.getPropertyValue('font-size'),
-	})
-}
-*/
-
 // Calcs width (fract), height, aspect of a monospaced char
 // assuming that the CSS font-family is a monospaced font.
 // Returns a mutable object.
