@@ -428,20 +428,29 @@ export function calcMetrics(el) {
 
 	const style = getComputedStyle(el)
 
+	// Extract info from the style: in case of a canvas element
+	// the style and font family should be set anyways.
 	const fontFamily = style.getPropertyValue('font-family')
 	const lineHeight = parseFloat(style.getPropertyValue('line-height'))
 	const fontSize   = parseFloat(style.getPropertyValue('font-size'))
+	let cellWidth
 
-	// NOTE: the created canvas doesn’t seem to be garbage collected (Safari)?
-	const c = el.nodeName == 'CANVAS' ? el : document.createElement('canvas')
-	const ctx = c.getContext('2d')
-	ctx.font = fontSize + 'px ' + fontFamily
+	// If the output element is a canvas 'measureText()' is used
+	// else cellWidth is computed 'by hand' (should be the same, in any case)
+	if (el.nodeName == 'CANVAS') {
+		const ctx = c.getContext('2d')
+		ctx.font = fontSize + 'px ' + fontFamily
+		cellWidth = ctx.measureText(''.padEnd(50, 'X')).width / 50
+	} else {
+		const span = document.createElement('span')
+		el.appendChild(span)
+		span.innerHTML = ''.padEnd(50, 'X')
+		cellWidth = span.getBoundingClientRect().width / 50
+		el.removeChild(span)
+	}
 
-	const cellWidth = ctx.measureText(''.padEnd(10, 'x')).width / 10
-	const aspect = cellWidth / lineHeight
-
-	const m = {
-		aspect,
+	const metrics = {
+		aspect : cellWidth / lineHeight,
 		cellWidth,
 		lineHeight,
 		fontFamily,
@@ -460,7 +469,8 @@ export function calcMetrics(el) {
 			}
 		}
 	}
-	return m
+
+	return metrics
 }
 
 
