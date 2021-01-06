@@ -175,7 +175,7 @@ export function run(program, runSettings, userData = {}) {
 		const EMPTY_CELL = ' '
 
 		// Default cell style inserted in case of undefined / null
-		const DEFAULT_CELL = Object.freeze({
+		const DEFAULT_CELL_STYLE = Object.freeze({
 			color      : settings.color,
 			background : settings.background,
 			weight     : settings.weight
@@ -203,6 +203,9 @@ export function run(program, runSettings, userData = {}) {
 		let ptime = 0
 		const interval = 1000 / settings.fps
 		const timeOffset = state.time
+
+		// Used to track window resize
+		let cols, rows
 
 		// Main program loop
 		function loop(t) {
@@ -245,11 +248,14 @@ export function run(program, runSettings, userData = {}) {
 			pointer.ppressed = pointer.pressed
 
 			// 1. --------------------------------------------------------------
-			// Normalize the buffer
-			// NOTE: Only the render data is altered, user data is kept intact
-			buffer.length = context.cols * context.rows
-			for (let i=0; i<buffer.length; i++) {
-				buffer[i] = {...buffer[i], ...DEFAULT_CELL, char : EMPTY_CELL}
+			// In case of resize / init normalize the buffer
+			if (cols != context.cols || rows != context.rows) {
+				cols = context.cols
+				rows = context.rows
+				buffer.length = context.cols * context.rows
+				for (let i=0; i<buffer.length; i++) {
+					buffer[i] = {...DEFAULT_CELL_STYLE, char : EMPTY_CELL}
+				}
 			}
 
 			// 2. --------------------------------------------------------------
