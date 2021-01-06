@@ -12,8 +12,8 @@ export function main() {
 // Shorter:
 // export const main () => '?'
 
-// Shortest:
+// Even shorter:
 // export let main=o=>'?'
 
-// Shrts:
+// Shrtst:
 // export let main=o=>0
