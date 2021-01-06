@@ -13,9 +13,9 @@ export function exportFrame(context, filename, from=1, to=from) {
 	// Error: renderer is not canvas.
 	// A renderer instance could be imported here and the content of the buffer
 	// rendere to a tmp canvas… maybe overkill: let’s keep things simple for now.
-	const canvas = context.parentInfo.element
+	const canvas = context.settings.element
 	if (canvas.nodeName != 'CANVAS') {
-		console.warn('exportframe.js: Can’t export, canvas renderer is required.')
+		console.warn('exportframe.js: Can’t export, a canvas renderer is required.')
 		return
 	}
 
