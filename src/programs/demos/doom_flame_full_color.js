@@ -73,7 +73,10 @@ export function main(coord, context, cursor, buffer) {
 	const u = data[coord.index]
 	const v = flame[clamp(u, 0, flame.length-1)]
 
-	if (v === 0) return // Inserts a space
+	if (v === 0) return {
+		char : ' ',
+		background : 'black'
+	}
 
 	return {
 		char : u % 10,
