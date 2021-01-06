@@ -101,7 +101,10 @@ export function main(coord, context, cursor) {
 	if (idx == 0) {
 		const x = coord.x % bgMatrixDim.x
 		const y = coord.y % bgMatrixDim.y
-		return d < 0 ? ' ' : bgMatrix[y][x]
+		return {
+			char : d < 0 ? ' ' : bgMatrix[y][x],
+			color : 'black'
+		}
 	} else {
 		return {
 			char  : density[idx],
