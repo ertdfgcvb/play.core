@@ -10,16 +10,14 @@ function saves the previous frame so it can be used in `main()`.
 import { dist, sub } from '/src/modules/vec2.js'
 
 let prevFrame;
-let initialized = false;
 let width, height;
 
 export function pre(context, cursor, buffer) {
-	if (!initialized) {
+	if (width != context.cols || height != context.rows) {
 		const length = context.cols * context.rows
 		for (let i = 0; i < length; i++) {
 			buffer[i] = {char : Math.random() > 0.5 ? '▒' : ' '};
 		}
-		initialized = true;
 		width = context.cols;
 		height = context.rows;
 	}
@@ -27,7 +25,6 @@ export function pre(context, cursor, buffer) {
 	// Use the spread operator to copy the previous frame
 	// You must make a copy, otherwise `prevFrame` will be updated prematurely
 	prevFrame = [...buffer];
-
 }
 
 export function main(coord, context, cursor, buffer) {

@@ -7,7 +7,6 @@
 import { dist, sub } from '/src/modules/vec2.js'
 
 let prevFrame;
-let initialized = false;
 let width, height;
 
 function newParticle() {
@@ -15,13 +14,11 @@ function newParticle() {
 }
 
 export function pre(context, cursor, buffer) {
-	if (!initialized) {
+	if (width != context.cols || height != context.rows) {
 		const length = context.cols * context.rows
 		for (let i = 0; i < length; i++) {
 			buffer[i] = {char : Math.random() > 0.5 ? newParticle() : ' '};
 		}
-		initialized = true;
-
 		width = context.cols;
 		height = context.rows;
 	}

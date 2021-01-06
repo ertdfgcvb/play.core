@@ -10,7 +10,6 @@ import * as v2 from '/src/modules/vec2.js'
 const vec2 = v2.vec2
 
 let prevFrame;
-let initialized = false;
 let width, height;
 
 const colors = [
@@ -31,7 +30,7 @@ export const settings = {
 const roads = '┃━┏┓┗┛┣┫┳┻╋';
 
 export function pre(context, cursor, buffer) {
-	if (!initialized) {
+	if (width != context.cols || height != context.rows) {
 		const length = context.cols * context.rows
 		for (let i = 0; i < length; i++) {
 			buffer[i] = Math.random() < 0.001 ? {
@@ -39,12 +38,9 @@ export function pre(context, cursor, buffer) {
 				color: 'white'
 			} : ' ';
         }
-		initialized = true;
-
 		width = context.cols;
 		height = context.rows;
 	}
-
 
 	// Use the spread operator to copy the previous frame
 	// You must make a copy, otherwise `prevFrame` will be updated prematurely
