@@ -396,7 +396,7 @@ export function calcMetrics(el) {
 	// If the output element is a canvas 'measureText()' is used
 	// else cellWidth is computed 'by hand' (should be the same, in any case)
 	if (el.nodeName == 'CANVAS') {
-		const ctx = c.getContext('2d')
+		const ctx = el.getContext('2d')
 		ctx.font = fontSize + 'px ' + fontFamily
 		cellWidth = ctx.measureText(''.padEnd(50, 'X')).width / 50
 	} else {
