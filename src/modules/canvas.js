@@ -94,24 +94,24 @@ export default class Canvas {
 		return this
 	}
 
-	// Resizes the destination canvas to the size of the ascii context
-	// and covers it with the source image.
-	// An otional scaling factor can be passed.
+	// Covers the destintation canvas with the source image.
+	// An otional aspect factor can be passed.
 	cover(source, aspect=1) {
 		centerImage(source, this.canvas, 1, aspect, MODE_COVER)
 		this.loadPixels()
 		return this
 	}
 
-	// Resizes the destination canvas to the size of the ascii context
-	// and fits the source image in it.
-	// An otional scaling factor can be passed.
+	// Fits the source image on the destintation canvas.
+	// An otional aspect factor can be passed.
 	fit(source, aspect=1) {
 		centerImage(source, this.canvas, 1, aspect, MODE_FIT)
 		this.loadPixels()
 		return this
 	}
 
+	// Centers the source image on the destination canvas.
+	// Optional scaling factors can be passed.
 	center(source, scaleX=1, scaleY=1) {
 		centerImage(source, this.canvas, scaleX, scaleY, MODE_CENTER)
 		this.loadPixels()
@@ -208,7 +208,6 @@ export default class Canvas {
 				gray : toGray(r, g, b)
 			}
 		}
-
 		return this
 	}
 
@@ -306,7 +305,6 @@ function centerImage(sourceCanvas, targetCanvas, scaleX=1, scaleY=1, mode=MODE_C
 	ctx.fillRect(0, 0, tw, th)
 	ctx.save()
 	ctx.translate(tw/2, th/2)
-	//ctx.scale(1, 1)
 	ctx.drawImage(sourceCanvas, -dw/2, -dh/2, dw, dh)
 	ctx.restore()
 }
