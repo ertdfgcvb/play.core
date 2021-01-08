@@ -9,8 +9,6 @@ https://twitter.com/ntsutae/status/1292115106763960327
 
 const pattern = '└┧─┨┕┪┖┫┘┩┙┪━'
 
-export const settings = { weight: 700 }
-
 export function main(coord, context, cursor, buffer) {
 	const t1 = Math.floor(context.frame / 2)
 	const t2 = Math.floor(context.frame / 128)
