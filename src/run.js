@@ -37,7 +37,7 @@ const CSSStyles = [
 	'color',
 	'fontWeight',
 	'fontFamily',
-	'textAling',
+	'textAlign',
 	'lineHeight',
 	'fontSize'
 ]
