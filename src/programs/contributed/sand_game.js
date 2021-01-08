@@ -34,9 +34,9 @@ export function main(coord, context, cursor, buffer) {
 			return {
 				char: Math.random() > 0.5 ? newParticle() : ' ',
 
-				background: 'white',
+				backgroundColor: 'white',
 				color: 'rgb(179, 158, 124)',
-				weight: 500
+				fontWeight: 500
 			}
 		}
 	}
@@ -60,18 +60,18 @@ export function main(coord, context, cursor, buffer) {
 	if (y >= context.rows - 1) {
 		return {
 			char: 'GROUND_'.charAt(x % 7),
-			background: 'rgb(138, 162, 70)',
+			backgroundColor: 'rgb(138, 162, 70)',
 			color: 'rgb(211, 231, 151)',
-			weight: 900
+			fontWeight: 700
 		}
 	}
 
 	if (x >= context.cols - 1 || x <= 0) {
 		return {
 			char: 'WALL'.charAt(y % 4),
-			background: 'rgb(247, 187, 39)',
+			backgroundColor: 'rgb(247, 187, 39)',
 			color: 'white',
-			weight: 900
+			fontWeight: 700
 		}
 	}
 
@@ -103,9 +103,9 @@ export function main(coord, context, cursor, buffer) {
 
 	return {
 		char,
-		background: 'white',
+		backgroundColor: 'white',
 		color: 'rgb(179, 158, 124)',
-		weight: 500
+		fontWeight: 500
 	}
 }
 

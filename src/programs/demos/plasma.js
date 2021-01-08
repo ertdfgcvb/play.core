@@ -43,9 +43,9 @@ export function main(coord, context, cursor, buffer) {
 	const b = floor(map(sin(v3 * PI43 - t1), -1, 1, 0, quant)) * mult
 
 	return {
-		char       : density[idx],
-		color      : 'white',
-		background : css(r, g, b) // r, g, b are floats
+		char : density[idx],
+		color : 'white',
+		backgroundColor : css(r, g, b) // r, g, b are floats
 	}
 }
 

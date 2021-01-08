@@ -22,7 +22,7 @@ export const settings = {
 	// Universal settings
 	cols : 42,
 	rows : 22,
-	background : 'pink',
+	backgroundColor : 'pink',
 	color : 'black'
 }
 

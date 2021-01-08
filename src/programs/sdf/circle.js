@@ -29,7 +29,7 @@ export function main(coord, context, cursor, buffer) {
 
 	return {
 		char : coord.x % 2 ? '│' : density[index],
-		background : 'black',
+		backgroundColor : 'black',
 		color : 'white'
 	}
 }

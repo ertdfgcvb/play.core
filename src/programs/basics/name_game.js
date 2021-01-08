@@ -8,9 +8,9 @@
 // The default backround color and font attributes can be altered
 // by exporting a 'settings' object (see the manual for details).
 export const settings = {
-		background : 'black',
+		backgroundColor : 'black',
 		color : 'white',
-		weight : 'bold' // or '700'
+		fontWeight : 'bold' // or '700'
 }
 
 const TAU = Math.PI * 2

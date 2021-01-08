@@ -48,7 +48,7 @@ export function main(coord, context, cursor, buffer) {
 		char       : density[index],
 		color      : 'white',
 		// convert {r,g,b} obj to a valid CSS hex string
-		background : rgb2hex(color)
+		backgroundColor : rgb2hex(color)
 	}
 }
 

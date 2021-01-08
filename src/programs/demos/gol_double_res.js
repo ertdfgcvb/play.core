@@ -129,10 +129,10 @@ export function post(context, cursor, buffer) {
 	text += 'cells ' + numCells + '/' + buff.length + '\n'
 
     drawBox(text, {
-		background  : 'tomato',
-		color       : 'black',
-		borderStyle : 'double',
-		shadowStyle : 'gray'
+		backgroundColor : 'tomato',
+		color           : 'black',
+		borderStyle     : 'double',
+		shadowStyle     : 'gray'
 	}, buffer)
 }
 

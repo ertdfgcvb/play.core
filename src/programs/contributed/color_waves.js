@@ -6,6 +6,10 @@
 
 const chars = '¯\_(ツ)_/¯.::.ᕦ(ò_óˇ)ᕤ '.split('')
 
+export const settings = {
+	fontWeight : 700
+}
+
 export function main(coord, context, cursor){
 	const t = context.time * 0.0001
 
@@ -22,9 +26,8 @@ export function main(coord, context, cursor){
 
 	const i = Math.round(Math.abs(x + y + o)) % chars.length
 	return {
-		char       : chars[i],
-		color      : colors[i % colors.length],
-		weight     : '700'
+		char : chars[i],
+		color : colors[i % colors.length]
 	}
 }
 

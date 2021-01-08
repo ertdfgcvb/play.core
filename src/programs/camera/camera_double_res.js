@@ -42,9 +42,9 @@ export function main(coord, context, cursor, buffer) {
 	const lower = data[idx + context.cols]
 
 	return {
-		char       :'▄',
-		color      : lower.hex,
-		background : upper.hex
+		char :'▄',
+		color : lower.hex,
+		backgroundColor : upper.hex
 	}
 }
 

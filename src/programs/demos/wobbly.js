@@ -45,13 +45,13 @@ export function main(coord, context, cursor, buffer) {
 	return {
 		char  : density[index],
 		color : k == 0 ? 'orangered' : 'royalblue',
-		// background : coord.y % 2 ? 'white' : 'cornsilk'
+		// backgroundColor : coord.y % 2 ? 'white' : 'cornsilk'
 	}
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffer) {
 	drawInfo(context, cursor, buffer, {
-		color : 'white', background : 'royalblue', shadowStyle : 'gray'
+		color : 'white', backgroundColor : 'royalblue', shadowStyle : 'gray'
 	})
 }

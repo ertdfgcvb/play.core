@@ -25,10 +25,13 @@ const getW = (cols) => {
 }
 
 const blank = {
-	char       : ' ',
-	color      : 'black',
-	background : 'white',
-	weight     : '100',
+	char  : ' ',
+	color : 'black',
+}
+
+export const settings = {
+	backgroundColor : 'white',
+	fontWeight: '100'
 }
 
 export function main(coord, context, cursor, buffer){
@@ -103,8 +106,6 @@ export function main(coord, context, cursor, buffer){
 	return {
 		char       : char,
 		color      : 'black',
-		background : 'white',
-		weight     : '100',
 	}
 }
 

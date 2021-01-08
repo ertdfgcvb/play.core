@@ -9,7 +9,7 @@ import { clamp, map } from '/src/modules/num.js'
 import { CSS4 } from '/src/modules/color.js'
 import { mix, smoothstep } from '/src/modules/num.js'
 
-export const settings = { background : 'black' }
+export const settings = { backgroundColor : 'black' }
 
 const { min, max, sin, floor } = Math
 
@@ -75,13 +75,13 @@ export function main(coord, context, cursor, buffer) {
 
 	if (v === 0) return {
 		char : ' ',
-		background : 'black'
+		backgroundColor : 'black'
 	}
 
 	return {
 		char : u % 10,
 		color : palette[min(palette.length-1,v+1)].hex,
-		background : palette[v].hex
+		backgroundColor : palette[v].hex
 	}
 }
 

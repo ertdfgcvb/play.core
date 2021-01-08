@@ -9,7 +9,7 @@ import { clamp, map } from '/src/modules/num.js'
 import { CSS4 } from '/src/modules/color.js'
 import { mix, smoothstep } from '/src/modules/num.js'
 
-export const settings = { fps : 30, background : 'black', color : 'white' }
+export const settings = { fps : 30, backgroundColor : 'black', color : 'white' }
 
 const { min, max, sin, floor } = Math
 
@@ -61,7 +61,7 @@ export function main(coord, context, cursor, buffer) {
 
 	return {
 		char : flame[clamp(u, 0, flame.length-1)],
-		weight : u > 20 ? 700 : 100
+		fontWeight : u > 20 ? 700 : 100
 	}
 }
 

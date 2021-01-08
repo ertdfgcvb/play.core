@@ -6,17 +6,17 @@
 A style object can be passed to override the default style:
 
 const style = {
-	x           : 3,
-	y           : 2,
-	width       : 0,
-	height      : 0,
-	background  : 'white',
-	color       : 'black',
-	weight      : 'normal',
-	shadowStyle : 'none',
-	borderStyle : 'round'
-	paddingX    : 2,
-	paddingY    : 1,
+	x               : 3,
+	y               : 2,
+	width           : 0,
+	height          : 0,
+	backgroundColor : 'white',
+	color           : 'black',
+	fontWeight      : 'normal',
+	shadowStyle     : 'none',
+	borderStyle     : 'round'
+	paddingX        : 2,
+	paddingY        : 1,
 }
 */
 
@@ -111,27 +111,27 @@ const shadowStyles = {
 		char   : '╳',
 	},
 	gray : {
-		color      : 'dimgray',
-		background : 'lightgray'
+		color : 'dimgray',
+		backgroundColor : 'lightgray'
 	},
 	none : {
 	}
 }
 
 const defaultTextBoxStyle = {
-	x           : 2,
-	y           : 1,
-	width       : 0, // auto width
-	height      : 0, // auto height
-	paddingX    : 2, // text offset from the left border
-	paddingY    : 1, // text offset from the top border
-	background  : 'white',
-	color       : 'black',
-	weight      : 'normal',
-	shadowStyle : 'none',
-	borderStyle : 'round',
-	shadowX     : 2, // horizontal shadow offset
-	shadowY     : 1, // vertical shadow offset
+	x               : 2,
+	y               : 1,
+	width           : 0, // auto width
+	height          : 0, // auto height
+	paddingX        : 2, // text offset from the left border
+	paddingY        : 1, // text offset from the top border
+	backgroundColor : 'white',
+	color           : 'black',
+	fontWeight      : 'normal',
+	shadowStyle     : 'none',
+	borderStyle     : 'round',
+	shadowX         : 2, // horizontal shadow offset
+	shadowY         : 1, // vertical shadow offset
 }
 
 import { wrap, measure } from './string.js'
@@ -163,8 +163,8 @@ export function drawBox(text, style, target, targetCols, targetRows) {
 	setRect({
 		char       : border.bg,
 		color      : s.color,
-		weight     : s.weight,
-		background : s.background
+		fontWeight     : s.fontWeight,
+		backgroundColor : s.backgroundColor
 	}, x1, y1, w, h, target, targetCols, targetRows)
 
 	// Corners
@@ -195,21 +195,21 @@ export function drawBox(text, style, target, targetCols, targetRows) {
 	// Txt
 	mergeText({
 		text,
-		color: style.color,
-		background: style.background,
-		weight: style.weght
+		color : style.color,
+		backgroundColor : style.backgroundColor,
+		fontWeight : style.weght
 	}, x1+s.paddingX, y1+s.paddingY, target, targetCols, targetRows)
 }
 
 // -- Utility for some info output ---------------------------------------------
 
 const defaultInfoStyle = {
-	width       : 24,
-	background  : 'white',
-	color       : 'black',
-	weight      : 'normal',
-	shadowStyle : 'none',
-	borderStyle : 'round',
+	width           : 24,
+	backgroundColor : 'white',
+	color           : 'black',
+	fontWeight      : 'normal',
+	shadowStyle     : 'none',
+	borderStyle     : 'round',
 }
 
 export function drawInfo(context, cursor, target, style) {

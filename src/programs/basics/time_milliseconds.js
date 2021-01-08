@@ -20,7 +20,7 @@ export function main(coord, context, cursor, buffer) {
 	const i = Math.round(Math.abs(x + y + o)) % pattern.length
 	return {
 		char   : pattern[i],
-		weight : '100', // or 'light', 'bold', '400'
+		fontWeight : '100', // or 'light', 'bold', '400'
 	}
 }
 
@@ -31,6 +31,6 @@ import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffer) {
 	// An extra object can be passed to drawInfo to alter the default style
 	drawInfo(context, cursor, buffer, {
-		color : 'white', background : 'royalblue', shadowStyle : 'gray'
+		color : 'white', backgroundColor : 'royalblue', shadowStyle : 'gray'
 	})
 }

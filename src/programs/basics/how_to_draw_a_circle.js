@@ -41,7 +41,7 @@ export function post(context, cursor, buffer) {
 
 	// Custom box style
 	const style = {
-		background : 'tomato',
+		backgroundColor : 'tomato',
 		borderStyle : 'double',
 		shadowStyle : 'gray'
 	}

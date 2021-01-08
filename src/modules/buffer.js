@@ -66,7 +66,7 @@ export function mergeRect(val, x, y, w, h, target, targetCols, targetRows) {
 // 		text : 'abc\ndef',
 // 		color : 'red',
 // 		weight : '400',
-// 		background : 'black',
+// 		backgroundColor : 'black',
 //      etc...
 //	}
 // or just as a string into the target buffer.

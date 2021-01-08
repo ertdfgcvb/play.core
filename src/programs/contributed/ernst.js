@@ -50,7 +50,7 @@ export function main(coord, context, cursor, buffer){
 	return {
 		char       : chars[i],
 		color      : colors[i],
-		weight     : '100'
+		fontWeight : '100'
 	}
 }
 

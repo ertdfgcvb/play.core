@@ -102,7 +102,7 @@ export function main(coord, context, cursor) {
 		const x = coord.x % bgMatrixDim.x
 		const y = coord.y % bgMatrixDim.y
 		return {
-			char : d < 0 ? ' ' : bgMatrix[y][x],
+			char  : d < 0 ? ' ' : bgMatrix[y][x],
 			color : 'black'
 		}
 	} else {

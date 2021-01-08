@@ -23,8 +23,8 @@ const colors = [
 ];
 
 export const settings = {
-	fps          : 30,    // fps capping
-	background   : '#000000',    // background color of the container element
+	fps             : 30,    // fps capping
+	backgroundColor : '#000000',    // background color of the container element
 }
 
 const roads = '┃━┏┓┗┛┣┫┳┻╋';

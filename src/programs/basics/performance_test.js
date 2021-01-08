@@ -32,9 +32,9 @@ export function main(coord, context, cursor, buffer) {
     const b2 = map(cos(direction * 0.05 + 3 -f), -1, 1, 0, 255)
 
 	return {
-		char       : context.frame % 10,
-		color      : `rgb(${r2},${g2},${b2})`,
-		background : `rgb(${r1},${g1},${b1})`,
+		char : context.frame % 10,
+		color : `rgb(${r2},${g2},${b2})`,
+		backgroundColor : `rgb(${r1},${g1},${b1})`,
 	}
 }
 

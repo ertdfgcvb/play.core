@@ -11,7 +11,7 @@ all the gaps.
 [header]
 */
 
-export const settings = { background : 'whitesmoke' }
+export const settings = { backgroundColor : 'whitesmoke' }
 
 export function pre(context, cursor, buffer) {
 
@@ -79,6 +79,6 @@ export function pre(context, cursor, buffer) {
 import { drawInfo } from '/src/modules/drawbox.js'
 export function post(context, cursor, buffer) {
 	drawInfo(context, cursor, buffer, {
-		color : 'white', background : 'royalblue', shadowStyle : 'gray'
+		color : 'white', backgroundColor : 'royalblue', shadowStyle : 'gray'
 	})
 }

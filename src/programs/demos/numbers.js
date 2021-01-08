@@ -9,7 +9,7 @@ import { map } from '/src/modules/num.js'
 import { CGA } from '/src/modules/color.js'
 
 export const settings = {
-	background : 'black'
+	backgroundColor : 'black'
 }
 
 // Remove some colors (backwards, in place) from the CGA palette

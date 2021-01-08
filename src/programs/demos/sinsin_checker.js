@@ -22,10 +22,10 @@ export function main(coord, context, cursor, buffer) {
 	const i = floor(Math.abs(x + y + o))
 	const c = (floor(coord.x * 0.09) + floor(coord.y * 0.09)) % 2
 	return {
-		char       : pattern[c][i % pattern[c].length],
-		color      : 'black', //col[c],
-		background : 'white', //col[(c+1)%2],
-		weight     : weights[c],
+		char : pattern[c][i % pattern[c].length],
+		color : 'black', //col[c],
+		// backgroundColor : col[(c+1)%2],
+		fontWeight : weights[c],
 	}
 }
 
