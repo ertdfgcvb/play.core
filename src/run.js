@@ -20,19 +20,27 @@ const renderers = {
 // They can be overwritten by the parameters of the runner
 // or as a settings object exported by the program (in this order).
 const defaultSettings = {
-	element      : null,    // target element for output
-	cols         : 0,       // number of columns, 0 is equivalent to 'auto'
-	rows         : 0,       // number of columns, 0 is equivalent to 'auto'
-	once         : false,   // if set to true the renderer will run only once
-	fps          : 30,      // fps capping
-	renderer     : 'text',  // can be 'canvas', anything else falls back to 'text'
-	background   : '',      // default styles of the target element
-	color        : '',
-	weight       : '',
-	allowSelect  : false,   // allows selection of the rendered element
-	restoreState : false,   // will store the "state" object in local storage
-	                        // this is handy for live-coding situations
+	element         : null,    // target element for output
+	cols            : 0,       // number of columns, 0 is equivalent to 'auto'
+	rows            : 0,       // number of columns, 0 is equivalent to 'auto'
+	once            : false,   // if set to true the renderer will run only once
+	fps             : 30,      // fps capping
+	renderer        : 'text',  // can be 'canvas', anything else falls back to 'text'
+	allowSelect     : false,   // allows selection of the rendered element
+	restoreState    : false,   // will store the "state" object in local storage
+	                           // this is handy for live-coding situations
 }
+
+// CSS styles which can be passed to the container element via settings
+const CSSStyles = [
+	'backgroundColor',
+	'color',
+	'fontWeight',
+	'fontFamily',
+	'textAling',
+	'lineHeight',
+	'fontSize'
+]
 
 // Program runner.
 // Takes a program object (usually an imported module),
@@ -94,6 +102,11 @@ export function run(program, runSettings, userData = {}) {
 					console.warn("This renderer expects a text target element.")
 				}
 			}
+		}
+
+		// Apply CSS settings to element
+		for (const s of CSSStyles) {
+			if (settings[s]) settings.element.style[s] = settings[s]
 		}
 
 		// Eventqueue
@@ -178,9 +191,9 @@ export function run(program, runSettings, userData = {}) {
 
 		// Default cell style inserted in case of undefined / null
 		const DEFAULT_CELL_STYLE = Object.freeze({
-			color      : settings.color,
-			background : settings.background,
-			weight     : settings.weight
+			color           : settings.color,
+			backgroundColor : settings.backgroundColor,
+			fontWeight      : settings.fontWeight
 		})
 
 		// Buffer needed for the final DOM rendering,

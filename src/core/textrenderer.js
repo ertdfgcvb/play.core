@@ -18,9 +18,9 @@ function render(context, buffer) {
 	const element = context.settings.element
 
 	// Set the most used styles to the container
-	element.style.backgroundColor = context.settings.background
-	element.style.color = context.settings.color
-	element.style.fontWeight = context.settings.weight
+	// element.style.backgroundColor = context.settings.background
+	// element.style.color = context.settings.color
+	// element.style.fontWeight = context.settings.weight
 
 	// Detect resize
 	if (context.rows != rows || context.cols != cols) {
@@ -100,8 +100,8 @@ function render(context, buffer) {
 				if (tagIsOpen) html += '</span>'
 
 				const c = currCell.color === context.settings.color ? null : currCell.color
-				const b = currCell.background === context.settings.background ? null : currCell.background
-				const w = currCell.weight === context.settings.weight ? null : currCell.weight
+				const b = currCell.backgroundColor === context.settings.backgroundColor ? null : currCell.backgroundColor
+				const w = currCell.fontWeight === context.settings.fontWeight ? null : currCell.fontWeight
 
 				// Accumulate the CSS inline attribute.
 				let css = ''
@@ -135,19 +135,19 @@ function render(context, buffer) {
 
 // Compares two cells
 function isSameCell(cellA, cellB) {
-	if (typeof cellA != 'object')              return false
-	if (typeof cellB != 'object')              return false
-	if (cellA.char !== cellB.char)             return false
-	if (cellA.weight !== cellB.weight)         return false
-	if (cellA.color !== cellB.color)           return false
-	if (cellA.background !== cellB.background) return false
+	if (typeof cellA != 'object')                        return false
+	if (typeof cellB != 'object')                        return false
+	if (cellA.char !== cellB.char)                       return false
+	if (cellA.fontWeight !== cellB.fontWeight)           return false
+	if (cellA.color !== cellB.color)                     return false
+	if (cellA.backgroundColor !== cellB.backgroundColor) return false
 	return true
 }
 
 // Compares two cells for style only
 function isSameCellStyle(cellA, cellB) {
-	if (cellA.weight !== cellB.weight)         return false
-	if (cellA.color !== cellB.color)           return false
-	if (cellA.background !== cellB.background) return false
+	if (cellA.fontWeight !== cellB.fontWeight)           return false
+	if (cellA.color !== cellB.color)                     return false
+	if (cellA.backgroundColor !== cellB.backgroundColor) return false
 	return true
 }

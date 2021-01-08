@@ -39,12 +39,12 @@ function render(context, buffer) {
 	}
 
 	const ff = ' ' + m.fontSize + 'px ' + m.fontFamily
-	const bg = settings && settings.background ? settings.background : 'white'
+	const bg = settings && settings.backgroundColor ? settings.backgroundColor : 'white'
 	const fg = settings && settings.color ? settings.color : 'black'
-	const weight = settings && settings.weight ? settings.color : '400'
+	const fontWeight = settings && settings.fontWeight ? settings.color : '400'
 
-	// Set the background of the box-element
-	canvas.style.backgroundColor = settings.background || 'white'
+	// Set the backgroundColor of the box-element
+	// canvas.style.backgroundColor = settings.backgroundColor || 'white'
 
 	// Transparent canvas backround for the remaining size
 	// (fractions of cellWidth and lineHeight).
@@ -74,11 +74,11 @@ function render(context, buffer) {
 			const cell = buffer[j * c + i]
 			const x = i * cw
 			const y = j * ch
-			if (cell.background && cell.background != bg) {
-				ctx.fillStyle = cell.background || bg
+			if (cell.backgroundColor && cell.backgroundColor != bg) {
+				ctx.fillStyle = cell.backgroundColor || bg
 				ctx.fillRect(Math.round(x), y, Math.ceil(cw), ch)
 			}
-			ctx.font = (cell.weight || weight) + ff
+			ctx.font = (cell.fontWeight || fontWeight) + ff
 			ctx.fillStyle = cell.color || fg
 			ctx.fillText(cell.char, x, y)
 		}
