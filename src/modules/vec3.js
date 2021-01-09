@@ -5,11 +5,11 @@
 
 - No vector class (a 'vector' is just any object with {x, y, z})
 - The functions never modify the original object.
-- An optional destination object can be passed as last paremeter  to all
+- An optional destination object can be passed as last paremeter to all
   the functions (except vec3()).
 - All function can be exported individually or grouped via default export.
-- For the full class use: import * as Vec3 from '/src/modules/vec3.js'
-
+- For the default export use:
+	import * as Vec3 from '/src/modules/vec3.js'
 */
 
 // Creates a vector

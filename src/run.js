@@ -44,11 +44,10 @@ const CSSStyles = [
 
 // Program runner.
 // Takes a program object (usually an imported module),
-// an Element object (usually a <pre> element) as rendering target
 // and some optional settings (see above) as arguments.
-// Finally, a precalculated metrics object can be passed,
-// otherwise it will be calcualted prior first run.
-// The program object should contain at least a main(), pre() or post() function.
+// Finally, an optional userData object can be passed which will be available
+// as last parameter in all the module functions.
+// The program object should export at least a main(), pre() or post() function.
 export function run(program, runSettings, userData = {}) {
 
 	// Everything is wrapped inside a promise;
