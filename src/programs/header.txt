@@ -1,4 +1,4 @@
----------------------------------------------------------------------------
+---------------------------------------------------------------------
 Type ?help
      anywhere (or edit the previous line)
      to open the manual for an overview about the playground,
@@ -7,9 +7,9 @@ Type ?immediate on
      to enable immediate mode (off to disable).
 Type ?video night
      to switch to dark mode for the editor (day for light).
----------------------------------------------------------------------------
-Meta-Enter   : run
-Meta-Period  : show/hide editor
-Meta-S       : save a new version (locally, with permalink)
-Meta-Shift-U : upload a version to the server (needs author and title tags)
----------------------------------------------------------------------------
+---------------------------------------------------------------------
+Cmd/Ctrl-Enter   : run
+Cmd/Ctrl-Period  : show/hide editor
+Cmd/Ctrl-S       : save a new version (locally, with permalink)
+Cmd/Ctrl-Shift-U : upload to playground (needs author and title tags)
+---------------------------------------------------------------------
