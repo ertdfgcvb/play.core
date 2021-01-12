@@ -10,7 +10,7 @@ export function main() {
 }
 
 // Shorter:
-// export const main () => '?'
+// export const main = () => '?'
 
 // Even shorter:
 // export let main=o=>'?'
