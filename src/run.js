@@ -35,11 +35,12 @@ const defaultSettings = {
 const CSSStyles = [
 	'backgroundColor',
 	'color',
-	'fontWeight',
 	'fontFamily',
-	'textAlign',
+	'fontSize',
+	'fontWeight',
+	'letterSpacing',
 	'lineHeight',
-	'fontSize'
+	'textAlign',
 ]
 
 // Program runner.
