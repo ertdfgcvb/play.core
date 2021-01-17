@@ -5,7 +5,7 @@
 
 A canvas 'wrapper' class.
 The purpose is to offer a ready to use buffer (a "pixel" array
-of {r, g, b, a, (gray)} objects) of the same size of the ASCII context.
+of {r, g, b, (a, v)} objects) of the same size of the ASCII context;
 Some convenience functions are provided.
 
 Four main functions are implemented to copy a source (canvas, video, image)
@@ -20,7 +20,7 @@ A call to these functions will also update the internal 'pixels' array trough:
 
 A few extra functions are provided to manipulate the array directly:
 - mirrorX()
-- normalize() // only gray values
+- normalize() // only v values
 - quantize()
 
 Finally the whole buffer can be copied to a destination trough:
@@ -37,8 +37,8 @@ export const MODE_COVER  = Symbol()
 export const MODE_FIT    = Symbol()
 export const MODE_CENTER = Symbol()
 
-const BLACK = { r:0, g:0, b:0, a:1, gray:0 }
-const WHITE = { r:255, g:255, b:255, a:1, gray:1 }
+const BLACK = { r:0, g:0, b:0, a:1, v:0 }
+const WHITE = { r:255, g:255, b:255, a:1, v:1 }
 
 export default class Canvas {
 
@@ -52,7 +52,7 @@ export default class Canvas {
 		this.ctx.putImageData(this.ctx.createImageData(1, 1), 0, 0);
 
 		// A flat buffer to store image data
-		// in the form of {r, g, b, [a], gray}
+		// in the form of {r, g, b, [a, v]}
 		this.pixels = []
 		this.loadPixels()
 	}
@@ -102,7 +102,8 @@ export default class Canvas {
 		return this
 	}
 
-	// Fits the source image on the destintation canvas.
+	// Fits the source image on the destintation canvas
+	// without resizing the canvas.
 	// An otional aspect factor can be passed.
 	fit(source, aspect=1) {
 		centerImage(source, this.canvas, 1, aspect, MODE_FIT)
@@ -110,7 +111,8 @@ export default class Canvas {
 		return this
 	}
 
-	// Centers the source image on the destination canvas.
+	// Centers the source image on the destination canvas
+	// without resizing the canvas.
 	// Optional scaling factors can be passed.
 	center(source, scaleX=1, scaleY=1) {
 		centerImage(source, this.canvas, scaleX, scaleY, MODE_CENTER)
@@ -138,7 +140,7 @@ export default class Canvas {
 	}
 
 	normalize() {
-		normalizeGray(this.pixels, this.pixels, 0.0, 1.0)
+		normalizev(this.pixels, this.pixels, 0.0, 1.0)
 		return this
 	}
 
@@ -179,8 +181,8 @@ export default class Canvas {
 
   		// Avoid 9 extra interpolations if only gray is needed
   		if (gray) {
-	  		const p1 = mix(this.get(l, b).gray, this.get(r, b).gray, lr)
-	  		const p2 = mix(this.get(l, t).gray, this.get(r, t).gray, lr)
+	  		const p1 = mix(this.get(l, b).v, this.get(r, b).v, lr)
+	  		const p2 = mix(this.get(l, t).v, this.get(r, t).v, lr)
 	  		return mix(p1, p2, bt)
 	  	} else {
 	  		const p1 = mixColors(this.get(l, b), this.get(r, b), lr)
@@ -205,7 +207,7 @@ export default class Canvas {
 			const a = data[i+3] / 255.0 // CSS style
 			this.pixels[idx++] = {
 				r, g, b, a,
-				gray : toGray(r, g, b)
+				v : toGray(r, g, b)
 			}
 		}
 		return this
@@ -240,10 +242,10 @@ export default class Canvas {
 
 function mixColors(a, b, amt) {
 	return {
-		r    : mix(a.r, b.r, amt),
-		g    : mix(a.g, b.g, amt),
-		b    : mix(a.b, b.b, amt),
-		gray : mix(a.gray, b.gray, amt)
+		r : mix(a.r, b.r, amt),
+		g : mix(a.g, b.g, amt),
+		b : mix(a.b, b.b, amt),
+		v : mix(a.v, b.v, amt)
 	}
 }
 
@@ -343,7 +345,7 @@ function paletteQuantize(arrayIn, arrayOut, palette) {
 				nearest = b
 			}
 		}
-		arrayOut[i] = {...nearest, gray : arrayIn[i].gray } // Keep the original gray value intact
+		arrayOut[i] = {...nearest, v : arrayIn[i].v } // Keep the original gray value intact
 	}
 	return arrayOut
 }
@@ -355,15 +357,15 @@ function normalizeGray(arrayIn, arrayOut, lower=0.0, upper=1.0) {
 	let min = Number.MAX_VALUE
 	let max = 0
 	for (let i=0; i<arrayIn.length; i++) {
-		min = Math.min(arrayIn[i].gray, min)
-		max = Math.max(arrayIn[i].gray, max)
+		min = Math.min(arrayIn[i].v, min)
+		max = Math.max(arrayIn[i].v, max)
 	}
 	// return target.map( v => {
 	//     return map(v, min, max, 0, 1)
 	// })
 	for (let i=0; i<arrayIn.length; i++) {
-		const gray = min == max ? min : map(arrayIn[i].gray, min, max, lower, upper)
-		arrayOut[i] = {...arrayOut[i], gray}
+		const v = min == max ? min : map(arrayIn[i].v, min, max, lower, upper)
+		arrayOut[i] = {...arrayOut[i], v}
 	}
 	return arrayOut
 }
