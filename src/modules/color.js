@@ -23,7 +23,7 @@ Colors in exported palettes are augmented to:
 	g    : 0,          // 0-255 (as in CSS)
 	b    : 0,          // 0-255 (as in CSS)
 	a    : 1.0,        // 0-1   (as in CSS)
-	v    : 0.6,        // 0-1   (custom gray value)
+	v    : 0.6,        // 0-1   (gray value)
 	hex  : '#FF0000',
 	css  : 'rgb(255,0,0)'
 	int  : 16711680
