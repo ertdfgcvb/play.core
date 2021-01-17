@@ -106,6 +106,7 @@ export default class Canvas {
 		const h = source.videoWidth || source.width
 		this.resize(w, h)
 		this.copy(source, 0, 0, w, h, 0, 0, w, h)
+		return this
 	}
 
 	// Covers the destintation canvas with the source image
