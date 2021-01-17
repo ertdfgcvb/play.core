@@ -32,7 +32,7 @@ export function pre(context, cursor, buffer) {
 export function main(coord, context, cursor, buffer) {
 	// Coord also contains the index of each cell:
 	const color = data[coord.index]
-	const index = Math.floor(color.gray * (density.length-1))
+	const index = Math.floor(color.v * (density.length-1))
 	return density[index]
 }
 

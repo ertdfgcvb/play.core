@@ -43,7 +43,7 @@ export function main(coord, context, cursor, buffer) {
 	// Coord also contains the index of each cell
 	const color = data[coord.index]
 	// Add some chars to the output
-	const index = Math.floor(color.gray * (density.length-1))
+	const index = Math.floor(color.v * (density.length-1))
 	return {
 		char       : density[index],
 		color      : 'white',

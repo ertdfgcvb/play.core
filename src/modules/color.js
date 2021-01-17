@@ -23,7 +23,7 @@ Colors in exported palettes are augmented to:
 	g    : 0,          // 0-255 (as in CSS)
 	b    : 0,          // 0-255 (as in CSS)
 	a    : 1.0,        // 0-1   (as in CSS)
-	gray : 0.6,        // 0-1   (custom)
+	v    : 0.6,        // 0-1   (custom gray value)
 	hex  : '#FF0000',
 	css  : 'rgb(255,0,0)'
 	int  : 16711680
@@ -295,11 +295,11 @@ const _CSS4 = [..._CSS3,
 // Helper function
 function augment(pal) {
 	return pal.map(el => {
-		const rgb  = int2rgb(el.int)
-		const hex  = rgb2hex(rgb)
-		const css  = rgb2css(rgb)
-		const gray = rgb2gray(rgb)
-	 	return {...el, ...rgb, gray, hex, css}
+		const rgb = int2rgb(el.int)
+		const hex = rgb2hex(rgb)
+		const css = rgb2css(rgb)
+		const v   = rgb2gray(rgb)
+	 	return {...el, ...rgb, v, hex, css}
 	})
 }
 
