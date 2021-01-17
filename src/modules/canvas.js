@@ -94,7 +94,17 @@ export default class Canvas {
 		return this
 	}
 
-	// Covers the destintation canvas with the source image.
+	// Resizes the canvas to the size of the source image
+	// and paints the image on it.
+	image(source) {
+		const w = source.videoWidth || source.width
+		const h = source.videoWidth || source.width
+		this.resize(w, h)
+		this.copy(source, 0, 0, w, h, 0, 0, w, h)
+	}
+
+	// Covers the destintation canvas with the source image
+	// without resizing the canvas.
 	// An otional aspect factor can be passed.
 	cover(source, aspect=1) {
 		centerImage(source, this.canvas, 1, aspect, MODE_COVER)
