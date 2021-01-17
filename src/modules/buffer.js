@@ -25,7 +25,7 @@ export function get(x, y, target, targetCols, targetRows) {
 // A buffer object contains at least a 'state' array
 // and a 'width' and a 'height' field to allow easy setting.
 // The value to be set is a single character or a 'cell' object like:
-// { char, color, background, weight }
+// { char, color, backgroundColor, fontWeight }
 // which can overwrite the buffer (set) or partially merged (merge)
 export function set(val, x, y, target, targetCols, targetRows) {
 	if (x < 0 || x >= targetCols) return
@@ -65,7 +65,7 @@ export function mergeRect(val, x, y, w, h, target, targetCols, targetRows) {
 //	{
 // 		text : 'abc\ndef',
 // 		color : 'red',
-// 		weight : '400',
+// 		fontWeight : '400',
 // 		backgroundColor : 'black',
 //      etc...
 //	}
@@ -87,11 +87,19 @@ export function mergeText(textObj, x, y, target, targetCols, targetRows) {
 
 	let col = x
 	let row = y
+	// Hackish and inefficient way to retain info of the first and last
+	// character of each line merged into the matrix.
+	// Can be useful to wrap with markup.
+	const wrapInfo = []
+
 	text.split('\n').forEach((line, lineNum) => {
 		line.split('').forEach((char, charNum) => {
 			col = x + charNum
 			merge({char, ...mergeObj}, col, row, target, targetCols, targetRows)
 		})
+		const first = get(x, row, target, targetCols, targetRows)
+		const last = get(x+line.length-1, row, target, targetCols, targetRows)
+		wrapInfo.push({first, last})
 		row++
 	})
 
@@ -100,10 +108,11 @@ export function mergeText(textObj, x, y, target, targetCols, targetRows) {
 
 	// Returns some info about the inserted text:
 	// - the coordinates (offset) of the last inserted character
-	// - the first an last chars
+	// - the first an last chars of each line (wrapInfo)
 	return {
 		offset : {col, row},
-		first  : get(x, y, target, targetCols, targetRows),
-		last   : get(col, row, target, targetCols, targetRows)
+		// first  : wrapInfo[0].first,
+		// last   : wrapInfo[wrapInfo.length-1].last,
+		wrapInfo
 	}
 }
