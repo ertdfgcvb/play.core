@@ -5,11 +5,16 @@
 
 A canvas 'wrapper' class.
 The purpose is to offer a ready to use buffer (a "pixel" array
-of {r, g, b, (a, v)} objects) of the same size of the ASCII context;
+of {r, g, b, (a, v)} objects) of the same size of the ASCII context (or not)
+which can be read or sampled.
 Some convenience functions are provided.
 
-Four main functions are implemented to copy a source (canvas, video, image)
+Resizes the canvas:
+- resize(w, h)
+
+Five main functions are implemented to copy a source (canvas, video, image)
 to the internal canvas:
+- image(source)  // resizes the canvas to the source image and copies it
 - copy(source, ...)
 - cover(source, ...)
 - fit(source, ...)
@@ -265,7 +270,6 @@ function getElementSize(source) {
 	const height = type == 'VIDEO' ? source.videoHeight : source.height || 0
 	return { width, height }
 }
-
 
 function centerImage(sourceCanvas, targetCanvas, scaleX=1, scaleY=1, mode=MODE_CENTER) {
 
