@@ -103,7 +103,7 @@ export default class Canvas {
 	// and paints the image on it.
 	image(source) {
 		const w = source.videoWidth || source.width
-		const h = source.videoWidth || source.width
+		const h = source.videoHeight || source.height
 		this.resize(w, h)
 		this.copy(source, 0, 0, w, h, 0, 0, w, h)
 		return this
