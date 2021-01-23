@@ -35,7 +35,7 @@ function image (url) {
         img.onload = () => resolve(img)
         img.onerror = () => {
             console.log('Loader: error loading image ' + url)
-            resolve(img)
+            resolve(null)
         }
         img.src = url
     })
