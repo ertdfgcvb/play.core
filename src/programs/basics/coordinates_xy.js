@@ -5,12 +5,6 @@
 [header]
 */
 
-// Some settings can be exported, see the manual for details
-export const settings = {
-	color : 'white',
-	backgroundColor : 'black'
-}
-
 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ.:!?'
 
 export function main(coord, context, cursor, buffer) {
