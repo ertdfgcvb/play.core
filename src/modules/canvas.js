@@ -156,7 +156,7 @@ export default class Canvas {
 	}
 
 	normalize() {
-		normalizev(this.pixels, this.pixels, 0.0, 1.0)
+		normalizeGray(this.pixels, this.pixels, 0.0, 1.0)
 		return this
 	}
 
