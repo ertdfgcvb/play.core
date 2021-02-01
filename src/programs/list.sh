@@ -18,7 +18,7 @@ SCRIPT_PATH=${0%/*}    # path to this script
 URL_PREFIX='/#/src'
 
 # All folders
-#FOLDERS=`find ./ -mindepth 1 -type d`
+# FOLDERS=`find ./ -mindepth 1 -type d`
 
 # Odered list of folders
 FOLDERS=(basics sdf demos camera contributed)
