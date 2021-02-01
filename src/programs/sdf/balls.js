@@ -1,8 +1,8 @@
 /**
+[header]
 @author ertdfgcvb
 @title  Balls
 @desc   Smooth SDF balls
-[header]
 */
 
 import { map } from '/src/modules/num.js'

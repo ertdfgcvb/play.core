@@ -1,10 +1,10 @@
 /**
+[header]
 @author ertdfgcvb
 @title  Chroma Spiral
 @desc   Shadertoy port
 Inspired by this shader by scry
 https://www.shadertoy.com/view/tdsyRf
-[header]
 */
 
 import { map } from '/src/modules/num.js'

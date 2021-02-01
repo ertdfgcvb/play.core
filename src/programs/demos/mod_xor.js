@@ -1,10 +1,10 @@
 /**
+[header]
 @author ertdfgcvb
 @title  Mod Xor
 @desc   Patterns obtained trough modulo and xor
 Inspired by this tweet by @ntsutae
 https://twitter.com/ntsutae/status/1292115106763960327
-[header]
 */
 
 const pattern = '└┧─┨┕┪┖┫┘┩┙┪━'

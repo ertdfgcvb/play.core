@@ -1,8 +1,8 @@
 /**
+[header]
 @author ertdfgcvb
 @title  Sin Sin
 @desc   Checker variation
-[header]
 */
 
 const pattern = [

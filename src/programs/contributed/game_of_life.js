@@ -1,4 +1,5 @@
 /**
+[header]
 @author Alex Miller
 @title  GOL
 @desc   Conway's Game of Life

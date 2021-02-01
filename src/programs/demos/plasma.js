@@ -1,9 +1,9 @@
 /**
+[header]
 @author ertdfgcvb
 @title  Plasma
 @desc   Oldschool plasma demo
 Plasma primer: https://www.bidouille.org/prog/plasma
-[header]
 */
 
 import { vec2, dot, add, sub, length } from '/src/modules/vec2.js'

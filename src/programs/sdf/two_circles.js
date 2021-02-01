@@ -1,8 +1,8 @@
 /**
+[header]
 @author ertdfgcvb
 @title  Two circles
 @desc   Smooth union of two circles
-[header]
 */
 
 import { sdCircle, opSmoothUnion } from '/src/modules/sdf.js'

@@ -1,4 +1,5 @@
 /**
+[header]
 @author Alex Miller
 @title  Sand game
 @desc   Click to drop sand

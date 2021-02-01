@@ -1,10 +1,10 @@
 /**
+[header]
 @author ertdfgcvb
 @title  Spiral
 @desc   Shadertoy port
 Inspired by this shader by ahihi
 https://www.shadertoy.com/view/XdSGzR
-[header]
 */
 
 import { vec2, dot, add, sub, length } from '/src/modules/vec2.js'

@@ -1,8 +1,8 @@
 /**
+[header]
 @author ertdfgcvb
 @title  Coordinates: index
 @desc   Use of coord.index
-[header]
 */
 
 // Global variables have scope in the whole module.

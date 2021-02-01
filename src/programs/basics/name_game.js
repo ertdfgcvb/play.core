@@ -1,8 +1,8 @@
 /**
+[header]
 @author ertdfgcvb
 @title  Name game
 @desc   What’s your name?
-[header]
 */
 
 // The default backround color and font attributes can be altered

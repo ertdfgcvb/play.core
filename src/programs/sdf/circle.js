@@ -1,8 +1,8 @@
 /**
+[header]
 @author ertdfgcvb
 @title  Circle
 @desc   Draw a smooth circle with exp()
-[header]
 */
 
 import { sdCircle } from '/src/modules/sdf.js'

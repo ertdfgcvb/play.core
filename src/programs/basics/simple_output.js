@@ -1,8 +1,8 @@
 /**
+[header]
 @author ertdfgcvb
 @title  Simple output
 @desc   The smallest program possible?
-[header]
 */
 
 export function main() {

@@ -1,8 +1,8 @@
 /**
+[header]
 @author ertdfgcvb
 @title  How to draw a square
 @desc   Draw a square using a distance function
-[header]
 */
 
 import { map } from '/src/modules/num.js'

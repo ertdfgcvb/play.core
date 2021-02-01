@@ -1,8 +1,8 @@
 /**
+[header]
 @author ertdfgcvb
 @title  How to log
 @desc   Console output inside the main() loop
-[header]
 */
 
 const { abs, floor, max } = Math

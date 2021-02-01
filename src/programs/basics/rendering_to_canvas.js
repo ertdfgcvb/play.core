@@ -1,8 +1,8 @@
 /**
+[header]
 @author ertdfgcvb
 @title  Canvas renderer
 @desc   Rendering to a canvas element
-[header]
 */
 
 // A few extra fields are available when choosing the canvas renderer:

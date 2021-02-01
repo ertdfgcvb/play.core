@@ -1,8 +1,8 @@
 /**
+[header]
 @author ertdfgcvb
 @title  Rectangles
 @desc   Smooth SDF Rectangles
-[header]
 */
 
 import { map } from '/src/modules/num.js'

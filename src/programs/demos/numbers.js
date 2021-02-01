@@ -1,8 +1,8 @@
 /**
+[header]
 @author ertdfgcvb
 @title  Numbers
 @desc   Fun with integers
-[header]
 */
 
 import { map } from '/src/modules/num.js'

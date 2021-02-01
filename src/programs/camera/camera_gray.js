@@ -1,8 +1,8 @@
 /**
+[header]
 @author ertdfgcvb
 @title  Camera grayscale
 @desc   Grayscale input from camera
-[header]
 */
 
 import { sort } from '/src/modules/sort.js'

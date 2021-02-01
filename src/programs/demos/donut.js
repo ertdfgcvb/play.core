@@ -1,4 +1,5 @@
 /**
+[header]
 @author ertdfgcvb
 @title  Donut
 @desc   Ported from a1k0n’s donut demo.
@@ -8,7 +9,6 @@ This program writes directly into the frame buffer
 in a sort of 'brute force' way:
 theta and phi (below) must be small enough to fill
 all the gaps.
-[header]
 */
 
 export const settings = { backgroundColor : 'whitesmoke' }

@@ -1,9 +1,10 @@
 /**
+[header]
 @author ertdfgcvb
 @title  Camera RGB
 @desc   Color input from camera (quantised)
-[header]
 */
+
 import { map } from '/src/modules/num.js'
 import { rgb2hex, rgb}  from '/src/modules/color.js'
 import Camera from '/src/modules/camera.js'

@@ -1,8 +1,8 @@
 /**
+[header]
 @author ertdfgcvb
 @title  Doom Flame (full color)
 @desc   Oldschool flame effect
-[header]
 */
 
 import { clamp, map } from '/src/modules/num.js'

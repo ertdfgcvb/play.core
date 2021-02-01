@@ -1,8 +1,8 @@
 /**
+[header]
 @author ertdfgcvb
 @title  Camera double resolution
 @desc   Doubled vertical resolution input from camera
-[header]
 */
 
 import { CSS3 } from '/src/modules/color.js'
