@@ -1,5 +1,6 @@
 /**
 [header]
+
 @author ertdfgcvb
 @title  Camera double resolution
 @desc   Doubled vertical resolution input from camera

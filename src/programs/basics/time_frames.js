@@ -1,5 +1,6 @@
 /**
 [header]
+
 @author ertdfgcvb
 @title  Time: frames
 @desc   Use of context.frame (ASCII horizon)

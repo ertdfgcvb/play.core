@@ -1,5 +1,6 @@
 /**
 [header]
+
 @author nkint
 @title  oeö
 @desc   Inspired by Ernst Jandl, 1964

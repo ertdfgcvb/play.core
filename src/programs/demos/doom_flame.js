@@ -1,5 +1,6 @@
 /**
 [header]
+
 @author ertdfgcvb
 @title  Doom Flame
 @desc   Oldschool flame effect

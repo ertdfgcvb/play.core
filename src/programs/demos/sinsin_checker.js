@@ -1,5 +1,6 @@
 /**
 [header]
+
 @author ertdfgcvb
 @title  Sin Sin
 @desc   Checker variation
@@ -18,7 +19,7 @@ export function main(coord, context, cursor, buffer) {
 	const t = context.time * 0.001
 	const x = coord.x - context.cols / 2
 	const y = coord.y - context.rows / 2
-	const o = sin(y * x * 0.001 + y * x * 0.002 + t ) * 40
+	const o = sin(x * y * 0.0017 + y * 0.0033 + t ) * 40
 	const i = floor(Math.abs(x + y + o))
 	const c = (floor(coord.x * 0.09) + floor(coord.y * 0.09)) % 2
 	return {

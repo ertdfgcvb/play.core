@@ -1,5 +1,6 @@
 /**
 [header]
+
 @author ertdfgcvb
 @title  Mod Xor
 @desc   Patterns obtained trough modulo and xor
