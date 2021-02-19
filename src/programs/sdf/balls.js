@@ -1,6 +1,5 @@
 /**
 [header]
-
 @author ertdfgcvb
 @title  Balls
 @desc   Smooth SDF balls

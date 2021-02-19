@@ -17,6 +17,9 @@ SCRIPT_PATH=${0%/*}    # path to this script
 
 URL_PREFIX='/#/src'
 
+NUM_COLS=${1:-3}
+
+
 # All folders
 # FOLDERS=`find ./ -mindepth 1 -type d`
 
@@ -39,28 +42,35 @@ for folder in ${FOLDERS[@]}; do
 			FOLDER=$(echo $folder | sed -e 's/\.\///' -e 's/\///' -e 's/\.js//' )
 			FIRST=0
 			printf "\t"
-			printf "<div>"
+			printf "<div class='program-cathegory'>"
 			printf "$(trim $FOLDER)"
 			printf "</div>"
 			printf "\n"
 		else
-			printf "\t"
-			printf "<div>"
-			printf "</div>"
-			printf "\n"
+			if [[ $NUM_COLS == 3 ]]; then
+				printf "\t"
+				printf "<div>"
+				printf "</div>"
+				printf "\n"
+			fi
 		fi
 
 		printf "\t"
 		printf "<div>"
-		printf "<a target='_blank' href='$URL'>$(trim $TITLE)</a>"
+		if [[ $NUM_COLS == 3 ]]; then
+			printf "<a target='_blank' href='$URL'>$(trim $TITLE)</a>"
+		else
+			printf "<a href='$URL' onclick=\"location.href='$URL';location.reload()\">$(trim $TITLE)</a>"
+		fi
 		printf "</div>"
 		printf "\n"
 
-		printf "\t"
-		printf "<div>"
-		printf "$(trim $DESC)"
-		printf "</div>"
-		printf "\n"
-
+		if [[ $NUM_COLS == 3 ]]; then
+			printf "\t"
+			printf "<div>"
+			printf "$(trim $DESC)"
+			printf "</div>"
+			printf "\n"
+		fi
 	done
 done

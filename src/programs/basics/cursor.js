@@ -1,6 +1,5 @@
 /**
 [header]
-
 @author ertdfgcvb
 @title  Cursor
 @desc   Crosshair example with mouse cursor

@@ -1,0 +1,16 @@
+---------------------------------------------------------------------
+Type ?help
+     anywhere (or edit the previous line)
+     to open the manual for an overview about the playground,
+     more commands like this and links to many examples.
+Type ?immediate on
+     to enable immediate mode (off to disable).
+Type ?video night
+     to switch to dark mode for the editor (day for light).
+---------------------------------------------------------------------
+Cmd/Ctrl-Enter    : run
+Cmd/Ctrl-Period   : show/hide editor
+Cmd/Ctrl-S        : save locally (with permalink)
+Cmd/Ctrl-Shift-U  : share to playground (needs author and title tags)
+Program directory : https://play.ertdfgcvb.xyz/lsd
+---------------------------------------------------------------------

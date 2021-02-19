@@ -1,6 +1,5 @@
 /**
 [header]
-
 @author ertdfgcvb
 @title  Sin Sin
 @desc   Checker variation

@@ -1,6 +1,5 @@
 /**
 [header]
-
 @author Alex Miller
 @title  Pathfinder
 @desc   Click to spawn new path segments

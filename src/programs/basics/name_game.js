@@ -1,6 +1,5 @@
 /**
 [header]
-
 @author ertdfgcvb
 @title  Name game
 @desc   What’s your name?
