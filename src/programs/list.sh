@@ -60,7 +60,7 @@ for folder in ${FOLDERS[@]}; do
 		if [[ $NUM_COLS == 3 ]]; then
 			printf "<a target='_blank' href='$URL'>$(trim $TITLE)</a>"
 		else
-			printf "<a href='$URL' onclick=\"location.href='$URL';location.reload()\">$(trim $TITLE)</a>"
+			printf "<a href='$URL'>$(trim $TITLE)</a>"
 		fi
 		printf "</div>"
 		printf "\n"
