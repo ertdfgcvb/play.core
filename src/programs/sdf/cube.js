@@ -12,7 +12,7 @@ import { map } from '/src/modules/num.js'
 
 export const settings = { fps : 60 }
 
-const density = '  -=+abcdX'
+const density = ' -=+abcdX'
 
 // Shorthands
 const { vec3 } = v3
