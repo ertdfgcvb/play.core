@@ -389,6 +389,7 @@ export function copyContent(el) {
 	sel.removeAllRanges()
 	sel.addRange(range)
 	document.execCommand('copy')
+	sel.removeAllRanges()
 
 	// Restore default, if necessary
 	if (!selectionEnabled) disableSelect(el)
