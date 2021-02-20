@@ -35,11 +35,11 @@ export function pre(context, cursor, buffer) {
 	const cB = Math.cos(B)
 	const sB = Math.sin(B)
 
-	// Reset buffer
+	// Clear the buffers
 	const num = width * height
 	for(let k=0; k<num; k++) {
-		buffer[k].char = k % width == width-1 ? '\n' : ' ' // buffer
-		z[k] = 0                                           // z buffer
+		buffer[k].char = ' ' // char buffer
+		z[k] = 0             // z buffer
 	}
 
 	// Theta (j) goes around the cross-sectional circle of a torus
