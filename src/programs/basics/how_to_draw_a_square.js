@@ -45,9 +45,9 @@ export function main(coord, context, cursor, buffer) {
     const d = box(p, {x:size, y:size})
 
 	// Visualize the distance field
-	// return d == 0 ? ' ' : (''+d).charAt(2)
+	return d == 0 ? ' ' : (''+d).charAt(2)
 	// Visualize the distance field and some background
-	return d == 0 ? (coord.x % 2 == 0 ? '─' : '┼') : (''+d).charAt(2)
+	// return d == 0 ? (coord.x % 2 == 0 ? '─' : '┼') : (''+d).charAt(2)
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
