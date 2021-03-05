@@ -56,6 +56,8 @@ function render(context, buffer) {
 
 	ctx.save()
 	ctx.scale(scale, scale)
+	ctx.fillStyle = fg
+	ctx.textBaseline = 'top'
 
 	// Custom settings: it’s possible to center the canvas
 	if (settings.canvasOffset) {
@@ -65,22 +67,58 @@ function render(context, buffer) {
 		ctx.translate(ox, oy)
 	}
 
+	// Center patch with cell bg color...
+	// a bit painful and needs some opt.
+	if( settings.textAlign == 'center' ) {
 
-	ctx.fillStyle = fg
-	ctx.textBaseline = 'top'
+		for (let j=0; j<r; j++) {
+			const offs = j * c
+			const widths  = []
+			const offsets = []
+			const colors  = []
+			let totalWidth = 0
 
-	for (let j=0; j<r; j++) {
-		for (let i=0; i<c; i++) {
-			const cell = buffer[j * c + i]
-			const x = i * cw
-			const y = j * ch
-			if (cell.backgroundColor && cell.backgroundColor != bg) {
-				ctx.fillStyle = cell.backgroundColor || bg
-				ctx.fillRect(Math.round(x), y, Math.ceil(cw), ch)
+			// Find width
+			for (let i=0; i<c; i++) {
+				const cell = buffer[offs + i]
+				ctx.font = (cell.fontWeight || fontWeight) + ff
+				const w = ctx.measureText(cell.char).width
+				totalWidth += w
+				widths[i] = w
 			}
-			ctx.font = (cell.fontWeight || fontWeight) + ff
-			ctx.fillStyle = cell.color || fg
-			ctx.fillText(cell.char, x, y)
+			// Draw
+			let ox = (canvas.width - totalWidth) * 0.5
+			const y = j * ch
+			for (let i=0;i<c; i++) {
+				const cell = buffer[offs + i]
+				const x = ox
+				if (cell.backgroundColor && cell.backgroundColor != bg) {
+					ctx.fillStyle = cell.backgroundColor || bg
+					ctx.fillRect(Math.round(x), y, Math.ceil(widths[i]), ch)
+				}
+				ctx.font = (cell.fontWeight || fontWeight) + ff
+				ctx.fillStyle = cell.color || fg
+				ctx.fillText(cell.char, ox, y)
+
+				ox += widths[i]
+			}
+		}
+
+	// (Default) block mode
+	} else {
+		for (let j=0; j<r; j++) {
+			for (let i=0; i<c; i++) {
+				const cell = buffer[j * c + i]
+				const x = i * cw
+				const y = j * ch
+				if (cell.backgroundColor && cell.backgroundColor != bg) {
+					ctx.fillStyle = cell.backgroundColor || bg
+					ctx.fillRect(Math.round(x), y, Math.ceil(cw), ch)
+				}
+				ctx.font = (cell.fontWeight || fontWeight) + ff
+				ctx.fillStyle = cell.color || fg
+				ctx.fillText(cell.char, x, y)
+			}
 		}
 	}
 	ctx.restore()
