@@ -247,8 +247,10 @@ export function run(program, runSettings, userData = {}) {
 
 			// Cursor update
 			const cursor = {
-				x       : pointer.x / metrics.cellWidth,
-				y       : pointer.y / metrics.lineHeight,
+				          // The canvas might be slightly larger than the number
+				          // of cols/rows, min is required!
+				x       : Math.min(context.cols-1, pointer.x / metrics.cellWidth),
+				y       : Math.min(context.rows-1, pointer.y / metrics.lineHeight),
 				pressed : pointer.pressed,
 				p : { // state of previous frame
 					x       : pointer.px / metrics.cellWidth,
