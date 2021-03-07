@@ -266,8 +266,8 @@ export function min(a, b, out) {
 // Returns the fractional part of the vector (component-wise)
 export function fract(a, out) {
 	out = out || vec2(0, 0)
-	out.x = out.x - Math.floor(out.x)
-	out.y = out.y - Math.floor(out.y)
-	out.z = out.z - Math.floor(out.z)
+	out.x = a.x - Math.floor(a.x)
+	out.y = a.y - Math.floor(a.y)
+	out.z = a.z - Math.floor(a.z)
 	return out
 }
