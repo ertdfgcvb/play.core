@@ -100,20 +100,22 @@ const dyna = new Dyna(MASS, DAMP)
 // NOTE: vectors a and b will be floored
 
 function line(a, b) {
-	let x0 = Math.floor(a.x)
-	let y0 = Math.floor(a.y)
+	let   x0 = Math.floor(a.x)
+	let   y0 = Math.floor(a.y)
 	const x1 = Math.floor(b.x)
 	const y1 = Math.floor(b.y)
-    const dx =  Math.abs(x1-x0)
-    const sx = x0<x1 ? 1 : -1
-    const dy = -Math.abs(y1-y0)
-    let sy = y0<y1 ? 1 : -1
-    let err = dx+dy
+    const dx = Math.abs(x1 - x0)
+    const dy = -Math.abs(y1 - y0)
+    const sx = x0 < x1 ? 1 : -1
+    const sy = y0 < y1 ? 1 : -1
+    let  err = dx + dy
+
 	const points = []
+
     while (true) {
         points.push({x:x0, y:y0})
         if (x0 == x1 && y0 == y1) break
-        let e2 = 2*err
+        let e2 = 2 * err
         if (e2 >= dy) {
             err += dy
             x0 += sx
