@@ -8,6 +8,8 @@ Expects the canvas renderer as the active renderer.
 Tested on Safari, FF, Chrome
 */
 
+import {saveBlobAsFile} from '/src/modules/filedownload.js'
+
 export function exportFrame(context, filename, from=1, to=from) {
 
 	// Error: renderer is not canvas.
@@ -38,29 +40,7 @@ export function exportFrame(context, filename, from=1, to=from) {
 	if (f >= from && f <= to) {
 		const out = base + '_' + (f.toString().padStart(5, '0')) + '.' + ext
 		console.info('exportframe.js: Exporting frame ' + out + '. Will stop at ' + to + '.')
-		canvas.toBlob( blob => saveAs(blob, out))
+		canvas.toBlob( blob => saveBlobAsFile(blob, out))
 	}
 }
 
-// The hack: creates an anchor with a 'download' attribute
-// and then emits a click event.
-// See: https://github.com/eligrey/FileSaver.js
-function saveAs (blob, name) {
-	const a = document.createElement('a')
-	a.download = name
-	a.rel = 'noopener'
-	a.href = URL.createObjectURL(blob)
-
-	setTimeout(() => { URL.revokeObjectURL(a.href) }, 30000)
-	setTimeout(() => { click(a) }, 0)
-}
-
-function click (node) {
-	try {
-		node.dispatchEvent(new MouseEvent('click'))
-	} catch (err) {
-		var e = document.createEvent('MouseEvents')
-		e.initMouseEvent('click')
-		node.dispatchEvent(e)
-	}
-}

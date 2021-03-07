@@ -186,7 +186,7 @@ export function neg(v, out) {
 	return out
 }
 
-// Rotates a vextor around the x axis
+// Rotates a vector around the x axis
 export function rotX(v, ang, out) {
 	out = out || vec3(0, 0, 0)
 	const c = Math.cos(ang)
@@ -197,7 +197,7 @@ export function rotX(v, ang, out) {
     return out
 }
 
-// Rotates a vextor around the y axis
+// Rotates a vector around the y axis
 export function rotY(v, ang, out) {
 	out = out || vec3(0, 0, 0)
 	const c = Math.cos(ang)
@@ -208,7 +208,7 @@ export function rotY(v, ang, out) {
     return out
 }
 
-// Rotates a vextor around the z axis
+// Rotates a vector around the z axis
 export function rotZ(v, ang, out) {
 	out = out || vec3(0, 0, 0)
 	const c = Math.cos(ang)
