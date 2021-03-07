@@ -45,11 +45,9 @@ export function pre(context, cursor, buffer) {
 
 		for (let j=sy; j<ey; j++) {
 			for (let i=sx; i<ex; i++) {
-
 				const x = (p.x - i)
 				const y = (p.y - j) / a
 				const l = 1 - length({x, y}) / RADIUS
-
 				const idx = i + cols * j
 				buffer[idx].value = Math.max(buffer[idx].value, l)
 			}
