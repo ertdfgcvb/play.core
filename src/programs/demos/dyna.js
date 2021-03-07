@@ -2,7 +2,7 @@
 [header]
 @author ertdfgcvb
 @title  Dyna
-@desc   Paul Haeberli’s Dynadraw
+@desc   A poor copy of Paul Haeberli’s Dynadraw
 
 The original from 1989:
 http://www.graficaobscura.com/dyna/
