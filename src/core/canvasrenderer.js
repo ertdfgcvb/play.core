@@ -87,9 +87,9 @@ function render(context, buffer) {
 				widths[i] = w
 			}
 			// Draw
-			let ox = (canvas.width - totalWidth) * 0.5
+			let ox = (canvas.width / scale - totalWidth) * 0.5
 			const y = j * ch
-			for (let i=0;i<c; i++) {
+			for (let i=0; i<c; i++) {
 				const cell = buffer[offs + i]
 				const x = ox
 				if (cell.backgroundColor && cell.backgroundColor != bg) {
