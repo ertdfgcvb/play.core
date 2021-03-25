@@ -15,5 +15,5 @@
 
 build:
 	rollup -i run.js --format es --name play -o __TMP__.js
-	terser --compress --mangle --timings -- __TMP__.js > run.min.js
+	terser --compress --mangle --toplevel --timings --ecma 2015 -- __TMP__.js > run.min.js
 	rm -f __TMP__.js
