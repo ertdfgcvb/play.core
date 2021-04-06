@@ -6,7 +6,6 @@
 */
 
 import { clamp, map } from '/src/modules/num.js'
-import { CSS4 } from '/src/modules/color.js'
 import { mix, smoothstep } from '/src/modules/num.js'
 
 export const settings = { backgroundColor : 'black' }
@@ -14,14 +13,14 @@ export const settings = { backgroundColor : 'black' }
 const { min, max, sin, floor } = Math
 
 const palette = [
-	CSS4.black,         // 0 < top
-	CSS4.purple,        // 1
-	CSS4.darkred,       // 2
-	CSS4.red,           // 3
-	CSS4.orangered,     // 4
-	CSS4.gold,          // 5
-	CSS4.lemonchiffon,  // 6
-	CSS4.white          // 7 < bottom
+	'black',        // 0 < top
+	'purple',       // 1
+	'darkred',      // 2
+	'red',          // 3
+	'orangered',    // 4
+	'gold',         // 5
+	'lemonchiffon', // 6
+	'white'         // 7 < bottom
 ]
 
 //             top                       bottom
@@ -80,8 +79,8 @@ export function main(coord, context, cursor, buffer) {
 
 	return {
 		char : u % 10,
-		color : palette[min(palette.length-1,v+1)].hex,
-		backgroundColor : palette[v].hex
+		color : palette[min(palette.length-1,v+1)],
+		backgroundColor : palette[v]
 	}
 }
 
