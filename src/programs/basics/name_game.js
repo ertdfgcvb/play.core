@@ -6,11 +6,11 @@
 */
 
 // The default backround color and font attributes can be altered
-// by exporting a 'settings' object (see the manual for details).
+// by exporting a ‘settings’ object (see the manual for details).
 export const settings = {
 	backgroundColor : 'black',
 	color : 'white',
-	fontWeight : 100, // or 'lighter'
+	fontWeight : 100, // or ‘lighter’
 	fontSize : '3em'
 }
 
