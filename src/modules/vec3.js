@@ -271,3 +271,31 @@ export function fract(a, out) {
 	out.z = a.z - Math.floor(a.z)
 	return out
 }
+
+// Returns the floored vector (component-wise)
+export function floor(a, out) {
+	out = out || vec2(0, 0)
+	out.x = Math.floor(a.x)
+	out.y = Math.floor(a.y)
+	out.z = Math.floor(a.z)
+	return out
+}
+
+// Returns the ceiled vector (component-wise)
+export function ceil(a, out) {
+	out = out || vec2(0, 0)
+	out.x = Math.ceil(a.x)
+	out.y = Math.ceil(a.y)
+	out.z = Math.ceil(a.z)
+	return out
+}
+
+// Returns the rounded vector (component-wise)
+export function round(a, out) {
+	out = out || vec2(0, 0)
+	out.x = Math.round(a.x)
+	out.y = Math.round(a.y)
+	out.z = Math.round(a.z)
+	return out
+}
+
