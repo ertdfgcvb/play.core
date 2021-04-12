@@ -25,13 +25,9 @@ const getW = (cols) => {
 	return w
 }
 
-const blank = {
-	char  : ' ',
-	color : 'black',
-}
+const blank =  ' ';
 
 export const settings = {
-	backgroundColor : 'white',
 	fontWeight: '100'
 }
 
@@ -104,14 +100,5 @@ export function main(coord, context, cursor, buffer){
 	// throw new Error('dudee')
 	// if(coord.x === 0) { console.log() }
 
-	return {
-		char       : char,
-		color      : 'black',
-	}
-}
-
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer){
-	//drawInfo(context, cursor, buffer)
-	//console.log(JSON.stringify(buffer))
+	return char
 }
