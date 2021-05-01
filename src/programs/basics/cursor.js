@@ -14,7 +14,7 @@ export function main(coord, context, cursor, buffer) {
 	if (coord.x == x && coord.y == y) return '┼'
 	if (coord.x == x) return '│'
 	if (coord.y == y) return '─'
-	return ' '
+	return (coord.x + coord.y) % 2 ? '·' : ' '
 }
 
 import { drawInfo } from '/src/modules/drawbox.js'
