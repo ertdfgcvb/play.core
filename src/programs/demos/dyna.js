@@ -22,7 +22,7 @@ let cols, rows
 export function pre(context, cursor, buffer) {
 
 	// Detect window resize
-	if (cols != context.cols || rows != context.rows) {
+	if (cols != context.cols || rows != context.rows) {
 		cols = context.cols
 		rows = context.rows
 		for (let i=0; i<cols*rows; i++) {

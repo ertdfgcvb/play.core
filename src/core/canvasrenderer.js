@@ -93,11 +93,11 @@ function render(context, buffer) {
 				const cell = buffer[offs + i]
 				const x = ox
 				if (cell.backgroundColor && cell.backgroundColor != bg) {
-					ctx.fillStyle = cell.backgroundColor || bg
+					ctx.fillStyle = cell.backgroundColor || bg
 					ctx.fillRect(Math.round(x), y, Math.ceil(widths[i]), ch)
 				}
 				ctx.font = (cell.fontWeight || fontWeight) + ff
-				ctx.fillStyle = cell.color || fg
+				ctx.fillStyle = cell.color || fg
 				ctx.fillText(cell.char, ox, y)
 
 				ox += widths[i]
@@ -112,11 +112,11 @@ function render(context, buffer) {
 				const x = i * cw
 				const y = j * ch
 				if (cell.backgroundColor && cell.backgroundColor != bg) {
-					ctx.fillStyle = cell.backgroundColor || bg
+					ctx.fillStyle = cell.backgroundColor || bg
 					ctx.fillRect(Math.round(x), y, Math.ceil(cw), ch)
 				}
 				ctx.font = (cell.fontWeight || fontWeight) + ff
-				ctx.fillStyle = cell.color || fg
+				ctx.fillStyle = cell.color || fg
 				ctx.fillText(cell.char, x, y)
 			}
 		}

@@ -7,7 +7,7 @@
 # npm install terser -g
 # in case of privilege issues:
 # sudo chown -R $USER ~/.npm
-# sudo chown -R $USER /usr/local/lib/node_modules
+# sudo chown -R $USER /usr/local/lib/node_modules
 #
 # 2.
 # Rollup:

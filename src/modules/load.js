@@ -42,7 +42,7 @@ function image (url) {
 }
 
 function text (url) {
-    return fetch(url).then( response => {
+    return fetch(url).then( response => {
         return response.text()
     }).catch( err => {
         console.log('Loader: error loading text ' + url)
@@ -51,7 +51,7 @@ function text (url) {
 }
 
 function json (url) {
-    return fetch(url).then( response => {
+    return fetch(url).then( response => {
         return response.json()
     }).catch( err => {
         console.log('Loader: error loading json ' + url)

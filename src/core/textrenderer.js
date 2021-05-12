@@ -23,7 +23,7 @@ function render(context, buffer) {
 	// element.style.fontWeight = context.settings.weight
 
 	// Detect resize
-	if (context.rows != rows || context.cols != cols) {
+	if (context.rows != rows || context.cols != cols) {
 		cols = context.cols
 		rows = context.rows
 		backBuffer.length = 0
@@ -80,7 +80,7 @@ function render(context, buffer) {
 		let prevCell = {} //defaultCell
 		let tagIsOpen = false
 		for (let i=0; i<cols; i++) {
-			const currCell = buffer[i + offs] //|| {...defaultCell, char : EMPTY_CELL}
+			const currCell = buffer[i + offs] //|| {...defaultCell, char : EMPTY_CELL}
 			// Undocumented feature:
 			// possible to inject some custom HTML (for example <a>) into the renderer.
 			// It can be inserted before the char or after the char (beginHTML, endHTML)

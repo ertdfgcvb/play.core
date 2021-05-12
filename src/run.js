@@ -85,7 +85,7 @@ export function run(program, runSettings, userData = {}) {
 		// TODO: better / more generic renderer init
 		let renderer
 		if (!settings.element) {
-			renderer = renderers[settings.renderer] || renderers['text']
+			renderer = renderers[settings.renderer] || renderers['text']
 			settings.element = document.createElement(renderer.preferredElementNodeName)
 			document.body.appendChild(settings.element)
 		} else {
@@ -269,7 +269,7 @@ export function run(program, runSettings, userData = {}) {
 			if (cols != context.cols || rows != context.rows) {
 				cols = context.cols
 				rows = context.rows
-				buffer.length = context.cols * context.rows
+				buffer.length = context.cols * context.rows
 				for (let i=0; i<buffer.length; i++) {
 					buffer[i] = {...DEFAULT_CELL_STYLE, char : EMPTY_CELL}
 				}
@@ -407,8 +407,10 @@ export function calcMetrics(el) {
 	// Extract info from the style: in case of a canvas element
 	// the style and font family should be set anyways.
 	const fontFamily = style.getPropertyValue('font-family')
-	const lineHeight = parseFloat(style.getPropertyValue('line-height'))
 	const fontSize   = parseFloat(style.getPropertyValue('font-size'))
+	// Can’t rely on computed lineHeight since Safari 14.1
+	// See:  https://bugs.webkit.org/show_bug.cgi?id=225695
+	const lineHeight = parseFloat(style.getPropertyValue('line-height'))
 	let cellWidth
 
 	// If the output element is a canvas 'measureText()' is used
@@ -439,7 +441,7 @@ export function calcMetrics(el) {
 			const tmp = calcMetrics(el)
 			for(var k in tmp) {
 				// NOTE: Object.assign won’t work
-				if (typeof tmp[k] == 'number' || typeof tmp[k] == 'string') {
+				if (typeof tmp[k] == 'number' || typeof tmp[k] == 'string') {
 					m[k] = tmp[k]
 				}
 			}

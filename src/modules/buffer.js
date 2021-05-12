@@ -15,8 +15,8 @@ const v = get(10, 10, buffer, cols, rows)
 
 // Safe get function to read from a buffer
 export function get(x, y, target, targetCols, targetRows) {
-	if (x < 0 || x >= targetCols) return {}
-	if (y < 0 || y >= targetRows) return {}
+	if (x < 0 || x >= targetCols) return {}
+	if (y < 0 || y >= targetRows) return {}
 	const i = x + y * targetCols
 	return target[i]
 }
@@ -28,15 +28,15 @@ export function get(x, y, target, targetCols, targetRows) {
 // { char, color, backgroundColor, fontWeight }
 // which can overwrite the buffer (set) or partially merged (merge)
 export function set(val, x, y, target, targetCols, targetRows) {
-	if (x < 0 || x >= targetCols) return
-	if (y < 0 || y >= targetRows) return
+	if (x < 0 || x >= targetCols) return
+	if (y < 0 || y >= targetRows) return
 	const i = x + y * targetCols
 	target[i] = val
 }
 
 export function merge(val, x, y, target, targetCols, targetRows) {
-	if (x < 0 || x >= targetCols) return
-	if (y < 0 || y >= targetRows) return
+	if (x < 0 || x >= targetCols) return
+	if (y < 0 || y >= targetRows) return
 	const i = x + y * targetCols
 
 	// Flatten:

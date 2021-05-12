@@ -48,7 +48,7 @@ const WHITE = { r:255, g:255, b:255, a:1, v:1 }
 export default class Canvas {
 
 	constructor(sourceCanvas) {
-		this.canvas = sourceCanvas || document.createElement('canvas')
+		this.canvas = sourceCanvas || document.createElement('canvas')
 
 		// Initialize the canvas as a black 1x1 image so it can be used
 		this.canvas.width = 1
@@ -83,13 +83,13 @@ export default class Canvas {
 	// allows distortion, offsets, etc.
 	copy(source, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight) {
 
-		sx = sx || 0
-		sy = sy || 0
+		sx = sx || 0
+		sy = sy || 0
 		sWidth = sWidth || source.videoWidth || source.width
 		sHeight = sHeight || source.videoHeight || source.height
 
-		dx = dx || 0
-		dy = dy || 0
+		dx = dx || 0
+		dy = dy || 0
 		dWidth = dWidth || this.canvas.width
 		dHeight = dHeight || this.canvas.height
 
@@ -242,7 +242,7 @@ export default class Canvas {
 
 	// Attaches the canvas to a target element for debug purposes
 	display(target, x=0, y=0) {
-		target = target || document.body
+		target = target || document.body
 		this.canvas.style.position = 'absolute'
 		this.canvas.style.left = x + 'px'
 		this.canvas.style.top = y + 'px'
@@ -267,8 +267,8 @@ function mixColors(a, b, amt) {
 
 function getElementSize(source) {
 	const type = source.nodeName
-	const width = type == 'VIDEO' ? source.videoWidth : source.width || 0
-	const height = type == 'VIDEO' ? source.videoHeight : source.height || 0
+	const width = type == 'VIDEO' ? source.videoWidth : source.width || 0
+	const height = type == 'VIDEO' ? source.videoHeight : source.height || 0
 	return { width, height }
 }
 

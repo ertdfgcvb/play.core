@@ -42,7 +42,7 @@ const data = []
 export function pre(context, cursor, buffer) {
 
 	// The window has been resized (or “init”), reset the buffer:
-	if (cols != context.cols || rows != context.rows) {
+	if (cols != context.cols || rows != context.rows) {
 		cols = context.cols
 		rows = context.rows
 		const len = context.cols * context.rows	* 2 // double height

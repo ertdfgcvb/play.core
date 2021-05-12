@@ -27,7 +27,7 @@ const getW = (cols) => {
 
 const blank =  ' ';
 
-export const settings = {
+export const settings = {
 	fontWeight: '100'
 }
 

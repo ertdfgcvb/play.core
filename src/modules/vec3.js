@@ -264,7 +264,7 @@ export function min(a, b, out) {
 }
 
 // Returns the fractional part of the vector (component-wise)
-export function fract(a, out) {
+export function fract(a, out) {
 	out = out || vec2(0, 0)
 	out.x = a.x - Math.floor(a.x)
 	out.y = a.y - Math.floor(a.y)
@@ -273,7 +273,7 @@ export function fract(a, out) {
 }
 
 // Returns the floored vector (component-wise)
-export function floor(a, out) {
+export function floor(a, out) {
 	out = out || vec2(0, 0)
 	out.x = Math.floor(a.x)
 	out.y = Math.floor(a.y)
@@ -282,7 +282,7 @@ export function floor(a, out) {
 }
 
 // Returns the ceiled vector (component-wise)
-export function ceil(a, out) {
+export function ceil(a, out) {
 	out = out || vec2(0, 0)
 	out.x = Math.ceil(a.x)
 	out.y = Math.ceil(a.y)
@@ -291,7 +291,7 @@ export function ceil(a, out) {
 }
 
 // Returns the rounded vector (component-wise)
-export function round(a, out) {
+export function round(a, out) {
 	out = out || vec2(0, 0)
 	out.x = Math.round(a.x)
 	out.y = Math.round(a.y)

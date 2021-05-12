@@ -49,7 +49,7 @@ export function css(r,g,b,a=1.0) {
 
 // Convert {r,g,b,a} values to 'rgb(r,g,b,a)'
 export function rgb2css(rgb) {
-	if (rgb.a === undefined || rgb.a === 1.0) {
+	if (rgb.a === undefined || rgb.a === 1.0) {
 		return `rgb(${rgb.r},${rgb.g},${rgb.b})`
 	}
 	// CSS3 (in CSS4 we could return rgb(r g b a))
