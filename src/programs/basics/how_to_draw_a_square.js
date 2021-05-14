@@ -5,7 +5,7 @@
 @desc   Draw a square using a distance function
 */
 
-import { map } from '/src/modules/num.js'
+import { map } from '../../modules/num.js'
 
 // Set framerate to 60
 export const settings = { fps : 60 }
@@ -50,7 +50,7 @@ export function main(coord, context, cursor, buffer) {
 	// return d == 0 ? (coord.x % 2 == 0 ? '─' : '┼') : (''+d).charAt(2)
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
+import { drawInfo } from '../../modules/drawbox.js'
 export function post(context, cursor, buffer) {
 	drawInfo(context, cursor, buffer, {
 		color : 'white', backgroundColor : 'royalblue', shadowStyle : 'gray'

@@ -5,8 +5,8 @@
 @desc   Click or tap to toggle mode
 */
 
-import { vec2, dist, mulN } from '/src/modules/vec2.js'
-import { map } from '/src/modules/num.js'
+import { vec2, dist, mulN } from '../../modules/vec2.js'
+import { map } from '../../modules/num.js'
 
 export const settings = { fps : 60 }
 
@@ -52,7 +52,7 @@ export function main(coord, context, cursor) {
 	return density[idx]
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
+import { drawInfo } from '../../modules/drawbox.js'
 export function post(context, cursor, buffer) {
 	drawInfo(context, cursor, buffer, {
 		color : 'white', backgroundColor : 'royalblue', shadowStyle : 'gray'

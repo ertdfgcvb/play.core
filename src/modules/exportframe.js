@@ -8,7 +8,7 @@ Expects the canvas renderer as the active renderer.
 Tested on Safari, FF, Chrome
 */
 
-import {saveBlobAsFile} from '/src/modules/filedownload.js'
+import {saveBlobAsFile} from './filedownload.js'
 
 export function exportFrame(context, filename, from=1, to=from) {
 

@@ -5,8 +5,8 @@
 @desc   Fun with integers
 */
 
-import { map } from '/src/modules/num.js'
-import { CGA } from '/src/modules/color.js'
+import { map } from '../../modules/num.js'
+import { CGA } from '../../modules/color.js'
 
 export const settings = {
 	backgroundColor : 'black'

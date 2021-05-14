@@ -5,8 +5,8 @@
 @desc   Smooth SDF balls
 */
 
-import { map } from '/src/modules/num.js'
-import { sdCircle, opSmoothUnion } from '/src/modules/sdf.js'
+import { map } from '../../modules/num.js'
+import { sdCircle, opSmoothUnion } from '../../modules/sdf.js'
 
 const density = '#ABC|/:÷×+-=?*· '
 
