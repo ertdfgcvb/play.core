@@ -37,3 +37,17 @@ run(program, settings).catch(function(e) {
   console.log(e.error);
 });
 ```
+
+## Building for `<script>` tags
+
+If you want to build a minified JS module for inclusion in a site using a `<script>` tag, you can use the `build` script, included in the package:
+
+```shell
+# Install this package (including build dependencies)
+npm install
+
+# Run the build script
+npm run build
+```
+
+This will create a `run.min.js` file which you can include in your site.
