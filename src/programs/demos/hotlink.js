@@ -7,8 +7,11 @@ The code for the Simplex Noise function is downloaded from GitHub
 and evaluated trough “new Function()”.
 */
 
-fetch("https://raw.githubusercontent.com/blindman67/SimplexNoiseJS/master/simplexNoise.js").then(e => e.text()).then(t => {
-	const openSimplexNoise = new Function("return " + t)()
+// Don’t do this :)
+fetch("https://raw.githubusercontent.com/blindman67/SimplexNoiseJS/master/simplexNoise.js")
+.then(e => e.text())
+.then(e => {
+	const openSimplexNoise = new Function("return " + e)()
 	noise3D = openSimplexNoise(Date.now()).noise3D
 })
 
