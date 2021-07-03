@@ -9,9 +9,9 @@
 // by exporting a ‘settings’ object (see the manual for details).
 export const settings = {
 	backgroundColor : 'black',
-	color : 'white',
-	fontWeight : 100, // or ‘lighter’
-	fontSize : '3em'
+	color           : 'white',
+	fontSize        : '3em',
+	fontWeight      : 'lighter' // or 100
 }
 
 const TAU = Math.PI * 2
