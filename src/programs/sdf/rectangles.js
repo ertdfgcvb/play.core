@@ -5,8 +5,8 @@
 @desc   Smooth SDF Rectangles
 */
 
-import { map } from '/src/modules/num.js'
-import { sdBox, opSmoothUnion } from '/src/modules/sdf.js'
+import { map } from '../../modules/num.js'
+import { sdBox, opSmoothUnion } from '../../modules/sdf.js'
 
 let density = '▚▀abc|/:÷×+-=?*· '
 
@@ -51,7 +51,7 @@ function transform(p, trans, rot) {
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
+import { drawInfo } from '../../modules/drawbox.js'
 export function post(context, cursor, buffer) {
 	drawInfo(context, cursor, buffer)
 }

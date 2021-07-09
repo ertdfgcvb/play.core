@@ -5,10 +5,10 @@
 @desc   The cursor controls box thickness and exp
 */
 
-import { sdSegment } from '/src/modules/sdf.js'
-import * as v2 from '/src/modules/vec2.js'
-import * as v3 from '/src/modules/vec3.js'
-import { map } from '/src/modules/num.js'
+import { sdSegment } from '../../modules/sdf.js'
+import * as v2 from '../../modules/vec2.js'
+import * as v3 from '../../modules/vec3.js'
+import { map } from '../../modules/num.js'
 
 export const settings = { fps : 60 }
 
@@ -113,7 +113,7 @@ export function main(coord, context, cursor) {
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
+import { drawInfo } from '../../modules/drawbox.js'
 export function post(context, cursor, buffer) {
 	drawInfo(context, cursor, buffer)
 }

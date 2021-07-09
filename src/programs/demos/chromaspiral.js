@@ -7,9 +7,9 @@ Inspired by this shader by scry
 https://www.shadertoy.com/view/tdsyRf
 */
 
-import { map } from '/src/modules/num.js'
-import { sort } from '/src/modules/sort.js'
-import { vec2, rot, add, mulN, addN, subN, length } from '/src/modules/vec2.js'
+import { map } from '../../modules/num.js'
+import { sort } from '../../modules/sort.js'
+import { vec2, rot, add, mulN, addN, subN, length } from '../../modules/vec2.js'
 
 const { min, sin, cos, floor } = Math
 
@@ -60,7 +60,7 @@ export function main(coord, context, cursor, buffer) {
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
+import { drawInfo } from '../../modules/drawbox.js'
 export function post(context, cursor, buffer) {
 	drawInfo(context, cursor, buffer)
 }

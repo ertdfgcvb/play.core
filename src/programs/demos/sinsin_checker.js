@@ -29,7 +29,7 @@ export function main(coord, context, cursor, buffer) {
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
+import { drawInfo } from '../../modules/drawbox.js'
 export function post(context, cursor, buffer) {
     drawInfo(context, cursor, buffer, { shadowStyle : 'gray' })
 }

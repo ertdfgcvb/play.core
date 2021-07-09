@@ -5,8 +5,8 @@
 @desc   Smooth union of two circles
 */
 
-import { sdCircle, opSmoothUnion } from '/src/modules/sdf.js'
-import { sub, vec2 } from '/src/modules/vec2.js'
+import { sdCircle, opSmoothUnion } from '../../modules/sdf.js'
+import { sub, vec2 } from '../../modules/vec2.js'
 
 const density = '#WX?*:÷×+=-· '
 
@@ -43,7 +43,7 @@ export function main(coord, context, cursor, buffer) {
 
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
+import { drawInfo } from '../../modules/drawbox.js'
 export function post(context, cursor, buffer) {
 	drawInfo(context, cursor, buffer)
 }

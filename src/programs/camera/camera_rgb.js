@@ -5,10 +5,10 @@
 @desc   Color input from camera (quantised)
 */
 
-import { map } from '/src/modules/num.js'
-import { rgb2hex, rgb}  from '/src/modules/color.js'
-import Camera from '/src/modules/camera.js'
-import Canvas from '/src/modules/canvas.js'
+import { map } from '../../modules/num.js'
+import { rgb2hex, rgb}  from '../../modules/color.js'
+import Camera from '../../modules/camera.js'
+import Canvas from '../../modules/canvas.js'
 
 const cam = Camera.init()
 const can = new Canvas()
@@ -53,7 +53,7 @@ export function main(coord, context, cursor, buffer) {
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
+import { drawInfo } from '../../modules/drawbox.js'
 export function post(context, cursor, buffer) {
 	drawInfo(context, cursor, buffer)
 }

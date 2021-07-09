@@ -6,9 +6,9 @@
 Plasma primer: https://www.bidouille.org/prog/plasma
 */
 
-import { vec2, dot, add, sub, length } from '/src/modules/vec2.js'
-import { map } from '/src/modules/num.js'
-import { css } from '/src/modules/color.js'
+import { vec2, dot, add, sub, length } from '../../modules/vec2.js'
+import { map } from '../../modules/num.js'
+import { css } from '../../modules/color.js'
 
 export const settings = { fps : 60 }
 
@@ -49,7 +49,7 @@ export function main(coord, context, cursor, buffer) {
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
+import { drawInfo } from '../../modules/drawbox.js'
 export function post(context, cursor, buffer) {
 	drawInfo(context, cursor, buffer)
 }

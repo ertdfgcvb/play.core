@@ -5,8 +5,8 @@
 @desc   Oldschool flame effect
 */
 
-import { clamp, map } from '/src/modules/num.js'
-import { mix, smoothstep } from '/src/modules/num.js'
+import { clamp, map } from '../../modules/num.js'
+import { mix, smoothstep } from '../../modules/num.js'
 
 export const settings = { backgroundColor : 'black' }
 
@@ -143,7 +143,7 @@ function valueNoise() {
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
+import { drawInfo } from '../../modules/drawbox.js'
 export function post(context, cursor, buffer) {
 	drawInfo(context, cursor, buffer)
 }

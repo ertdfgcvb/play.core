@@ -118,7 +118,7 @@ export function main(coord, context, cursor, buffer) {
 }
 
 // Draw some info
-import { drawBox } from '/src/modules/drawbox.js'
+import { drawBox } from '../../modules/drawbox.js'
 export function post(context, cursor, buffer) {
 
 	const buff = data[(context.frame + 1) % 2]

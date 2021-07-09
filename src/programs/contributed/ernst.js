@@ -5,8 +5,8 @@
 @desc   Inspired by Ernst Jandl, 1964
 */
 
-import { dist, vec2, length, add, mulN } from '/src/modules/vec2.js'
-import { map, smoothstep } from '/src/modules/num.js';
+import { dist, vec2, length, add, mulN } from '../../modules/vec2.js'
+import { map, smoothstep } from '../../modules/num.js';
 
 const { PI, atan2, floor, cos, max } = Math;
 
@@ -55,7 +55,7 @@ export function main(coord, context, cursor, buffer){
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
+import { drawInfo } from '../../modules/drawbox.js'
 export function post(context, cursor, buffer){
 	drawInfo(context, cursor, buffer)
 }

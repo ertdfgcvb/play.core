@@ -5,9 +5,9 @@
 @desc   Doubled vertical resolution input from camera
 */
 
-import { CSS3 } from '/src/modules/color.js'
-import Camera from '/src/modules/camera.js'
-import Canvas from '/src/modules/canvas.js'
+import { CSS3 } from '../../modules/color.js'
+import Camera from '../../modules/camera.js'
+import Canvas from '../../modules/canvas.js'
 
 const cam = Camera.init()
 const can = new Canvas()
@@ -48,7 +48,7 @@ export function main(coord, context, cursor, buffer) {
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
+import { drawInfo } from '../../modules/drawbox.js'
 export function post(context, cursor, buffer) {
 	drawInfo(context, cursor, buffer)
 }

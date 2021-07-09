@@ -5,10 +5,10 @@
 @desc   Draw donuts with SDF
 */
 
-import { sdCircle } from '/src/modules/sdf.js'
-import { sort } from '/src/modules/sort.js'
-import { length, rot } from '/src/modules/vec2.js'
-import { map, fract, smoothstep } from '/src/modules/num.js'
+import { sdCircle } from '../../modules/sdf.js'
+import { sort } from '../../modules/sort.js'
+import { length, rot } from '../../modules/vec2.js'
+import { map, fract, smoothstep } from '../../modules/num.js'
 
 const density = '▀▄▚▐─═0123.+?'
 
@@ -49,7 +49,7 @@ export function main(coord, context, cursor, buffer) {
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
+import { drawInfo } from '../../modules/drawbox.js'
 export function post(context, cursor, buffer) {
 	drawInfo(context, cursor, buffer, {
 		color : 'white', backgroundColor : 'royalblue', shadowStyle : 'gray'
