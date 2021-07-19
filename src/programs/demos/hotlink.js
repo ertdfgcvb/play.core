@@ -3,7 +3,7 @@
 @author ertdfgcvb
 @title  Hotlink
 @desc   Function hotlink example (GitHub)
-        The code for the Simplex Noise function is downloaded from GitHub
+        The code for the Open Simplex Noise function is downloaded from GitHub
         and evaluated through “new Function()”.
 */
 
