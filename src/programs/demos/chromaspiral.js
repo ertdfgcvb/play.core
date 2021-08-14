@@ -27,27 +27,18 @@ export function main(coord, context, cursor, buffer) {
 	}
 
 	for (let i=0;i<3;i++) {
-		subN(st, 0.5 + i * 0.005, st)
-		const o = i * 3.0
-		const v = vec2(sin(t * 3.0 + o), cos(t * 2.0 + o))
+		const o = i * 3
+		const v = vec2(sin(t * 3 + o), cos(t * 2 + o))
 		add(st, v, st)
-		mulN(st, cos(t * 0.1), st)
-		addN(st, 0.5 - i*0.005, st)
 
-		const ang = -t + length(subN(st, 0.2))
-		subN(st, 0.5, st)
+		const ang = -t + length(subN(st, 0.5))
 		rot(st, ang, st)
-		addN(st, 0.5, st)
 	}
 
 	mulN(st, 0.6, st)
 
-	const s = cos(t*1.0) * 2.0;
+	const s = cos(t) * 2.0
 	let c = sin(st.x * 3.0 + s) + sin(st.y * 21)
-	c = map(sin(c * 0.5), -1, 1, 0, 1)
-
-	addN(st, 0.1 + t * 0.1, st);
-	c = sin(st.x * 3.0 + s) + sin(st.y * 21)
 	c = map(sin(c * 0.5), -1, 1, 0, 1)
 
 	const index = floor(c * (density.length - 1))
