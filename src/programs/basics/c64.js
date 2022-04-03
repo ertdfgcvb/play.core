@@ -13,5 +13,8 @@ export const settings = {
 }
 
 export function main() {
+	// Also try: ╩ ╦ or ▄ ░
+	// or any combination from
+	// https://play.ertdfgcvb.xyz/abc.html#font:characterset
 	return Math.random() < 0.5 ? '╱' : '╲'
 }
