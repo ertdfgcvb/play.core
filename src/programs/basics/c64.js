@@ -4,7 +4,7 @@
 @title  C64
 @desc   10 PRINT CHR$(205.5+RND(1)); : GOTO 10
 See also:
-https://10print.org/10_PRINT_121114.pdf
+https://10print.org
 */
 
 // Run the program only once
