@@ -18,6 +18,7 @@ export function main(coord, context, cursor, buffer) {
 	// the console will be flooded with data very quickly!
 	// Output can be limited to one cell and every 10 frames, for example:
 	if (coord.index == 100 && context.frame % 10 == 0) {
+		// console.clear()
 		console.log("dist = " + dist)
 	}
 
