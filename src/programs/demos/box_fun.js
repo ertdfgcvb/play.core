@@ -57,7 +57,7 @@ export function post(context, cursor, buffer) {
 				...baseStyle
 			}
 			let txt = ''
-			txt += `*${q[(i + j * numX) % q.length ]}*\n`
+			txt += `*${q[(i + j * numX) % q.length]}*\n`
 			txt += `pos: ${style.x}×${style.y}\n`
 
 			drawBox(txt, style, buffer, cols, rows)
