@@ -140,6 +140,18 @@ export function run(program, runSettings, userData = {}) {
 			pointer.pressed = false
 			eventQueue.push('pointerUp')
 		})
+		
+		const touchHandler = e => {
+			const rect = settings.element.getBoundingClientRect()
+			pointer.x = e.touches[0].clientX - rect.left
+			pointer.y = e.touches[0].clientY - rect.top
+			eventQueue.push('pointerMove')
+		}
+
+		settings.element.addEventListener('touchmove', touchHandler)
+		settings.element.addEventListener('touchstart', touchHandler)
+		settings.element.addEventListener('touchend', touchHandler)
+
 
 		// CSS fix
 		settings.element.style.fontStrech = 'normal'
