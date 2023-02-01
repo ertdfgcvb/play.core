@@ -8,7 +8,7 @@ Each frame of the animation depends on the previous frame. Code in the `pre()`
 function saves the previous frame so it can be used in `main()`.
 */
 
-import { dist, sub } from '/src/modules/vec2.js'
+import { dist, sub } from '../../modules/vec2.js'
 
 let prevFrame;
 let width, height;

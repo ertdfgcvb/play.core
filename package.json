@@ -1,0 +1,14 @@
+{
+  "name": "play.core",
+  "version": "1.0.0",
+  "repository": "https://github.com/ertdfgcvb/play.core.git",
+  "author": "andreas@ertdfgcvb.xyz",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "rollup": "^2.47.0",
+    "terser": "^5.7.0"
+  },
+  "scripts": {
+    "build": "$(npm bin)/rollup -i src/run.js --format es --name play | $(npm bin)/terser --compress --mangle --toplevel --timings --ecma 2015 > run.min.js"
+  }
+}

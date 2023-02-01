@@ -5,7 +5,7 @@
 @desc   Click to drop sand
 */
 
-import { dist, sub } from '/src/modules/vec2.js'
+import { dist, sub } from '../../modules/vec2.js'
 
 let prevFrame;
 let width, height;

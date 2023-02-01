@@ -8,8 +8,8 @@ The original from 1989:
 http://www.graficaobscura.com/dyna/
 */
 
-import { copy, length, vec2, add, sub, divN, mulN } from '/src/modules/vec2.js'
-import { smoothstep } from '/src/modules/num.js'
+import { copy, length, vec2, add, sub, divN, mulN } from '../../modules/vec2.js'
+import { smoothstep } from '../../modules/num.js'
 
 export const settings = { fps : 60 }
 
@@ -66,7 +66,7 @@ export function main(coord, context, cursor, buffer) {
 	return density[idx]
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
+import { drawInfo } from '../../modules/drawbox.js'
 export function post(context, cursor, buffer) {
 	drawInfo(context, cursor, buffer, {
 		color : 'white', backgroundColor : 'royalblue', shadowStyle : 'gray'

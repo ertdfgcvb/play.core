@@ -9,7 +9,7 @@
   the functions (except vec2()).
 - All function can be exported individually or grouped via default export.
 - For the default export use:
-	import * as Vec2 from '/src/modules/vec2.js'
+	import * as Vec2 from 'play.core/src/modules/vec2.js'
 */
 
 // Creates a vector

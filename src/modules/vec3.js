@@ -9,7 +9,7 @@
   the functions (except vec3()).
 - All function can be exported individually or grouped via default export.
 - For the default export use:
-	import * as Vec3 from '/src/modules/vec3.js'
+	import * as Vec3 from 'play.core/src/modules/vec3.js'
 */
 
 // Creates a vector

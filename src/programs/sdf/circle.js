@@ -5,8 +5,8 @@
 @desc   Draw a smooth circle with exp()
 */
 
-import { sdCircle } from '/src/modules/sdf.js'
-import { sort } from '/src/modules/sort.js'
+import { sdCircle } from '../../modules/sdf.js'
+import { sort } from '../../modules/sort.js'
 
 const density = sort('/\\MXYZabc!?=-. ', 'Simple Console', false)
 

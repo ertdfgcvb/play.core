@@ -17,7 +17,7 @@ export function main(coord, context, cursor, buffer) {
 	return (coord.x + coord.y) % 2 ? '·' : ' '
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
+import { drawInfo } from '../../modules/drawbox.js'
 export function post(context, cursor, buffer) {
 	drawInfo(context, cursor, buffer, {
 		color : 'white', backgroundColor : 'royalblue', shadowStyle : 'gray'
