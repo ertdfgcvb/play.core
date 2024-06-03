@@ -60,6 +60,19 @@ export function wrap(string, width=0) {
 	}
 }
 
+// TODO: fix bug for 1 line str, will return numLines = 0)
+/*
+export function measure(string) {
+	const chunks = string.split('\n')
+	return {
+		text     : string,
+		numLines : chunks.length,
+		maxWidth : Math.max( chunks.map( e => e.length) )
+	}
+} 
+*/
+
+
 export function measure(string) {
 	let numLines = 0
 	let maxWidth = 0
