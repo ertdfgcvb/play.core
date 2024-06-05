@@ -5,7 +5,7 @@
 @desc   Export 10 frames as images
 */
 
-import { exportFrame } from '/src/modules/exportframe.js'
+import { exportFrame } from '../../modules/exportframe.js'
 
 // Important: the frame exporter works only with the canvas renderer.
 // Optional: reset the frame count and time at each new run!
@@ -41,7 +41,7 @@ export function main(coord, context, cursor, buffer) {
 }
 
 // Display some info (will also be exported!)
-import { drawInfo } from '/src/modules/drawbox.js'
+import { drawInfo } from '../../modules/drawbox.js'
 export function post(context, cursor, buffer) {
 	drawInfo(context, cursor, buffer, {
 		color : 'white', backgroundColor : 'royalblue', shadowStyle : 'gray'

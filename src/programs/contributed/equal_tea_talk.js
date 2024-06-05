@@ -6,8 +6,8 @@
 See: http://www.hammersleyfoundation.org/index.php/artwork/computer-drawings/184-computer-drawings/331-equal-tea-talk
 */
 
-import { map, step, mod } from '/src/modules/num.js'
-import { vec2, mul, fract as fract2 } from '/src/modules/vec2.js'
+import { map, step, mod } from '../../modules/num.js'
+import { vec2, mul, fract as fract2 } from '../../modules/vec2.js'
 
 const chars = '#BEFTI_'.split('')
 

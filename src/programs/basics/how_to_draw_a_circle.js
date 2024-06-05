@@ -5,7 +5,7 @@
 @desc   Use of context.metrics.aspect
 */
 
-import { length } from '/src/modules/vec2.js'
+import { length } from '../../modules/vec2.js'
 
 export function main(coord, context, cursor, buffer) {
 
@@ -28,7 +28,7 @@ export function main(coord, context, cursor, buffer) {
 }
 
 // Draw some info
-import { drawBox } from '/src/modules/drawbox.js'
+import { drawBox } from '../../modules/drawbox.js'
 export function post(context, cursor, buffer) {
 	// Apply some rounding to the aspect for better output
 	const ar = cursor.pressed ? 1 : (''+context.metrics.aspect).substr(0, 8)

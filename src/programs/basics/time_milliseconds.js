@@ -24,7 +24,7 @@ export function main(coord, context, cursor, buffer) {
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
+import { drawInfo } from '../../modules/drawbox.js'
 
 // This function is called after the main loop and is useful
 // to manipulate the buffer; in this case with a window overlay.

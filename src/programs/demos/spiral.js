@@ -7,9 +7,9 @@ Inspired by this shader by ahihi
 https://www.shadertoy.com/view/XdSGzR
 */
 
-import { vec2, dot, add, sub, length } from '/src/modules/vec2.js'
-import { map } from '/src/modules/num.js'
-import { sort } from '/src/modules/sort.js'
+import { vec2, dot, add, sub, length } from '../../modules/vec2.js'
+import { map } from '../../modules/num.js'
+import { sort } from '../../modules/sort.js'
 
 export const settings = { fps : 60 }
 
@@ -47,7 +47,7 @@ export function main(coord, context, cursor, buffer) {
 	return density[idx]
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
+import { drawInfo } from '../../modules/drawbox.js'
 export function post(context, cursor, buffer) {
 	drawInfo(context, cursor, buffer, {
 		color : 'white', backgroundColor : 'royalblue', shadowStyle : 'gray'
