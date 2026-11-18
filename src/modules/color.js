@@ -1,42 +1,9 @@
-/**
-@module   color.js
-@desc     Some common palettes and simple color helpers
-@category public
-
-Colors can be defined as:
-
-rgb : { r:255, g:0, b:0 }
-int : 16711680 (0xff0000)
-hex : '#FF0000'
-css : 'rgb(255,0,0)'
-
-CSS1 and CSS3 palettes are exported as maps
-C64 and CGA palettes are exported as arrays
-
-Most of the times colors are ready to use as in CSS:
-this means r,g,b have 0-255 range but alpha 0-1
-
-Colors in exported palettes are augmented to:
-{
-	name : 'red',
-	r    : 255,        // 0-255 (as in CSS)
-	g    : 0,          // 0-255 (as in CSS)
-	b    : 0,          // 0-255 (as in CSS)
-	a    : 1.0,        // 0-1   (as in CSS)
-	v    : 0.6,        // 0-1   (gray value)
-	hex  : '#FF0000',
-	css  : 'rgb(255,0,0)'
-	int  : 16711680
-}
-
-*/
-
-// Convert r,g,b,a values to {r,g,b,a}
+// Colors are { r, g, b (0..255), a (0..1) }, as in CSS
 export function rgb(r,g,b,a=1.0) {
 	return {r,g,b,a}
 }
 
-// Convert r,g,b,a values to {r,g,b,a}
+// Convert r,g,b,a values to '#rrggbb' or '#rrggbbaa'
 export function hex(r,g,b,a=1.0) {
 	return rgb2hex({r,g,b,a})
 }
@@ -56,15 +23,14 @@ export function rgb2css(rgb) {
 	return `rgba(${rgb.r},${rgb.g},${rgb.b},${rgb.a})`
 }
 
-// Convert {r,g,b} values to '#RRGGBB' or '#RRGGBBAA'
+// Convert {r,g,b,a} values to '#rrggbb', or '#rrggbbaa' if not opaque
 export function rgb2hex(rgb) {
 
 	let r = Math.round(rgb.r).toString(16).padStart(2, '0')
 	let g = Math.round(rgb.g).toString(16).padStart(2, '0')
 	let b = Math.round(rgb.b).toString(16).padStart(2, '0')
 
-  	// Alpha not set
-	if (rgb.a === undefined) {
+	if (rgb.a === undefined || rgb.a === 1) {
 		return '#' + r + g + b
 	}
 
@@ -292,18 +258,17 @@ const _CSS4 = [..._CSS3,
 ]
 
 
-// Helper function
+// Palette entries: { name, int, r, g, b, a, gray, hex, css }
 function augment(pal) {
 	return pal.map(el => {
 		const rgb = int2rgb(el.int)
 		const hex = rgb2hex(rgb)
 		const css = rgb2css(rgb)
-		const v   = rgb2gray(rgb)
-	 	return {...el, ...rgb, v, hex, css}
+		const gray = rgb2gray(rgb)
+		return {...el, ...rgb, gray, hex, css}
 	})
 }
 
-// Helper function
 function toMap(pal) {
 	const out = {}
 	pal.forEach(el => {
@@ -318,4 +283,74 @@ export const CSS2 = toMap(augment(_CSS2))
 export const CSS1 = toMap(augment(_CSS1))
 export const C64  = augment(_C64)
 export const CGA  = augment(_CGA)
+
+// -- Parsing ------------------------------------------------------------------
+
+const parsed = new Map()
+
+// CSS color string to a frozen { r, g, b, a }, null if not valid.
+// Names, #rgb[a], #rrggbb[aa], rgb[a](), hsl[a](); cached
+export function parseColor(str) {
+	if (typeof str != 'string') return null
+	let c = parsed.get(str)
+	if (c !== undefined) return c
+	c = parse(str.trim().toLowerCase())
+	c = c ? Object.freeze(c) : null
+	// Bounded: programs can generate colors per frame
+	if (parsed.size > 4096) parsed.clear()
+	parsed.set(str, c)
+	return c
+}
+
+function parse(s) {
+	if (s == 'transparent') return { r : 0, g : 0, b : 0, a : 0 }
+	if (CSS4[s]) return { r : CSS4[s].r, g : CSS4[s].g, b : CSS4[s].b, a : 1 }
+
+	if (s[0] == '#') {
+		const h = s.slice(1)
+		if (!/^[0-9a-f]+$/.test(h)) return null
+		if (h.length == 3 || h.length == 4) {
+			const v = [...h].map(d => parseInt(d + d, 16))
+			return { r : v[0], g : v[1], b : v[2], a : h.length == 4 ? v[3] / 255 : 1 }
+		}
+		if (h.length == 6 || h.length == 8) {
+			const v = h.match(/../g).map(d => parseInt(d, 16))
+			return { r : v[0], g : v[1], b : v[2], a : h.length == 8 ? v[3] / 255 : 1 }
+		}
+		return null
+	}
+
+	const m = s.match(/^(rgba?|hsla?)\((.*)\)$/)
+	if (!m) return null
+	// Comma and space syntax: rgb(1, 2, 3, 0.5) or rgb(1 2 3 / 50%)
+	const parts = m[2].split(/[\s,\/]+/).filter(Boolean)
+	if (parts.length < 3) return null
+	const alpha = parts.length > 3 ? unit(parts[3], 1) : 1
+	if (m[1][0] == 'r') {
+		const [r, g, b] = parts.slice(0, 3).map(p => clamp(unit(p, 255), 0, 255))
+		return { r, g, b, a : clamp(alpha, 0, 1) }
+	}
+	const h = parseFloat(parts[0])
+	const sat = clamp(unit(parts[1], 1), 0, 1)
+	const l = clamp(unit(parts[2], 1), 0, 1)
+	const [r, g, b] = hsl2rgb(h, sat, l)
+	return { r, g, b, a : clamp(alpha, 0, 1) }
+}
+
+// '50%' is half of max, a plain number is taken as is
+function unit(p, max) {
+	return p.endsWith('%') ? parseFloat(p) / 100 * max : parseFloat(p)
+}
+
+function hsl2rgb(h, s, l) {
+	h = ((h % 360) + 360) % 360
+	const k = n => (n + h / 30) % 12
+	const a = s * Math.min(l, 1 - l)
+	const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1))
+	return [f(0), f(8), f(4)].map(v => Math.round(v * 255))
+}
+
+function clamp(v, min, max) {
+	return v < min ? min : v > max ? max : v
+}
 

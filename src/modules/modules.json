@@ -1,0 +1,13 @@
+[
+	{ "name" : "camera.js", "desc" : "Webcam as a video element (async)" },
+	{ "name" : "color.js",  "desc" : "Palettes (CSS, C64, CGA), conversions and CSS color parsing" },
+	{ "name" : "draw.js",   "desc" : "Blocks of text and art, drawn into the buffer" },
+	{ "name" : "grid.js",   "desc" : "2D grid with sampling, wrapping and transforms" },
+	{ "name" : "load.js",   "desc" : "Loaders for images, text and JSON" },
+	{ "name" : "num.js",    "desc" : "GLSL scalar functions and numeric helpers" },
+	{ "name" : "pixels.js", "desc" : "Pixels of a video, image or canvas at grid size" },
+	{ "name" : "sort.js",   "desc" : "Sorts chars by ink coverage in a given font (async)" },
+	{ "name" : "text.js",   "desc" : "String tools: dedent, measure, wrap, align, truncate" },
+	{ "name" : "vec2.js",   "desc" : "2D vector functions, GLSL style" },
+	{ "name" : "vec3.js",   "desc" : "3D vector functions, GLSL style" }
+]
