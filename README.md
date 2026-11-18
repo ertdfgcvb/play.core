@@ -118,11 +118,11 @@ export function main(coord) {
 ### Signatures
 
 ```js
-function pre (       ctx) // every frame
-function main(coord, ctx) // every cell, returns the cell content
-function post(       ctx) // every frame
+function pre (       ctx) {} // every frame
+function main(coord, ctx) {} // every cell, returns the cell content
+function post(       ctx) {} // every frame
 
-function pointerDown(ctx, event) // also pointerMove, pointerUp, keyDown, keyUp
+function pointerDown(ctx, event) {} // also pointerMove, pointerUp, keyDown, keyUp
 ```
 
 `coord` holds the coordinates of the cell; the same object is reused for every cell.
