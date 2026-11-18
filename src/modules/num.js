@@ -1,69 +1,113 @@
-/**
-@module   num.js
-@desc     Some GLSL functions ported to JS
-@category public
-*/
+// -- GLSL built-ins -----------------------------------------------------------
 
-export default {
-	map,
-	fract,
-	clamp,
-	sign,
-	mix,
-	smoothstep,
-	smootherstep
+export function fract(x) {
+	return x - Math.floor(x)
 }
 
-// Maps a value v from range 'in' to range 'out'
+// Floored modulo: positive for negative x, unlike %
+export function mod(x, y) {
+	return x - y * Math.floor(x / y)
+}
+
+export function clamp(x, min, max) {
+	return x < min ? min : x > max ? max : x
+}
+
+export function sign(x) {
+	return x > 0 ? 1 : x < 0 ? -1 : 0
+}
+
+export function mix(a, b, t) {
+	return a * (1 - t) + b * t
+}
+
+export function step(edge, x) {
+	return x < edge ? 0 : 1
+}
+
+export function smoothstep(edge0, edge1, x) {
+	const t = clamp((x - edge0) / (edge1 - edge0), 0, 1)
+	return t * t * (3 - 2 * t)
+}
+
+export function radians(deg) {
+	return deg * Math.PI / 180
+}
+
+export function degrees(rad) {
+	return rad * 180 / Math.PI
+}
+
+export function inversesqrt(x) {
+	return 1 / Math.sqrt(x)
+}
+
+// GLSL atan: one argument is atan(y_over_x), two arguments are atan2(y, x)
+export function atan(y, x) {
+	return x === undefined ? Math.atan(y) : Math.atan2(y, x)
+}
+
+// -- Not GLSL -----------------------------------------------------------------
+
+export function smootherstep(edge0, edge1, x) {
+	const t = clamp((x - edge0) / (edge1 - edge0), 0, 1)
+	return t * t * t * (t * (t * 6 - 15) + 10)
+}
+
+// Maps v from [inA, inB] to [outA, outB]
 export function map(v, inA, inB, outA, outB) {
 	return outA + (outB - outA) * ((v - inA) / (inB - inA))
 }
 
-// Returns the fractional part of a float
-export function fract(v) {
-	return v - Math.floor(v)
+// map() clamped to [outA, outB]
+export function mapClamped(v, inA, inB, outA, outB) {
+	const t = clamp((v - inA) / (inB - inA), 0, 1)
+	return outA + (outB - outA) * t
 }
 
-// Clamps a value between min and max
-export function clamp(v, min, max) {
-	if (v < min) return min
-	if (v > max) return max
-	return v
+// Inverse of mix: where v sits between a and b (0..1, not clamped)
+export function unmix(a, b, v) {
+	return (v - a) / (b - a)
 }
 
-// Returns -1 for negative numbers, +1 for positive numbers, 0 for zero
-export function sign(n) {
-	if (n > 0) return  1
-	if (n < 0) return -1
-	return 0
+// Wraps v into [min, max)
+export function wrap(v, min, max) {
+	return min + mod(v - min, max - min)
 }
 
-// GLSL mix
-export function mix(v1, v2, a) {
-	return v1 * (1 - a) + v2 * a
+// Back and forth between 0 and len
+export function pingpong(v, len) {
+	return len - Math.abs(mod(v, 2 * len) - len)
 }
 
-// GLSL step
-export function step(edge, x) {
-	return (x < edge ? 0 : 1)
+// Snaps v (0..1) to n levels: 0, 1/(n-1), ..., 1
+export function quantize(v, n) {
+	return Math.round(v * (n - 1)) / (n - 1)
 }
 
-// GLSL smoothstep
-// https://en.wikipedia.org/wiki/Smoothstep
-export function smoothstep(edge0, edge1, t) {
-  	const x = clamp((t - edge0) / (edge1 - edge0), 0, 1)
-  	return x * x * (3 - 2 * x)
+// -- Distances ----------------------------------------------------------------
+// Euclidean gives circles, Manhattan diamonds, Chebyshev squares
+
+export function lenEuclidean(x, y) {
+	return Math.sqrt(x * x + y * y)
 }
 
-// GLSL smootherstep
-export function smootherstep(edge0, edge1, t) {
-  const x = clamp((t - edge0) / (edge1 - edge0), 0, 1)
-  return x * x * x * (x * (x * 6 - 15) + 10)
+export function lenManhattan(x, y) {
+	return Math.abs(x) + Math.abs(y)
 }
 
-// GLSL modulo
-export function mod(a, b) {
-	return a % b
+export function lenChebyshev(x, y) {
+	return Math.max(Math.abs(x), Math.abs(y))
 }
 
+export function distEuclidean(ax, ay, bx, by) {
+	return lenEuclidean(bx - ax, by - ay)
+}
 
+export function distManhattan(ax, ay, bx, by) {
+	return lenManhattan(bx - ax, by - ay)
+}
+
+export function distChebyshev(ax, ay, bx, by) {
+	return lenChebyshev(bx - ax, by - ay)
+}
