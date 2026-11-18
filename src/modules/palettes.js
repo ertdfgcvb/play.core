@@ -1,10 +1,10 @@
-// palettes.js: The C64 and CGA palettes and the CSS named colors
+// palettes.js: The C64, CGA and EGA palettes and the CSS named colors
 
 import { int2rgb, rgb2hex, rgb2css, rgb2gray } from './color.js'
 import { CSS_COLORS } from '../core/css_colors.js'
 
 // Entries: { name, int, r, g, b, a, gray, hex, css }.
-// C64 and CGA are arrays (in hardware order), the CSS palettes are maps by name: CSS4.tomato
+// C64, CGA and EGA are arrays (in hardware order), the CSS palettes are maps by name: CSS4.tomato
 
 // https://www.c64-wiki.com/wiki/Color
 export const C64 = augment([
@@ -45,6 +45,13 @@ export const CGA = augment([
 	{ int : 0xffff55, name : 'yellow'       },
 	{ int : 0xffffff, name : 'white'        },
 ])
+
+// The 64 colors of EGA, by index (rgbRGB bits: uppercase 0xaa, lowercase 0x55).
+// The default 16 colors are the CGA palette
+export const EGA = augment(Array.from({ length : 64 }, (_, i) => {
+	const ch = (hi, lo) => (i & hi ? 0xaa : 0) + (i & lo ? 0x55 : 0)
+	return { int : ch(4, 32) << 16 | ch(2, 16) << 8 | ch(1, 8), name : String(i) }
+}))
 
 // CSS named colors by level: CSS1 (16) to CSS4 (148)
 export const CSS1 = css(1)

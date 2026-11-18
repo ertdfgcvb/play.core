@@ -46,3 +46,14 @@ test('mixColor, hsl, nearest, C64', async () => {
 	assert.equal(C64.length, 16)
 	assert.equal(C64[14].hex, '#0088ff')
 })
+
+test('EGA', async () => {
+	const { EGA, CGA } = await import('../src/modules/palettes.js')
+	assert.equal(EGA.length, 64)
+	assert.equal(EGA[20].hex, '#aa5500', 'brown')
+	assert.equal(EGA[63].hex, '#ffffff')
+	assert.equal(EGA[56].hex, '#555555')
+	// The default EGA palette selects these 16 of the 64: the CGA colors
+	const defaults = [0, 1, 2, 3, 4, 5, 20, 7, 56, 57, 58, 59, 60, 61, 62, 63]
+	assert.deepEqual(defaults.map(i => EGA[i].hex), CGA.map(c => c.hex))
+})

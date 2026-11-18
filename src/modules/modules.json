@@ -4,7 +4,7 @@
 	{ "name" : "color.js",    "desc" : "Color conversions, CSS color parsing, mixing and palette matching" },
 	{ "name" : "grid.js",     "desc" : "2D grid with sampling, wrapping and transforms" },
 	{ "name" : "num.js",      "desc" : "GLSL scalar functions and numeric helpers" },
-	{ "name" : "palettes.js", "desc" : "The C64 and CGA palettes and the CSS named colors" },
+	{ "name" : "palettes.js", "desc" : "The C64, CGA and EGA palettes and the CSS named colors" },
 	{ "name" : "pixels.js",   "desc" : "Pixels of a video, image or canvas at grid size; loadImage()" },
 	{ "name" : "sort.js",     "desc" : "Sorts chars by ink coverage in a given font (async)" },
 	{ "name" : "text.js",     "desc" : "String tools: dedent, measure, wrap, align, truncate" },
