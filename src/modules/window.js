@@ -34,7 +34,8 @@ const PANEL = {
 	paddingY   : 1,
 	title      : '',
 	titleStyle : null, // cell style of the title, or 'invert' (swaps color and backgroundColor)
-	titleX     : 2,    // column of the title, from the left border
+	titleX     : 2,    // first column of the title, from the left border
+	titleAlign : 'center', // or 'left' (at titleX)
 	align      : null, // 'center': x, y is the center
 }
 
@@ -100,7 +101,9 @@ export function panel(target, content = '', x = 0, y = 0, style = {}) {
 	const cell = cellStyle(s)
 
 	if (s.title && w >= s.titleX + 4) {
-		write(buffer, ' ' + truncate(s.title, w - s.titleX - 4) + ' ', x + s.titleX, y, variant(cell, s.titleStyle))
+		const t = ' ' + truncate(s.title, w - s.titleX - 4) + ' '
+		const tx = s.titleAlign == 'left' ? s.titleX : Math.max(s.titleX, Math.floor((w - length(t)) / 2))
+		write(buffer, t, x + tx, y, variant(cell, s.titleStyle))
 	}
 
 	const ix = x + 1 + px

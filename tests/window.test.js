@@ -116,7 +116,7 @@ test('desktop: info window with the info style', async () => {
 	const desk = new Desktop()
 	const w = desk.info({ x : 0, y : 0 })
 	const h = await frame(ctx => desk.update(ctx), 30, 10)
-	assert.match(h.text(), /\[■\]─ info/)
+	assert.match(h.text(), /\[■\]─+ info ─/)
 	assert.equal(h.buffer.get(2, 2).backgroundColor, 'royalblue')
 	w.style.backgroundColor = 'crimson'
 	h.step()
