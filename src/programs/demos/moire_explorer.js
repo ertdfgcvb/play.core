@@ -4,16 +4,18 @@
 @desc   Click or tap to toggle mode
 */
 
-import { vec2, dist, mulN } from '/src/modules/vec2.js'
-import { map } from '/src/modules/num.js'
+import { vec2, distance, mul } from '@ertdfgcvb/play/vec2.js'
+import { map } from '@ertdfgcvb/play/num.js'
 
 export const settings = { fps : 60 }
 
 // Shorthands
 const { sin, cos, atan2, floor, min } = Math
 
-// Change the mouse pointer to 'pointer'
-export const boot = (context) => context.settings.element.style.cursor = 'pointer'
+// Change the mouse pointer to 'pointer' (once, on the first frame)
+export function pre(context) {
+	if (context.frame == 0 && context.settings.element) context.settings.element.style.cursor = 'pointer'
+}
 
 // Cycle modes with click or tap
 export const pointerDown = () => mode = ++mode % 3
@@ -21,7 +23,7 @@ let mode = 0
 
 const density = ' ..._-:=+abcXW@#ÑÑÑ'
 
-export function main(coord, context, cursor) {
+export function main(coord, context) {
 	const t = context.time * 0.0001
 	const m = min(context.cols, context.rows)
 	const st = {
@@ -30,12 +32,12 @@ export function main(coord, context, cursor) {
 	}
 	st.x *= context.metrics.aspect
 
-	const centerA = mulN(vec2(cos(t*3), sin(t*7)), 0.5)
-	const centerB = mulN(vec2(cos(t*5), sin(t*4)), 0.5)
+	const centerA = mul(vec2(cos(t*3), sin(t*7)), 0.5)
+	const centerB = mul(vec2(cos(t*5), sin(t*4)), 0.5)
 
 	// Set A or B to zero to see only one of the two frequencies
-	const A = mode % 2 == 0 ? atan2(centerA.y-st.y, centerA.x-st.x) : dist(st, centerA)
-	const B = mode     == 0 ? atan2(centerB.y-st.y, centerB.x-st.x) : dist(st, centerB)
+	const A = mode % 2 == 0 ? atan2(centerA.y-st.y, centerA.x-st.x) : distance(st, centerA)
+	const B = mode     == 0 ? atan2(centerB.y-st.y, centerB.x-st.x) : distance(st, centerB)
 
 	const aMod = map(cos(t*2.12), -1, 1, 6, 60)
 	const bMod = map(cos(t*3.33), -1, 1, 6, 60)
@@ -51,9 +53,11 @@ export function main(coord, context, cursor) {
 	return density[idx]
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer) {
-	drawInfo(context, cursor, buffer, {
-		color : 'white', backgroundColor : 'royalblue', shadowStyle : 'gray'
-	})
+import { Desktop } from '@ertdfgcvb/play/window.js'
+
+const desk = new Desktop()
+desk.info()
+
+export function post(context) {
+	desk.update(context)
 }

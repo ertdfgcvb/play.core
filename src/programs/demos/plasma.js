@@ -5,9 +5,9 @@
 Plasma primer: https://www.bidouille.org/prog/plasma
 */
 
-import { vec2, dot, add, sub, length } from '/src/modules/vec2.js'
-import { map } from '/src/modules/num.js'
-import { css } from '/src/modules/color.js'
+import { vec2, dot, add, sub, length } from '@ertdfgcvb/play/vec2.js'
+import { map } from '@ertdfgcvb/play/num.js'
+import { css } from '@ertdfgcvb/play/color.js'
 
 export const settings = { fps : 60 }
 
@@ -17,7 +17,7 @@ const density = '$?01▄abc+-><:. '
 const PI23 = PI * 2 / 3
 const PI43 = PI * 4 / 3
 
-export function main(coord, context, cursor, buffer) {
+export function main(coord, context) {
 	const t1 = context.time * 0.0009
 	const t2 = context.time * 0.0003
     const m = Math.min(context.cols, context.rows)
@@ -48,7 +48,11 @@ export function main(coord, context, cursor, buffer) {
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer) {
-	drawInfo(context, cursor, buffer)
+import { Desktop } from '@ertdfgcvb/play/window.js'
+
+const desk = new Desktop()
+desk.info()
+
+export function post(context) {
+	desk.update(context)
 }

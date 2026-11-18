@@ -4,14 +4,13 @@
 @desc   Draw donuts with SDF
 */
 
-import { sdCircle } from '/src/modules/sdf.js'
-import { sort } from '/src/modules/sort.js'
-import { length, rot } from '/src/modules/vec2.js'
-import { map, fract, smoothstep } from '/src/modules/num.js'
+import { sort } from '@ertdfgcvb/play/sort.js'
+import { length, rot } from '@ertdfgcvb/play/vec2.js'
+import { map, fract, smoothstep } from '@ertdfgcvb/play/num.js'
 
 const density = '▀▄▚▐─═0123.+?'
 
-export function main(coord, context, cursor, buffer) {
+export function main(coord, context) {
 	const t = context.time * 0.001
     const m = Math.min(context.cols, context.rows)
     const a = context.metrics.aspect
@@ -48,9 +47,18 @@ export function main(coord, context, cursor, buffer) {
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer) {
-	drawInfo(context, cursor, buffer, {
-		color : 'white', backgroundColor : 'royalblue', shadowStyle : 'gray'
-	})
+import { Desktop } from '@ertdfgcvb/play/window.js'
+
+const desk = new Desktop()
+desk.info()
+
+export function post(context) {
+	desk.update(context)
+}
+
+// Signed distance functions by Inigo Quilez:
+// https://iquilezles.org/articles/distfunctions2d
+
+function sdCircle(p, radius) {
+	return length(p) - radius
 }

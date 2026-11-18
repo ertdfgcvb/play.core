@@ -7,8 +7,8 @@ The original from 1989:
 http://www.graficaobscura.com/dyna/
 */
 
-import { copy, length, vec2, add, sub, divN, mulN } from '/src/modules/vec2.js'
-import { smoothstep } from '/src/modules/num.js'
+import { copy, length, vec2, add, sub, div, mul } from '@ertdfgcvb/play/vec2.js'
+import { smoothstep } from '@ertdfgcvb/play/num.js'
 
 export const settings = { fps : 60 }
 
@@ -18,7 +18,9 @@ const RADIUS = 15 // Pencil radius
 
 let cols, rows
 
-export function pre(context, cursor, buffer) {
+export function pre(context) {
+	const { cursor } = context
+	const buffer = context.buffer.data
 
 	// Detect window resize
 	if (cols != context.cols || rows != context.rows) {
@@ -57,7 +59,8 @@ export function pre(context, cursor, buffer) {
 const density = ' .:░▒▓█Ñ#+-'.split('')
 
 // Just a renderer
-export function main(coord, context, cursor, buffer) {
+export function main(coord, context) {
+	const buffer = context.buffer.data
 	const i = coord.index
 	const v = smoothstep(0, 0.9, buffer[i].value)
 	buffer[i].value *= 0.99
@@ -65,11 +68,13 @@ export function main(coord, context, cursor, buffer) {
 	return density[idx]
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer) {
-	drawInfo(context, cursor, buffer, {
-		color : 'white', backgroundColor : 'royalblue', shadowStyle : 'gray'
-	})
+import { Desktop } from '@ertdfgcvb/play/window.js'
+
+const desk = new Desktop()
+desk.info()
+
+export function post(context) {
+	desk.update(context)
 }
 
 // -----------------------------------------------------------------------------
@@ -84,8 +89,8 @@ class Dyna {
 	}
 	update(cursor) {
 		const force = sub(cursor, this.pos)
-		const acc = divN(force, this.mass)
-		this.vel = mulN(add(this.vel, acc), this.damp)
+		const acc = div(force, this.mass)
+		this.vel = mul(add(this.vel, acc), this.damp)
 		this.pre = copy(this.pos)
 		this.pos = add(this.pos, this.vel)
 	}

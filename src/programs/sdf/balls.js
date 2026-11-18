@@ -4,14 +4,15 @@
 @desc   Smooth SDF balls
 */
 
-import { map } from '/src/modules/num.js'
-import { sdCircle, opSmoothUnion } from '/src/modules/sdf.js'
+import { length } from '@ertdfgcvb/play/vec2.js'
+
+import { map, clamp, mix } from '@ertdfgcvb/play/num.js'
 
 const density = '#ABC|/:÷×+-=?*· '
 
 const { PI, sin, cos, exp, abs } = Math
 
-export function main(coord, context, cursor, buffer) {
+export function main(coord, context) {
 	const t = context.time * 0.001 + 10
     const m = Math.min(context.cols, context.rows)
     const a = context.metrics.aspect
@@ -55,4 +56,16 @@ function transform(p, trans, rot) {
 		x : dx * c - dy * s,
 		y : dx * s + dy * c,
 	}
+}
+
+// Signed distance functions by Inigo Quilez:
+// https://iquilezles.org/articles/distfunctions2d
+
+function sdCircle(p, radius) {
+	return length(p) - radius
+}
+
+function opSmoothUnion(d1, d2, k) {
+	const h = clamp(0.5 + 0.5 * (d2 - d1) / k, 0.0, 1.0)
+	return mix(d2, d1, h) - k * h * (1.0 - h)
 }

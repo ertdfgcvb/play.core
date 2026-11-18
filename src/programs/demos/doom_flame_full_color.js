@@ -4,8 +4,8 @@
 @desc   Oldschool flame effect
 */
 
-import { clamp, map } from '/src/modules/num.js'
-import { mix, smoothstep } from '/src/modules/num.js'
+import { clamp, map } from '@ertdfgcvb/play/num.js'
+import { mix, smoothstep } from '@ertdfgcvb/play/num.js'
 
 export const settings = { backgroundColor : 'black' }
 
@@ -32,7 +32,8 @@ let cols, rows
 
 const data = []
 
-export function pre(context, cursor, buffer) {
+export function pre(context) {
+	const { cursor } = context
 
 	// Detect resize (and reset buffer, in case)
 	if (cols != context.cols || rows != context.rows) {
@@ -66,7 +67,7 @@ export function pre(context, cursor, buffer) {
 	}
 }
 
-export function main(coord, context, cursor, buffer) {
+export function main(coord, context) {
 
 	const u = data[coord.index]
 	const v = flame[clamp(u, 0, flame.length-1)]
@@ -142,7 +143,11 @@ function valueNoise() {
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer) {
-	drawInfo(context, cursor, buffer)
+import { Desktop } from '@ertdfgcvb/play/window.js'
+
+const desk = new Desktop()
+desk.info()
+
+export function post(context) {
+	desk.update(context)
 }

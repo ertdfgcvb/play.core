@@ -8,7 +8,7 @@ https://twitter.com/ntsutae/status/1292115106763960327
 
 const pattern = '└┧─┨┕┪┖┫┘┩┙┪━'
 
-export function main(coord, context, cursor, buffer) {
+export function main(coord, context) {
 	const t1 = Math.floor(context.frame / 2)
 	const t2 = Math.floor(context.frame / 128)
 	const x = coord.x
@@ -19,8 +19,12 @@ export function main(coord, context, cursor, buffer) {
 	return pattern[c]
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer) {
-    drawInfo(context, cursor, buffer, { shadowStyle : 'gray' })
+import { Desktop } from '@ertdfgcvb/play/window.js'
+
+const desk = new Desktop()
+desk.info()
+
+export function post(context) {
+	desk.update(context)
 }
 

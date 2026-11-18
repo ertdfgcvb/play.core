@@ -4,9 +4,9 @@
 @desc   Oldschool flame effect
 */
 
-import { clamp, map } from '/src/modules/num.js'
-import { CSS4 } from '/src/modules/color.js'
-import { mix, smoothstep } from '/src/modules/num.js'
+import { clamp, map } from '@ertdfgcvb/play/num.js'
+import { CSS4 } from '@ertdfgcvb/play/color.js'
+import { mix, smoothstep } from '@ertdfgcvb/play/num.js'
 
 export const settings = { fps : 30, backgroundColor : 'black', color : 'white' }
 
@@ -19,7 +19,8 @@ const noise = valueNoise()
 
 const data = []
 
-export function pre(context, cursor, buffer) {
+export function pre(context) {
+	const { cursor } = context
 
 
 	// Detect resize (and reset buffer, in case)
@@ -54,7 +55,7 @@ export function pre(context, cursor, buffer) {
 	}
 }
 
-export function main(coord, context, cursor, buffer) {
+export function main(coord, context) {
 	const u = data[coord.index]
 	if (u === 0) return // Inserts a space
 
@@ -123,7 +124,11 @@ function valueNoise() {
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer) {
-	drawInfo(context, cursor, buffer)
+import { Desktop } from '@ertdfgcvb/play/window.js'
+
+const desk = new Desktop()
+desk.info()
+
+export function post(context) {
+	desk.update(context)
 }

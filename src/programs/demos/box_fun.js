@@ -4,17 +4,18 @@
 @desc   Think inside of the box
 */
 
-import { clamp, map } from '/src/modules/num.js'
+import { clamp, map } from '@ertdfgcvb/play/num.js'
 
 const {sin, cos, floor} = Math
 
-export function main(coord, context, cursor, buffer) {
+export function main(coord, context) {
 	// Basic background pattern
 	return (coord.x + coord.y) % 2 ? '·' : ' '
 }
 
-import { drawBox } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer) {
+// Boxes recomputed each frame: panels, not windows
+import { panel } from '@ertdfgcvb/play/window.js'
+export function post(context) {
 	const { rows, cols } =  context
 	const t = context.time * 0.002
 	const baseW = 15
@@ -38,8 +39,8 @@ export function post(context, cursor, buffer) {
 		paddingY        : 1,
 		color           : 'black',
 		backgroundColor : 'white',
-		borderStyle     : 'double',
-		shadowStyle     : 'light',
+		border          : 'double',
+		shadow          : 'light',
 	}
 
 	for (let j=0; j<numY; j++) {
@@ -59,7 +60,7 @@ export function post(context, cursor, buffer) {
 			txt += `*${q[(i + j * numX) % q.length]}*\n`
 			txt += `pos: ${style.x}×${style.y}\n`
 
-			drawBox(txt, style, buffer, cols, rows)
+			panel(context, txt.trimEnd(), style.x, style.y, style)
 		}
 	}
 }

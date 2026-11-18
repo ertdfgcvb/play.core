@@ -12,7 +12,8 @@ all the gaps.
 
 export const settings = { backgroundColor : 'whitesmoke' }
 
-export function pre(context, cursor, buffer) {
+export function pre(context) {
+	const buffer = context.buffer.data
 
 	const TAU = Math.PI * 2
 
@@ -75,9 +76,11 @@ export function pre(context, cursor, buffer) {
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer) {
-	drawInfo(context, cursor, buffer, {
-		color : 'white', backgroundColor : 'royalblue', shadowStyle : 'gray'
-	})
+import { Desktop } from '@ertdfgcvb/play/window.js'
+
+const desk = new Desktop()
+desk.info()
+
+export function post(context) {
+	desk.update(context)
 }

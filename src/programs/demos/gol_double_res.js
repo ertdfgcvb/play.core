@@ -38,7 +38,8 @@ let cols, rows
 const data = []
 
 // The automata is computed in a single step and stored in the 'data' buffer
-export function pre(context, cursor, buffer) {
+export function pre(context) {
+	const { cursor } = context
 
 	// The window has been resized (or “init”), reset the buffer:
 	if (cols != context.cols || rows != context.rows) {
@@ -101,7 +102,7 @@ export function pre(context, cursor, buffer) {
 }
 
 // Just a renderer
-export function main(coord, context, cursor, buffer) {
+export function main(coord, context) {
 	// Current buffer
 	const curr = data[(context.frame + 1) % 2]
 
@@ -116,23 +117,28 @@ export function main(coord, context, cursor, buffer) {
 	                    return ' ' // both cells are empty
 }
 
-// Draw some info
-import { drawBox } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer) {
+// Draw some info in a window (live content)
+import { Desktop } from '@ertdfgcvb/play/window.js'
 
-	const buff = data[(context.frame + 1) % 2]
-	const numCells = buff.reduce((a, b) => a + b, 0)
+const desk = new Desktop()
 
-	let text = ''
-	text += 'frame ' + context.frame + '\n'
-	text += 'size  ' + context.cols + '×' + context.rows + '\n'
-	text += 'cells ' + numCells + '/' + buff.length + '\n'
+desk.open({
+	x               : 2,
+	y               : 1,
+	title           : 'gol',
+	backgroundColor : 'tomato',
+	color           : 'black',
+	border          : 'double',
+	shadow          : 'gray',
+	content         : context => {
+		const buff = data[(context.frame + 1) % 2]
+		const numCells = buff.reduce((a, b) => a + b, 0)
+		return 'frame ' + context.frame + '\n' +
+			'size  ' + context.cols + '×' + context.rows + '\n' +
+			'cells ' + numCells + '/' + buff.length
+	},
+})
 
-    drawBox(text, {
-		backgroundColor : 'tomato',
-		color           : 'black',
-		borderStyle     : 'double',
-		shadowStyle     : 'gray'
-	}, buffer)
+export function post(context) {
+	desk.update(context)
 }
-

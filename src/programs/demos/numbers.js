@@ -4,8 +4,8 @@
 @desc   Fun with integers
 */
 
-import { map } from '/src/modules/num.js'
-import { CGA } from '/src/modules/color.js'
+import { map } from '@ertdfgcvb/play/num.js'
+import { CGA } from '@ertdfgcvb/play/color.js'
 
 export const settings = {
 	backgroundColor : 'black'
@@ -38,7 +38,7 @@ const spacingY = 1
 
 const bit = (n, k) => n >> k & 1
 
-export function main(coord, context, cursor, buffer) {
+export function main(coord, context) {
 
 	const f = context.frame
 

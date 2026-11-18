@@ -4,12 +4,14 @@
 @desc   Smooth union of two circles
 */
 
-import { sdCircle, opSmoothUnion } from '/src/modules/sdf.js'
-import { sub, vec2 } from '/src/modules/vec2.js'
+import { clamp, mix } from '@ertdfgcvb/play/num.js'
+
+import { sub, vec2, length } from '@ertdfgcvb/play/vec2.js'
 
 const density = '#WX?*:÷×+=-· '
 
-export function main(coord, context, cursor, buffer) {
+export function main(coord, context) {
+	const { cursor } = context
 	const t = context.time
     const m = Math.min(context.cols, context.rows)
     const a = context.metrics.aspect
@@ -42,19 +44,36 @@ export function main(coord, context, cursor, buffer) {
 
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer) {
-	drawInfo(context, cursor, buffer)
+import { Desktop } from '@ertdfgcvb/play/window.js'
+
+const desk = new Desktop()
+desk.info()
+
+export function post(context) {
+	desk.update(context)
 }
 
 // Uncomment this to calculate the cursor position only once
 // and pass it to the main function as a global
 /*
 const p = vec2(0, 0)
-export function pre(context, cursor, buffer) {
+export function pre(context) {
+	const { cursor } = context
    	const m = Math.min(context.cols, context.rows)
     const a = context.metrics.aspect
 	p.x = 2.0 * (cursor.x - context.cols / 2) / m * a,
 	p.y = 2.0 * (cursor.y - context.rows / 2) / m
 }
 */
+
+// Signed distance functions by Inigo Quilez:
+// https://iquilezles.org/articles/distfunctions2d
+
+function sdCircle(p, radius) {
+	return length(p) - radius
+}
+
+function opSmoothUnion(d1, d2, k) {
+	const h = clamp(0.5 + 0.5 * (d2 - d1) / k, 0.0, 1.0)
+	return mix(d2, d1, h) - k * h * (1.0 - h)
+}

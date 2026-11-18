@@ -4,10 +4,11 @@
 @desc   The cursor controls box thickness and exp
 */
 
-import { sdSegment } from '/src/modules/sdf.js'
-import * as v2 from '/src/modules/vec2.js'
-import * as v3 from '/src/modules/vec3.js'
-import { map } from '/src/modules/num.js'
+import { dot, length, mul, sub } from '@ertdfgcvb/play/vec2.js'
+
+import * as v2 from '@ertdfgcvb/play/vec2.js'
+import * as v3 from '@ertdfgcvb/play/vec3.js'
+import { map, clamp } from '@ertdfgcvb/play/num.js'
 
 export const settings = { fps : 60 }
 
@@ -61,7 +62,7 @@ const boxProj = []
 
 const bgMatrixDim = vec2(bgMatrix[0].length, bgMatrix.length)
 
-export function pre(context, cursor) {
+export function pre(context) {
 	const t = context.time * 0.01
 	const rot = vec3(t * 0.11, t * 0.13, -t * 0.15)
 	const d = 2
@@ -71,11 +72,12 @@ export function pre(context, cursor) {
 		let vt = v3.rotX(v, rot.x)
 		vt = v3.rotY(vt, rot.y)
 		vt = v3.rotZ(vt, rot.z)
-		boxProj[i] = v2.mulN(vec2(vt.x, vt.y), d / (vt.z - zOffs))
+		boxProj[i] = v2.mul(vec2(vt.x, vt.y), d / (vt.z - zOffs))
 	}
 }
 
-export function main(coord, context, cursor) {
+export function main(coord, context) {
+	const { cursor } = context
 	const t = context.time * 0.01
 	const m = min(context.cols, context.rows)
     const a = context.metrics.aspect
@@ -112,8 +114,21 @@ export function main(coord, context, cursor) {
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer) {
-	drawInfo(context, cursor, buffer)
+import { Desktop } from '@ertdfgcvb/play/window.js'
+
+const desk = new Desktop()
+desk.info()
+
+export function post(context) {
+	desk.update(context)
 }
 
+// Signed distance functions by Inigo Quilez:
+// https://iquilezles.org/articles/distfunctions2d
+
+function sdSegment(p, a, b, thickness) {
+	const pa = sub(p, a)
+	const ba = sub(b, a)
+	const h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0)
+	return length(sub(pa, mul(ba, h))) - thickness
+}

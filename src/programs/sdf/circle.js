@@ -4,14 +4,15 @@
 @desc   Draw a smooth circle with exp()
 */
 
-import { sdCircle } from '/src/modules/sdf.js'
-import { sort } from '/src/modules/sort.js'
+import { length } from '@ertdfgcvb/play/vec2.js'
 
-const density = sort('/\\MXYZabc!?=-. ', 'Simple Console', false)
+import { sort } from '@ertdfgcvb/play/sort.js'
+
+const density = await sort('/\\MXYZabc!?=-. ', 'Simple Console')
 
 export const settings = { fps : 60 }
 
-export function main(coord, context, cursor, buffer) {
+export function main(coord, context) {
 	const t  = context.time * 0.002
     const m = Math.min(context.cols, context.rows)
     const a = context.metrics.aspect
@@ -31,4 +32,11 @@ export function main(coord, context, cursor, buffer) {
 		backgroundColor : 'black',
 		color : 'white'
 	}
+}
+
+// Signed distance functions by Inigo Quilez:
+// https://iquilezles.org/articles/distfunctions2d
+
+function sdCircle(p, radius) {
+	return length(p) - radius
 }

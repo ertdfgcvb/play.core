@@ -4,12 +4,13 @@
 @desc   Smooth SDF Rectangles
 */
 
-import { map } from '/src/modules/num.js'
-import { sdBox, opSmoothUnion } from '/src/modules/sdf.js'
+import { length } from '@ertdfgcvb/play/vec2.js'
+
+import { map, clamp, mix } from '@ertdfgcvb/play/num.js'
 
 let density = '▚▀abc|/:÷×+-=?*· '
 
-export function main(coord, context, cursor, buffer) {
+export function main(coord, context) {
 
 	const t = context.time
     const m = Math.max(context.cols, context.rows)
@@ -50,7 +51,27 @@ function transform(p, trans, rot) {
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer) {
-	drawInfo(context, cursor, buffer)
+import { Desktop } from '@ertdfgcvb/play/window.js'
+
+const desk = new Desktop()
+desk.info()
+
+export function post(context) {
+	desk.update(context)
+}
+
+// Signed distance functions by Inigo Quilez:
+// https://iquilezles.org/articles/distfunctions2d
+
+function sdBox(p, size) {
+	const d = {
+		x : Math.max(Math.abs(p.x) - size.x, 0),
+		y : Math.max(Math.abs(p.y) - size.y, 0),
+	}
+	return length(d) + Math.min(Math.max(d.x, d.y), 0.0)
+}
+
+function opSmoothUnion(d1, d2, k) {
+	const h = clamp(0.5 + 0.5 * (d2 - d1) / k, 0.0, 1.0)
+	return mix(d2, d1, h) - k * h * (1.0 - h)
 }

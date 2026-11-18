@@ -7,19 +7,15 @@
 */
 
 // Don’t do this :)
-fetch("https://raw.githubusercontent.com/blindman67/SimplexNoiseJS/master/simplexNoise.js")
-.then(e => e.text())
-.then(e => {
-	const openSimplexNoise = new Function("return " + e)()
-	noise3D = openSimplexNoise(Date.now()).noise3D
-})
-
-// Stub function
-function noise3D() { return 0 }
+// The script is not a module: it is downloaded as text and evaluated.
+// The program starts once it is loaded (top-level await)
+const src = await (await fetch('https://raw.githubusercontent.com/blindman67/SimplexNoiseJS/master/simplexNoise.js')).text()
+const openSimplexNoise = new Function('return ' + src)()
+const noise3D = openSimplexNoise(Date.now()).noise3D
 
 const density = 'Ñ@#W$9876543210?!abcxyz;:+=-,._ '
 
-export function main(coord, context, cursor, buffer) {
+export function main(coord, context) {
 	const t = context.time * 0.0007
 	const s = 0.03
 	const x = coord.x * s

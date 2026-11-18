@@ -8,7 +8,7 @@ const pattern = '┌┘└┐╰╮╭╯'
 
 const { sin, round, abs } = Math
 
-export function main(coord, context, cursor, buffer) {
+export function main(coord, context) {
 	const t = context.time * 0.0005
 	const x = coord.x
 	const y = coord.y
@@ -17,7 +17,11 @@ export function main(coord, context, cursor, buffer) {
 	return pattern[i]
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer) {
-	drawInfo(context, cursor, buffer, { shadowStyle : 'gray' })
+import { Desktop } from '@ertdfgcvb/play/window.js'
+
+const desk = new Desktop()
+desk.info()
+
+export function post(context) {
+	desk.update(context)
 }

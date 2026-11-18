@@ -13,7 +13,7 @@ const weights = [100, 700]
 
 const { floor, sin } = Math
 
-export function main(coord, context, cursor, buffer) {
+export function main(coord, context) {
 	const t = context.time * 0.001
 	const x = coord.x - context.cols / 2
 	const y = coord.y - context.rows / 2
@@ -28,7 +28,11 @@ export function main(coord, context, cursor, buffer) {
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer) {
-    drawInfo(context, cursor, buffer, { shadowStyle : 'gray' })
+import { Desktop } from '@ertdfgcvb/play/window.js'
+
+const desk = new Desktop()
+desk.info()
+
+export function post(context) {
+	desk.update(context)
 }

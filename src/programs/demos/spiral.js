@@ -6,18 +6,18 @@ Inspired by this shader by ahihi
 https://www.shadertoy.com/view/XdSGzR
 */
 
-import { vec2, dot, add, sub, length } from '/src/modules/vec2.js'
-import { map } from '/src/modules/num.js'
-import { sort } from '/src/modules/sort.js'
+import { vec2, dot, add, sub, length } from '@ertdfgcvb/play/vec2.js'
+import { map } from '@ertdfgcvb/play/num.js'
+import { sort } from '@ertdfgcvb/play/sort.js'
 
 export const settings = { fps : 60 }
 
 const { sin, cos, floor, PI, atan, sqrt, pow } = Math
 const TAU = PI * 2
 
-const density = sort('▅▃▁?ab012:. ', 'Simple Console', false)
+const density = await sort('▅▃▁?ab012:. ', 'Simple Console')
 
-export function main(coord, context, cursor, buffer) {
+export function main(coord, context) {
 	const t = context.time * 0.0006
     const m = Math.min(context.cols, context.rows)
     const a = context.metrics.aspect
@@ -46,9 +46,11 @@ export function main(coord, context, cursor, buffer) {
 	return density[idx]
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer) {
-	drawInfo(context, cursor, buffer, {
-		color : 'white', backgroundColor : 'royalblue', shadowStyle : 'gray'
-	})
+import { Desktop } from '@ertdfgcvb/play/window.js'
+
+const desk = new Desktop()
+desk.info()
+
+export function post(context) {
+	desk.update(context)
 }

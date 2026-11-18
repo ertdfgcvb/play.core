@@ -6,16 +6,16 @@ Inspired by this shader by scry
 https://www.shadertoy.com/view/tdsyRf
 */
 
-import { map } from '/src/modules/num.js'
-import { sort } from '/src/modules/sort.js'
-import { vec2, rot, add, mulN, addN, subN, length } from '/src/modules/vec2.js'
+import { map } from '@ertdfgcvb/play/num.js'
+import { sort } from '@ertdfgcvb/play/sort.js'
+import { vec2, rot, add, mul, sub, length } from '@ertdfgcvb/play/vec2.js'
 
 const { min, sin, cos, floor } = Math
 
 const density  = '#Wabc:+-. '
 const colors = ['deeppink', 'black', 'red', 'blue', 'orange', 'yellow']
 
-export function main(coord, context, cursor, buffer) {
+export function main(coord, context) {
 	const t  = context.time * 0.0002
     const m = min(context.cols, context.rows)
     const a = context.metrics.aspect
@@ -30,11 +30,11 @@ export function main(coord, context, cursor, buffer) {
 		const v = vec2(sin(t * 3 + o), cos(t * 2 + o))
 		add(st, v, st)
 
-		const ang = -t + length(subN(st, 0.5))
+		const ang = -t + length(sub(st, 0.5))
 		rot(st, ang, st)
 	}
 
-	mulN(st, 0.6, st)
+	mul(st, 0.6, st)
 
 	const s = cos(t) * 2.0
 	let c = sin(st.x * 3.0 + s) + sin(st.y * 21)
@@ -50,7 +50,11 @@ export function main(coord, context, cursor, buffer) {
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer) {
-	drawInfo(context, cursor, buffer)
+import { Desktop } from '@ertdfgcvb/play/window.js'
+
+const desk = new Desktop()
+desk.info()
+
+export function post(context) {
+	desk.update(context)
 }
