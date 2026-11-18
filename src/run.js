@@ -1,5 +1,5 @@
 import { Buffer } from './core/buffer.js'
-import { schedule, unschedule } from './core/scheduler.js'
+import { schedule, unschedule, createPacer } from './core/scheduler.js'
 import { domInput } from './core/input_dom.js'
 import VERSION from './core/version.js'
 
@@ -22,8 +22,6 @@ const DEFAULTS = {
 	data           : null,
 }
 
-// Tolerance for the fps cap: rAF timestamps jitter around the display rate
-const FPS_TOLERANCE = 1
 
 // program: a module object, or the URL of a module (string or URL).
 // A URL is imported as a separate copy for each run: module variables are not shared.
@@ -42,6 +40,7 @@ export async function run(source, options = {}) {
 	const data = settings.data || {}
 	// fps 0 (or less): uncapped, a frame on every tick of the loop (vsync in the browser)
 	const interval = settings.fps > 0 ? 1000 / settings.fps : 0
+	const pacer = createPacer(interval)
 
 	let frame = settings.startFrame
 	let time = settings.startTime
@@ -50,7 +49,6 @@ export async function run(source, options = {}) {
 	let state = 'idle'
 	let visible = true
 	let lastFrameT = null
-	let sampleT = 0
 	let fps = 0
 	let fpsFrames = 0
 	let fpsT = 0
@@ -141,13 +139,9 @@ export async function run(source, options = {}) {
 		}
 		if (lastFrameT === null) {
 			lastFrameT = t
-			sampleT = t - interval
+			pacer.reset()
 		}
-		if (interval > 0) {
-			const delta = t - sampleT
-			if (delta < interval - FPS_TOLERANCE) return
-			sampleT = t - (delta % interval)
-		}
+		if (!pacer.due(t)) return
 
 		fpsFrames++
 		if (t >= fpsT + 1000) {
