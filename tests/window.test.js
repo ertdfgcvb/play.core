@@ -2,7 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { run } from '../src/run.js'
 import { block, write } from '../src/modules/block.js'
-import { box, panel, info } from '../src/modules/window.js'
+import { box, panel } from '../src/modules/window.js'
 
 async function frame(post, cols = 12, rows = 6) {
 	const h = await run({ main : () => '.', post }, { renderer : null, cols, rows, once : true })
@@ -40,11 +40,6 @@ test('panel: block content keeps transparency over the fill', async () => {
 	assert.equal(h.text(), '     .\n x x .\n     .\n')
 })
 
-test('info', async () => {
-	const h = await frame(ctx => info(ctx, 0, 0), 30, 12)
-	assert.match(h.text(), /frame   0/)
-	assert.match(h.text(), /size    30×12/)
-})
 
 test('ctx or buffer as target', async () => {
 	const h = await frame(ctx => {
@@ -96,11 +91,6 @@ test('desktop: style cascades, window style overrides, invert title', async () =
 	assert.equal(h.buffer.get(13, 1).color, 'white')
 })
 
-test('info defaults', async () => {
-	const h = await frame(ctx => info(ctx), 30, 10)
-	assert.match(h.text(), /─ info ─/)
-	assert.equal(h.buffer.get(3, 2).backgroundColor, 'royalblue')
-})
 
 test('desktop: live content fits its text', async () => {
 	const { Desktop, infoText } = await import('../src/modules/window.js')

@@ -121,11 +121,7 @@ export function panel(target, content = '', x = 0, y = 0, style = {}) {
 	return { ...r, inner : { x : ix, y : iy, width : iw, height : ih } }
 }
 
-// Frame, time, size and cursor info, for debugging
-export function info(ctx, x = 2, y = 1, style = {}) {
-	return panel(ctx, infoText(ctx), x, y, { ...INFO, ...style })
-}
-
+// The info window of Desktop.info()
 const INFO = {
 	title           : 'info',
 	paddingX        : 1,
@@ -136,6 +132,7 @@ const INFO = {
 	titleStyle      : 'invert',
 }
 
+// Frame, time, size and cursor info, for debugging: write(ctx, infoText(ctx), 0, 0)
 // Lines padded to a fixed width: a window fitting the text keeps its size
 export function infoText(ctx) {
 	return [
@@ -173,7 +170,7 @@ export class Desktop {
 	}
 
 
-	// Opens the info box as a window, with the info() style; opts override it
+	// Opens the info window; opts override its style
 	info(opts = {}) {
 		return this.open({ x : 2, y : 1, ...INFO, content : infoText, ...opts })
 	}
