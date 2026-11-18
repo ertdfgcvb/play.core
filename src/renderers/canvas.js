@@ -1,8 +1,15 @@
 import { useElement, applyStyle, loadFont, fontInfo, watchElement } from '../core/style.js'
 
 export default async function canvas(target, settings) {
-	const { element, created } = useElement(target, 'canvas')
-	if (element.nodeName != 'CANVAS') throw new Error('The canvas renderer needs a <canvas> element')
+	let { element, created } = useElement(target, 'canvas')
+	// A program can ask for the canvas renderer: in any other element a canvas is created
+	if (element.nodeName != 'CANVAS') {
+		const c = document.createElement('canvas')
+		c.style.cssText = 'display:block;width:100%;height:100%'
+		element.appendChild(c)
+		element = c
+		created = true
+	}
 	applyStyle(element, settings)
 	await loadFont(element)
 

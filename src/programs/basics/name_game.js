@@ -16,13 +16,13 @@ export const settings = {
 
 const TAU = Math.PI * 2
 
-export function main(coord, context, cursor, buffer) {
-	const a = context.frame * 0.05
+export function main(coord, { frame, cols }) {
+	const a = frame * 0.05
 	const f = Math.floor((1 - Math.cos(a)) * 10) + 1
 	const g = Math.floor(a / TAU) % 10 + 1
-	const i = coord.index % (coord.y * g + 1) % (f % context.cols)
+	const i = coord.index % (coord.y * g + 1) % (f % cols)
 	// NOTE: If the function returns ‘undefined’ or ‘null’
-	// a space character will be inserted.
+	// the cell is left as it is: a space, as the buffer is cleared each frame.
 	// In some cases ‘i’ may be greater than 2:
 	// JavaScript array out of bounds results in ‘undefined’.
 	return 'Ada'[i]

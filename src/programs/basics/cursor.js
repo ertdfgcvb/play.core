@@ -5,7 +5,7 @@
 @desc   Crosshair example with mouse cursor
 */
 
-export function main(coord, context, cursor, buffer) {
+export function main(coord, { cursor }) {
 	// The cursor coordinates are mapped to the cell
 	// (fractional, needs rounding).
 	const x = Math.floor(cursor.x) // column of the cell hovered
@@ -17,9 +17,12 @@ export function main(coord, context, cursor, buffer) {
 	return (coord.x + coord.y) % 2 ? '·' : ' '
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer) {
-	drawInfo(context, cursor, buffer, {
-		color : 'white', backgroundColor : 'royalblue', shadowStyle : 'gray'
-	})
+// The info box as a window: drag it by the title bar, close it with [■]
+import { Desktop } from '@ertdfgcvb/play/window.js'
+
+const desk = new Desktop()
+desk.info()
+
+export function post(ctx) {
+	desk.update(ctx)
 }
