@@ -1,3 +1,5 @@
+// vec3.js: 3D vector functions, GLSL style
+
 // A single argument fills all the components, as in GLSL: vec3(1)
 export function vec3(x, y = x, z = x) {
 	return { x, y, z }

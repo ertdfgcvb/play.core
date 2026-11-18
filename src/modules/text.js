@@ -1,3 +1,5 @@
+// text.js: String tools: dedent, measure, wrap, align, truncate
+
 // Removes the first and last empty lines and the common indentation:
 // art can be written as an indented template literal
 export function dedent(str) {

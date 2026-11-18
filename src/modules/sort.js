@@ -1,3 +1,5 @@
+// sort.js: Sorts chars by ink coverage in a given font (async)
+
 // Sorts chars by ink coverage, drawn in the given font: densest first
 // (dark on light backgrounds), sparsest first with ascending.
 // Async: waits for the font, the result depends on it.

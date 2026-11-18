@@ -1,3 +1,5 @@
+// num.js: GLSL scalar functions and numeric helpers
+
 // -- GLSL built-ins -----------------------------------------------------------
 
 export function fract(x) {

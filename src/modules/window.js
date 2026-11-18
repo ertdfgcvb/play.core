@@ -1,3 +1,5 @@
+// window.js: Boxes, panels with title and text, Desktop (window manager), debug info text
+
 import { Grid } from './grid.js'
 import { write, isGridLike } from './block.js'
 import { run } from '../run.js'

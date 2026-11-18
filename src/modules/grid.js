@@ -1,3 +1,5 @@
+// grid.js: 2D grid with sampling, wrapping and transforms
+
 export class Grid {
 	constructor(w, h, type = Array) {
 		this.type = type

@@ -1,3 +1,5 @@
+// vec2.js: 2D vector functions, GLSL style
+
 // A single argument fills all the components, as in GLSL: vec2(1)
 export function vec2(x, y = x) {
 	return { x, y }

@@ -1,3 +1,5 @@
+// camera.js: Webcam as a video element (async)
+
 export default { init }
 
 let pending = null

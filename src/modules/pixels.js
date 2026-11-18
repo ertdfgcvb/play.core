@@ -1,3 +1,5 @@
+// pixels.js: Pixels of a video, image or canvas at grid size; loadImage()
+
 import { Grid } from './grid.js'
 
 // Fetches an image as ImageBitmap (a source for Pixels); rejects with the reason

@@ -1,3 +1,5 @@
+// block.js: Blocks of text and art, written into the buffer
+
 import { Grid } from './grid.js'
 import { dedent } from './text.js'
 

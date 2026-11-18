@@ -1,3 +1,5 @@
+// color.js: Palettes (CSS, C64, CGA), conversions and CSS color parsing
+
 // Colors are { r, g, b (0..255), a (0..1) }, as in CSS
 export function rgb(r,g,b,a=1.0) {
 	return {r,g,b,a}
