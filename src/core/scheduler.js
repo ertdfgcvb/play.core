@@ -29,8 +29,6 @@ export function unschedule(task) {
 // Frame pacing for an fps cap, as in v1: a frame when a full interval has passed since the
 // last due time; the remainder keeps the phase. vsync timestamps are precise, a late frame is late
 export function createPacer(interval) {
-	// Floating point only (1000 / 60 is not exact), not a tolerance for jitter
-	const EPS = 0.1
 	let sample = null
 	return {
 		reset() {
@@ -43,9 +41,8 @@ export function createPacer(interval) {
 				return true
 			}
 			const delta = t - sample
-			if (delta < interval - EPS) return false
-			// The remainder in (-EPS, interval - EPS]: a frame a hair early keeps the phase
-			sample = t - ((delta + EPS) % interval - EPS)
+			if (delta < interval) return false
+			sample = t - delta % interval
 			return true
 		},
 	}
