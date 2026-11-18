@@ -1,4 +1,3 @@
-// Writes tests/all_programs.html from src/programs: npm run list
 import { readdirSync, readFileSync, writeFileSync, statSync } from 'node:fs'
 
 const root = new URL('../src/programs/', import.meta.url)
@@ -61,5 +60,6 @@ const page = `<!DOCTYPE html>
 </html>
 `
 
+// Run with: npm run list
 writeFileSync(new URL('all_programs.html', import.meta.url), page)
 console.log('all_programs.html: ' + count + ' programs')
