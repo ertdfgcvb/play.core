@@ -3,3 +3,6 @@
 .AppleDouble
 .LSOverride
 node_modules
+
+# Local symlink to ../play.font (licensed font, never committed)
+css
