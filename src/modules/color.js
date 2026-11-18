@@ -1,63 +1,46 @@
 // color.js: Palettes (CSS, C64, CGA), conversions and CSS color parsing
 
 // Colors are { r, g, b (0..255), a (0..1) }, as in CSS
-export function rgb(r,g,b,a=1.0) {
-	return {r,g,b,a}
+export function rgb(r, g, b, a = 1) {
+	return { r, g, b, a }
 }
 
-// Convert r,g,b,a values to '#rrggbb' or '#rrggbbaa'
-export function hex(r,g,b,a=1.0) {
-	return rgb2hex({r,g,b,a})
+// r, g, b, a to '#rrggbb', or '#rrggbbaa' if not opaque
+export function hex(r, g, b, a = 1) {
+	return rgb2hex({ r, g, b, a })
 }
 
-// Convert r,g,b,a values to 'rgb(r,g,b,a)'
-export function css(r,g,b,a=1.0) {
-	if (a === 1.0) return `rgb(${r},${g},${b})`
-	// CSS3 (in CSS4 we could return rgb(r g b a))
-	return `rgba(${r},${g},${b},${a})`}
-
-// Convert {r,g,b,a} values to 'rgb(r,g,b,a)'
-export function rgb2css(rgb) {
-	if (rgb.a === undefined || rgb.a === 1.0) {
-		return `rgb(${rgb.r},${rgb.g},${rgb.b})`
-	}
-	// CSS3 (in CSS4 we could return rgb(r g b a))
-	return `rgba(${rgb.r},${rgb.g},${rgb.b},${rgb.a})`
+// r, g, b, a to 'rgb(r,g,b)', or 'rgba(r,g,b,a)' if not opaque
+export function css(r, g, b, a = 1) {
+	return rgb2css({ r, g, b, a })
 }
 
-// Convert {r,g,b,a} values to '#rrggbb', or '#rrggbbaa' if not opaque
-export function rgb2hex(rgb) {
-
-	let r = Math.round(rgb.r).toString(16).padStart(2, '0')
-	let g = Math.round(rgb.g).toString(16).padStart(2, '0')
-	let b = Math.round(rgb.b).toString(16).padStart(2, '0')
-
-	if (rgb.a === undefined || rgb.a === 1) {
-		return '#' + r + g + b
-	}
-
-	let a = Math.round(rgb.a * 255).toString(16).padStart(2, '0')
-	return '#' + r + g + b + a
+export function rgb2css(c) {
+	if (c.a === undefined || c.a === 1) return 'rgb(' + c.r + ',' + c.g + ',' + c.b + ')'
+	return 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + c.a + ')'
 }
 
-// Convert {r,g,b} values to gray value [0-1]
-export function rgb2gray(rgb) {
-	return Math.round(rgb.r * 0.2126 + rgb.g * 0.7152 + rgb.b * 0.0722) / 255.0
+// Values out of range (computed colors) are clamped
+export function rgb2hex(c) {
+	const h = v => Math.round(clamp(v, 0, 255)).toString(16).padStart(2, '0')
+	if (c.a === undefined || c.a === 1) return '#' + h(c.r) + h(c.g) + h(c.b)
+	return '#' + h(c.r) + h(c.g) + h(c.b) + h(c.a * 255)
 }
 
-// hex is not a string but an int number
+// Rec. 709 luma, 0..1 (as Pixels)
+export function rgb2gray(c) {
+	return (c.r * 0.2126 + c.g * 0.7152 + c.b * 0.0722) / 255
+}
+
+// 0xff0000 to { r, g, b, a }
 export function int2rgb(int) {
 	return {
-		a : 1.0,
 		r : int >> 16 & 0xff,
 		g : int >>  8 & 0xff,
-		b : int       & 0xff
+		b : int       & 0xff,
+		a : 1,
 	}
 }
-
-// export function int2hex(int) {
-// 	return '#' + (int).toString(16)
-// }
 
 // https://www.c64-wiki.com/wiki/Color
 const _C64 = [
@@ -123,6 +106,8 @@ const _CSS2 = [..._CSS1,
 ]
 
 const _CSS3 = [..._CSS2,
+	{ int : 0x00ffff, name : 'cyan' },    // alias of aqua
+	{ int : 0xff00ff, name : 'magenta' }, // alias of fuchsia
 	{ int : 0xf0f8ff, name : 'aliceblue' },
 	{ int : 0xfaebd7, name : 'antiquewhite' },
 	{ int : 0x7fffd4, name : 'aquamarine' },

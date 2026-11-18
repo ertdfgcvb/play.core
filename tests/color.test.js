@@ -22,3 +22,15 @@ test('palettes', () => {
 	assert.equal(typeof CSS4.red.gray, 'number')
 	assert.equal(rgb2hex({ r : 255, g : 0, b : 0, a : 0.5 }), '#ff000080')
 })
+
+test('tables and conversions', async () => {
+	const C = await import('../src/modules/color.js')
+	assert.equal(Object.keys(C.CSS4).length, 148)
+	assert.equal(Object.keys(C.CSS3).length, 147)
+	assert.equal(C.CSS4.cyan.hex, '#00ffff')
+	assert.deepEqual(C.parseColor('magenta'), { r : 255, g : 0, b : 255, a : 1 })
+	assert.equal(C.rgb2hex({ r : 300, g : -4, b : 12.6 }), '#ff000d')
+	assert.equal(C.rgb2gray({ r : 128, g : 128, b : 128 }), 128 / 255)
+	assert.equal(C.css(1, 2, 3), 'rgb(1,2,3)')
+	assert.equal(C.css(1, 2, 3, 0.5), 'rgba(1,2,3,0.5)')
+})
