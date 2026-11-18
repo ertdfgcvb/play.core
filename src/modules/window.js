@@ -27,13 +27,25 @@ export const SHADOWS = {
 	gray    : { color : 'dimgray', backgroundColor : 'lightgray' },
 }
 
+// Background colors given in turn to the Desktop windows (white text)
+export const PALETTE = ['royalblue', 'crimson', 'seagreen', 'darkorange', 'darkviolet', 'teal', 'sienna', 'slategray']
+
+// The look of the Desktop windows and of info()
+const WINDOW = {
+	paddingX   : 1,
+	paddingY   : 0,
+	shadow     : 'gray',
+	titleStyle : 'invert',
+}
+
 const PANEL = {
-	width    : 0,      // 0: fits the content
-	height   : 0,
-	paddingX : 2,
-	paddingY : 1,
-	title    : '',
-	align    : null,   // 'center': x, y is the center
+	width      : 0,    // 0: fits the content
+	height     : 0,
+	paddingX   : 2,
+	paddingY   : 1,
+	title      : '',
+	titleStyle : null, // cell style of the title, or 'invert' (swaps color and backgroundColor)
+	align      : null, // 'center': x, y is the center
 }
 
 // Border, fill and shadow, into the buffer (or ctx.buffer). style: { border, shadow, shadowX, shadowY, color, backgroundColor, fontWeight }.
@@ -66,7 +78,7 @@ export function box(target, x, y, w, h, style = {}) {
 }
 
 // A box with a title and content: a string (wrapped to width if set, clipped)
-// or a Grid (a block). style: box style plus width, height, paddingX, paddingY, title, align
+// or a Grid (a block). style: box style plus width, height, paddingX, paddingY, title, titleStyle, align
 export function panel(target, content = '', x = 0, y = 0, style = {}) {
 	const buffer = target.buffer || target
 	const s = { ...PANEL, ...style }
@@ -97,7 +109,10 @@ export function panel(target, content = '', x = 0, y = 0, style = {}) {
 	const r = box(buffer, x, y, w, h, s)
 	const cell = cellStyle(s)
 
-	if (s.title && w >= 6) write(buffer, ' ' + truncate(s.title, w - 6) + ' ', x + 2, y, cell)
+	if (s.title && w >= 6) {
+		const ts = s.titleStyle == 'invert' ? { ...cell, color : cell.backgroundColor, backgroundColor : cell.color } : { ...cell, ...s.titleStyle }
+		write(buffer, ' ' + truncate(s.title, w - 6) + ' ', x + 2, y, ts)
+	}
 
 	const ix = x + 1 + px
 	const iy = y + 1 + py
@@ -116,7 +131,21 @@ export function panel(target, content = '', x = 0, y = 0, style = {}) {
 
 // Frame, time, size and cursor info, for debugging
 export function info(ctx, x = 2, y = 1, style = {}) {
-	const text = [
+	// Fixed size: the box does not change with the numbers
+	return panel(ctx, infoText(ctx), x, y, { ...INFO, ...style })
+}
+
+const INFO = {
+	...WINDOW,
+	title           : 'info',
+	width           : 24,
+	height          : 8,
+	color           : 'white',
+	backgroundColor : 'royalblue',
+}
+
+export function infoText(ctx) {
+	return [
 		'fps     ' + Math.round(ctx.fps),
 		'frame   ' + ctx.frame,
 		'time    ' + Math.floor(ctx.time),
@@ -124,8 +153,6 @@ export function info(ctx, x = 2, y = 1, style = {}) {
 		'aspect  ' + ctx.metrics.aspect.toFixed(2),
 		'cursor  ' + Math.floor(ctx.cursor.x) + ',' + Math.floor(ctx.cursor.y),
 	].join('\n')
-	// Fixed width: the box does not change size with the numbers
-	return panel(ctx, text, x, y, { width : 24, ...style })
 }
 
 // -- Desktop: a simple window manager -----------------------------------------
@@ -162,10 +189,13 @@ class View {
 
 // Windows on top of the output: click to bring to front, drag by the title bar,
 // close with the × in the title bar. Call update(ctx) in post().
-// style: the default panel style of all the windows
+// style: the panel style of all the windows (overrides the window look and the palette)
+// palette: background colors given in turn to windows without colors
 export class Desktop {
-	constructor(style = {}) {
-		this.style = style
+	constructor(style = {}, palette = PALETTE) {
+		this.style = { ...WINDOW, ...style }
+		this.palette = palette
+		this.count = 0
 		this.windows = []
 		this.drag = null
 	}
@@ -187,9 +217,25 @@ export class Desktop {
 			rect     : null,
 			...opts,
 		}
+		const colored = c => c && (c.color !== undefined || c.backgroundColor !== undefined)
+		if (!colored(this.style) && !colored(win.style) && this.palette.length) {
+			win.style = { color : 'white', backgroundColor : this.palette[this.count % this.palette.length], ...win.style }
+		}
+		this.count++
 		win.close = () => this.close(win)
 		this.windows.push(win)
 		return win
+	}
+
+	// Opens the info box (frame, time, size, cursor) as a window
+	info(opts = {}) {
+		const { width, height, title, color, backgroundColor } = INFO
+		return this.open({
+			x : 2, y : 1, width, height, title,
+			style   : { color, backgroundColor },
+			content : (view, ctx) => write(view, infoText(ctx), 0, 0),
+			...opts,
+		})
 	}
 
 	close(win) {
