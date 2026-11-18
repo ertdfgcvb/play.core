@@ -91,3 +91,15 @@ test('relative URL strings resolve against the working directory in Node', async
 test('a missing module rejects', async () => {
 	await assert.rejects(run('tests/fixtures/missing.js', { renderer : null }))
 })
+
+test('clear : false keeps the buffer with main()', async () => {
+	const program = {
+		settings : { clear : false },
+		pre  : ({ frame, buffer }) => { if (frame == 0) buffer.set(0, 0, '#') },
+		main : (coord, { frame }) => coord.x == 1 ? frame : undefined,
+	}
+	const h = await run(program, { renderer : null, cols : 2, rows : 1, autoStart : false })
+	h.step(3)
+	assert.equal(h.text(), '#2\n')
+	h.stop()
+})

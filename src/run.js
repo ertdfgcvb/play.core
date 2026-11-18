@@ -16,6 +16,7 @@ const DEFAULTS = {
 	autoStart      : true,
 	pauseOffscreen : true,
 	allowSelect    : false,
+	clear          : true,
 	startTime      : 0,
 	startFrame     : 0,
 	data           : null,
@@ -98,8 +99,8 @@ export async function run(source, options = {}) {
 
 		const { pre, main, post } = program
 
-		// With main() the buffer is redrawn each frame, without it the buffer persists
-		if (typeof main == 'function') buffer.clear()
+		// With main() the buffer is redrawn each frame, without it (or with clear : false) it persists
+		if (typeof main == 'function' && settings.clear) buffer.clear()
 
 		if (typeof pre == 'function') pre(ctx)
 
