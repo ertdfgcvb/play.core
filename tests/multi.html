@@ -44,25 +44,23 @@
 </head>
 <body>
 	<div class="box"><pre id="a"></pre></div>
-	<div class="box"><canvas id="b"></canvas></div>
-	<div class="box"><pre id="c"></pre></div>
+	<div class="box"><pre id="b"></pre></div>
+	<div class="box"><canvas id="c"></canvas></div>
 	<div class="box"><canvas id="d"></canvas></div>
 	<div class="spacer"></div>
 	<div class="box"><pre id="e"></pre></div>
 	<script type="module">
 		import { run } from '@ertdfgcvb/play'
-		// A module is evaluated once per page: a second import with a query is a separate copy
-		import * as flame from './progs/flame.js'
-		import * as flame2 from './progs/flame.js?2'
-		import * as cursor from './progs/cursor.js'
-		import * as time from './progs/time.js'
+		// Programs as URLs: each run imports its own copy of the module
+		const example = name => new URL('../src/programs/' + name + '.js', import.meta.url)
+		const $ = id => document.querySelector(id)
 
 		const handles = [
-			await run(flame,  { element : document.querySelector('#a') }),
-			await run(flame2, { element : document.querySelector('#b'), renderer : 'canvas', fps : 60 }),
-			await run(cursor, { element : document.querySelector('#c') }),
-			await run(cursor, { element : document.querySelector('#d'), renderer : 'canvas' }),
-			await run(time,   { element : document.querySelector('#e') }),
+			await run(example('basics/time_milliseconds'), { element : $('#a') }),
+			await run(example('basics/cursor'),            { element : $('#b') }),
+			await run(example('sdf/balls'),                { element : $('#c'), renderer : 'canvas', fps : 60 }),
+			await run(example('demos/doom_flame'),         { element : $('#d'), renderer : 'canvas' }),
+			await run(example('basics/time_frames'),       { element : $('#e') }),
 		]
 
 		// Controls below each output
