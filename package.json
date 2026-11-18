@@ -1,0 +1,34 @@
+{
+	"name": "@ertdfgcvb/play",
+	"version": "2.0.0-alpha.0",
+	"description": "ASCII Playground core: run programs that output text grids, in the browser or in the terminal",
+	"type": "module",
+	"exports": {
+		".": "./src/run.js",
+		"./renderers/*": "./src/renderers/*",
+		"./grid.js": "./src/core/grid.js",
+		"./*": "./src/modules/*"
+	},
+	"files": [
+		"src/run.js",
+		"src/core",
+		"src/renderers",
+		"src/modules"
+	],
+	"scripts": {
+		"test": "node --test tests/"
+	},
+	"engines": {
+		"node": ">=18"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ertdfgcvb/play.core.git"
+	},
+	"homepage": "https://play.ertdfgcvb.xyz",
+	"license": "Apache-2.0",
+	"author": "Andreas Gysin",
+	"publishConfig": {
+		"access": "public"
+	}
+}

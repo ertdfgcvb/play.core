@@ -1,466 +1,291 @@
-/**
-Runner
-*/
+import { Grid2 } from './core/grid.js'
+import { Buffer } from './core/buffer.js'
+import { schedule, unschedule } from './core/scheduler.js'
+import { domInput } from './core/input_dom.js'
+import VERSION from './core/version.js'
 
-// Both available renderers are imported
-import textRenderer from './core/textrenderer.js'
-import canvasRenderer from './core/canvasrenderer.js'
-import FPS from './core/fps.js'
-import storage from './core/storage.js'
-import RUNNER_VERSION from './core/version.js'
+export { VERSION, Grid2 }
 
-export { RUNNER_VERSION }
-
-const renderers = {
-	'canvas' : canvasRenderer,
-	'text'   : textRenderer
+// Order of precedence: defaults < program.settings < run() options
+const DEFAULTS = {
+	element        : null,
+	renderer       : 'dom',
+	cols           : 0,
+	rows           : 0,
+	fps            : 30,
+	once           : false,
+	autoStart      : true,
+	pauseOffscreen : true,
+	allowSelect    : false,
+	startTime      : 0,
+	startFrame     : 0,
+	data           : null,
 }
 
-// Default settings for the program runner.
-// They can be overwritten by the parameters of the runner
-// or as a settings object exported by the program (in this order).
-const defaultSettings = {
-	element         : null,    // target element for output
-	cols            : 0,       // number of columns, 0 is equivalent to 'auto'
-	rows            : 0,       // number of columns, 0 is equivalent to 'auto'
-	once            : false,   // if set to true the renderer will run only once
-	fps             : 30,      // fps capping
-	renderer        : 'text',  // can be 'canvas', anything else falls back to 'text'
-	allowSelect     : false,   // allows selection of the rendered element
-	restoreState    : false,   // will store the "state" object in local storage
-	                           // this is handy for live-coding situations
-}
+// Tolerance for the fps cap: rAF timestamps jitter around the display rate
+const FPS_TOLERANCE = 1
 
-// CSS styles which can be passed to the container element via settings
-const CSSStyles = [
-	'backgroundColor',
-	'color',
-	'fontFamily',
-	'fontSize',
-	'fontWeight',
-	'letterSpacing',
-	'lineHeight',
-	'textAlign',
-]
+export async function run(program, options = {}) {
 
-// Program runner.
-// Takes a program object (usually an imported module),
-// and some optional settings (see above) as arguments.
-// Finally, an optional userData object can be passed which will be available
-// as last parameter in all the module functions.
-// The program object should export at least a main(), pre() or post() function.
-export function run(program, runSettings, userData = {}) {
+	const settings = Object.freeze({ ...DEFAULTS, ...program.settings, ...options })
+	const factory = await resolveRenderer(settings.renderer)
+	const renderer = await factory(settings.element, settings)
+	const element = renderer.element || null
 
-	// Everything is wrapped inside a promise;
-	// in case of errors in ‘program’ it will reject without reaching the bottom.
-	// If the program reaches the bottom of the first frame the promise is resolved.
-	return new Promise(function(resolve) {
-		// Merge of user- and default settings
-		const settings = {...defaultSettings, ...runSettings, ...program.settings}
+	const input = renderer.input || (isDOMElement(element) ? domInput(element) : null)
+	const keys = input ? input.state.keys : new Set()
 
-		// State is stored in local storage and will loaded on program launch
-		// if settings.restoreState == true.
-		// The purpose of this is to live edit the code without resetting
-		// time and the frame counter.
-		const state = {
-			time  : 0, // The time in ms
-			frame : 0, // The frame number (int)
-			cycle : 0  // An cycle count for debugging purposes
+	const buffer = new Buffer(0, 0, settings)
+	const grids = new Map()
+	const data = settings.data || {}
+	const interval = 1000 / settings.fps
+
+	let frame = settings.startFrame
+	let time = settings.startTime
+	let ctx = null
+	let cursorPrev = Object.freeze({ x : 0, y : 0, pressed : false })
+	let state = 'idle'
+	let visible = true
+	let lastFrameT = null
+	let sampleT = 0
+	let fps = 0
+	let fpsFrames = 0
+	let fpsT = 0
+
+	function grid(name, type = Array, fill = 0) {
+		let entry = grids.get(name)
+		if (!entry) {
+			entry = { fill, grid : new Grid2(0, 0, type) }
+			entry.grid.resize(buffer.width, buffer.height, fill)
+			grids.set(name, entry)
+		}
+		return entry.grid
+	}
+
+	function renderFrame(dt) {
+		const m = renderer.measure()
+
+		if (m.cols != buffer.width || m.rows != buffer.height) {
+			buffer.resize(m.cols, m.rows)
+			for (const e of grids.values()) e.grid.resize(m.cols, m.rows, e.fill)
 		}
 
-		// Name of local storage key
-		const LOCAL_STORAGE_KEY_STATE = 'currentState'
+		time += dt
 
-		if (settings.restoreState) {
-			storage.restore(LOCAL_STORAGE_KEY_STATE, state)
-			state.cycle++ // Keep track of the cycle count for debugging purposes
+		const cw = m.metrics.cellWidth
+		const lh = m.metrics.lineHeight
+		const p = input ? input.state : { x : 0, y : 0, pressed : false }
+		const cursor = Object.freeze({
+			// The element can be slightly larger than the grid
+			x       : Math.min(m.cols - 1, p.x / cw),
+			y       : Math.min(m.rows - 1, p.y / lh),
+			pressed : p.pressed,
+			prev    : cursorPrev,
+		})
+
+		ctx = Object.freeze({
+			frame,
+			time,
+			dt,
+			cols     : m.cols,
+			rows     : m.rows,
+			width    : m.width,
+			height   : m.height,
+			metrics  : m.metrics,
+			cursor,
+			keys,
+			buffer,
+			grid,
+			data,
+			settings,
+			fps,
+		})
+
+		if (input) {
+			for (const e of input.state.events) {
+				const fn = program[e.type]
+				if (typeof fn == 'function') fn(ctx, { ...e, x : e.x / cw, y : e.y / lh })
+			}
+			input.state.events.length = 0
 		}
 
-		// If element is not provided create a default element based
-		// on the renderer settings.
-		// Then choose the renderer:
-		// If the parent element is a canvas the canvas renderer is selected,
-		// for any other type a text node (PRE or any othe text node)
-		// is expected and the text renderer is used.
-		// TODO: better / more generic renderer init
-		let renderer
-		if (!settings.element) {
-			renderer = renderers[settings.renderer] || renderers['text']
-			settings.element = document.createElement(renderer.preferredElementNodeName)
-			document.body.appendChild(settings.element)
+		const { pre, main, post } = program
+
+		// With main() the buffer is redrawn each frame, without it the buffer persists
+		if (typeof main == 'function') buffer.clear()
+
+		if (typeof pre == 'function') pre(ctx)
+
+		if (typeof main == 'function') {
+			const cell = { x : 0, y : 0, index : 0 }
+			const cells = buffer.data
+			let idx = 0
+			for (let j=0; j<m.rows; j++) {
+				for (let i=0; i<m.cols; i++) {
+					cell.x = i
+					cell.y = j
+					cell.index = idx
+					buffer.merge(cells[idx], main(cell, ctx))
+					idx++
+				}
+			}
+		}
+
+		if (typeof post == 'function') post(ctx)
+
+		renderer.render(ctx, buffer)
+
+		cursorPrev = Object.freeze({ x : cursor.x, y : cursor.y, pressed : cursor.pressed })
+		frame++
+	}
+
+	function report(err) {
+		if (typeof handle.onerror == 'function') handle.onerror(err)
+		else if (typeof reportError == 'function') reportError(err)
+		else console.error(err)
+	}
+
+	function task(t) {
+		if (!visible) {
+			lastFrameT = null
+			return
+		}
+		if (lastFrameT === null) {
+			lastFrameT = t
+			sampleT = t - interval
+		}
+		const delta = t - sampleT
+		if (delta < interval - FPS_TOLERANCE) return
+		sampleT = t - (delta % interval)
+
+		fpsFrames++
+		if (t >= fpsT + 1000) {
+			fps = fpsFrames * 1000 / (t - fpsT)
+			fpsT = t
+			fpsFrames = 0
+		}
+
+		const dt = t - lastFrameT
+		lastFrameT = t
+		try {
+			renderFrame(dt)
+		} catch (err) {
+			handle.stop()
+			report(err)
+		}
+	}
+
+	const cleanup = []
+
+	if (settings.pauseOffscreen && isDOMElement(element) && typeof IntersectionObserver == 'function') {
+		const observer = new IntersectionObserver(entries => {
+			visible = entries[entries.length - 1].isIntersecting
+		})
+		observer.observe(element)
+		cleanup.push(() => observer.disconnect())
+	}
+
+	// A hidden tab stops rAF: the gap must not count as time
+	if (typeof document != 'undefined') {
+		const onVisibility = () => lastFrameT = null
+		document.addEventListener('visibilitychange', onVisibility)
+		cleanup.push(() => document.removeEventListener('visibilitychange', onVisibility))
+	}
+
+	const handle = {
+		element,
+		renderer,
+		onerror : null,
+		get ctx() { return ctx },
+		get buffer() { return buffer },
+		get state() { return state },
+		start() {
+			if (state == 'running' || state == 'stopped') return
+			state = 'running'
+			lastFrameT = null
+			schedule(task)
+		},
+		pause() {
+			if (state != 'running') return
+			state = 'paused'
+			unschedule(task)
+		},
+		stop() {
+			if (state == 'stopped') return
+			state = 'stopped'
+			unschedule(task)
+			if (input) input.dispose()
+			for (const fn of cleanup) fn()
+			renderer.dispose()
+		},
+		step(n = 1) {
+			for (let i=0; i<n; i++) renderFrame(frame == settings.startFrame ? 0 : interval)
+		},
+		text() {
+			return toText(buffer)
+		},
+		async snapshot(format = 'txt') {
+			if (format == 'txt') return new Blob([toText(buffer)], { type : 'text/plain;charset=utf-8' })
+			if (typeof renderer.snapshot == 'function') {
+				const blob = await renderer.snapshot(format, ctx, buffer)
+				if (blob) return blob
+			}
+			throw new Error('Snapshot format not supported by this renderer: ' + format)
+		},
+	}
+
+	if (settings.autoStart) {
+		try {
+			renderFrame(0)
+		} catch (err) {
+			handle.stop()
+			throw err
+		}
+		if (settings.once) {
+			state = 'paused'
 		} else {
-			if (settings.renderer == 'canvas') {
-				if (settings.element.nodeName == 'CANVAS') {
-					renderer = renderers[settings.renderer]
-				} else {
-					console.warn("This renderer expects a canvas target element.")
-				}
-			} else {
-				if (settings.element.nodeName != 'CANVAS') {
-					renderer = renderers[settings.renderer]
-				} else {
-					console.warn("This renderer expects a text target element.")
-				}
-			}
-		}
-
-		// Apply CSS settings to element
-		for (const s of CSSStyles) {
-			if (settings[s]) settings.element.style[s] = settings[s]
-		}
-
-		// Eventqueue
-		// Stores events and pops them at the end of the renderloop
-		// TODO: needed?
-		const eventQueue = []
-
-		// Input pointer updated by DOM events
-		const pointer = {
-			x        : 0,
-			y        : 0,
-			pressed  : false,
-			px       : 0,
-			py       : 0,
-			ppressed : false,
-		}
-
-		settings.element.addEventListener('pointermove', e => {
-			const rect = settings.element.getBoundingClientRect()
-			pointer.x = e.clientX - rect.left
-			pointer.y = e.clientY - rect.top
-			eventQueue.push('pointerMove')
-		})
-
-		settings.element.addEventListener('pointerdown', e => {
-			pointer.pressed = true
-			eventQueue.push('pointerDown')
-		})
-
-		settings.element.addEventListener('pointerup', e => {
-			pointer.pressed = false
-			eventQueue.push('pointerUp')
-		})
-		
-		const touchHandler = e => {
-			const rect = settings.element.getBoundingClientRect()
-			pointer.x = e.touches[0].clientX - rect.left
-			pointer.y = e.touches[0].clientY - rect.top
-			eventQueue.push('pointerMove')
-		}
-
-		settings.element.addEventListener('touchmove', touchHandler)
-		settings.element.addEventListener('touchstart', touchHandler)
-		settings.element.addEventListener('touchend', touchHandler)
-
-
-		// CSS fix
-		settings.element.style.fontStrech = 'normal'
-
-		// Text selection may be annoing in case of interactive programs
-		if (!settings.allowSelect) disableSelect(settings.element)
-
-		// Method to load a font via the FontFace object.
-		// The load promise works 100% of the times.
-		// But a definition of the font via CSS is preferable and more flexible.
-		/*
-		const CSSInfo = getCSSInfo(settings.element)
-		var font = new FontFace('Simple Console', 'url(/css/fonts/simple/SimpleConsole-Light.woff)', { style: 'normal', weight: 400 })
-		font.load().then(function(f) {
-			...
-		})
-		*/
-
-		// Metrics needs to be calculated before boot
-		// Even with the "fonts.ready" the font may STILL not be loaded yet
-		// on Safari 13.x and also 14.0.
-		// A (shitty) workaround is to wait 3! rAF.
-		// Submitted: https://bugs.webkit.org/show_bug.cgi?id=217047
-		document.fonts.ready.then((e) => {
-			// Run this three times...
-			let count = 3
-			;(function __run_thrice__() {
-				if (--count > 0) {
-					requestAnimationFrame(__run_thrice__)
-				} else {
-					// settings.element.style.lineHeight = Math.ceil(metrics.lineHeightf) + 'px'
-					// console.log(`Using font faimily: ${ci.fontFamily} @ ${ci.fontSize}/${ci.lineHeight}`)
-					// console.log(`Metrics: cellWidth: ${metrics.cellWidth}, lineHeightf: ${metrics.lineHeightf}`)
-					// Finally Boot!
-					boot()
-				}
-			})()
-			// Ideal mode:
-			// metrics = calcMetrics(settings.element)
-			// etc.
-			// requestAnimationFrame(loop)
-		})
-
-		// FPS object (keeps some state for precise FPS measure)
-		const fps = new FPS()
-
-		// A cell with no value at all is just a space
-		const EMPTY_CELL = ' '
-
-		// Default cell style inserted in case of undefined / null
-		const DEFAULT_CELL_STYLE = Object.freeze({
-			color           : settings.color,
-			backgroundColor : settings.backgroundColor,
-			fontWeight      : settings.fontWeight
-		})
-
-		// Buffer needed for the final DOM rendering,
-		// each array entry represents a cell.
-		const buffer = []
-
-		// Metrics object, calc once (below)
-		let metrics
-
-		function boot() {
-			metrics = calcMetrics(settings.element)
-			const context = getContext(state, settings, metrics, fps)
-			if (typeof program.boot == 'function') {
-				program.boot(context, buffer, userData)
-			}
-			requestAnimationFrame(loop)
-		}
-
-		// Time sample to calculate precise offset
-		let timeSample = 0
-		// Previous time step to increment state.time (with state.time initial offset)
-		let ptime = 0
-		const interval = 1000 / settings.fps
-		const timeOffset = state.time
-
-		// Used to track window resize
-		let cols, rows
-
-		// Main program loop
-		function loop(t) {
-
-			// Timing
-			const delta = t - timeSample
-			if (delta < interval) {
-				// Skip the frame
-				if (!settings.once) requestAnimationFrame(loop)
-				return
-			}
-
-			// Snapshot of context data
-			const context = getContext(state, settings, metrics, fps)
-
-			// FPS update
-			fps.update(t)
-
-			// Timing update
-			timeSample = t - delta % interval // adjust timeSample
-			state.time = t + timeOffset       // increment time + initial offs
-			state.frame++                     // increment frame counter
-			storage.store(LOCAL_STORAGE_KEY_STATE, state) // store state
-
-			// Cursor update
-			const cursor = {
-				          // The canvas might be slightly larger than the number
-				          // of cols/rows, min is required!
-				x       : Math.min(context.cols-1, pointer.x / metrics.cellWidth),
-				y       : Math.min(context.rows-1, pointer.y / metrics.lineHeight),
-				pressed : pointer.pressed,
-				p : { // state of previous frame
-					x       : pointer.px / metrics.cellWidth,
-					y       : pointer.py / metrics.lineHeight,
-					pressed : pointer.ppressed,
-				}
-			}
-
-			// Pointer: store previous state
-			pointer.px = pointer.x
-			pointer.py = pointer.y
-			pointer.ppressed = pointer.pressed
-
-			// 1. --------------------------------------------------------------
-			// In case of resize / init normalize the buffer
-			if (cols != context.cols || rows != context.rows) {
-				cols = context.cols
-				rows = context.rows
-				buffer.length = context.cols * context.rows
-				for (let i=0; i<buffer.length; i++) {
-					buffer[i] = {...DEFAULT_CELL_STYLE, char : EMPTY_CELL}
-				}
-			}
-
-			// 2. --------------------------------------------------------------
-			// Call pre(), if defined
-			if (typeof program.pre == 'function') {
-				program.pre(context, cursor, buffer, userData)
-			}
-
-			// 3. --------------------------------------------------------------
-			// Call main(), if defined
-			if (typeof program.main == 'function') {
-				for (let j=0; j<context.rows; j++) {
-					const offs = j * context.cols
-					for (let i=0; i<context.cols; i++) {
-						const idx = i + offs
-						// Override content:
-						// buffer[idx] = program.main({x:i, y:j, index:idx}, context, cursor, buffer, userData)
-						const out = program.main({x:i, y:j, index:idx}, context, cursor, buffer, userData)
-						if (typeof out == 'object' && out !== null) {
-							buffer[idx] = {...buffer[idx], ...out}
-						} else {
-							buffer[idx] = {...buffer[idx], char : out}
-						}
-						// Fix undefined / null / etc.
-						if (!Boolean(buffer[idx].char) && buffer[idx].char !== 0) {
-							buffer[idx].char = EMPTY_CELL
-						}
-					}
-				}
-			}
-
-			// 4. --------------------------------------------------------------
-			// Call post(), if defined
-			if (typeof program.post == 'function') {
-				program.post(context, cursor, buffer, userData)
-			}
-
-			// 5. --------------------------------------------------------------
-			renderer.render(context, buffer, settings)
-
-			// 6. --------------------------------------------------------------
-			// Queued events
-			while (eventQueue.length > 0) {
-				const type = eventQueue.shift()
-				if (type && typeof program[type] == 'function') {
-					program[type](context, cursor, buffer)
-				}
-			}
-
-			// 7. --------------------------------------------------------------
-			// Loop (eventually)
-			if (!settings.once) requestAnimationFrame(loop)
-
-			// The end of the first frame is reached without errors
-			// the promise can be resolved.
-			resolve(context)
-		}
-	})
-}
-
-// -- Helpers ------------------------------------------------------------------
-
-// Build / update the 'context' object (immutable)
-// A bit of spaghetti... but the context object needs to be ready for
-// the boot function and also to be updated at each frame.
-function getContext(state, settings, metrics, fps) {
-	const rect = settings.element.getBoundingClientRect()
-	const cols = settings.cols || Math.floor(rect.width / metrics.cellWidth)
-	const rows = settings.rows || Math.floor(rect.height / metrics.lineHeight)
-	return Object.freeze({
-		frame : state.frame,
-		time : state.time,
-		cols,
-		rows,
-		metrics,
-		width : rect.width,
-		height : rect.height,
-		settings,
-		// Runtime & debug data
-		runtime : Object.freeze({
-			cycle : state.cycle,
-			fps : fps.fps
-			// updatedRowNum
-		})
-	})
-}
-
-// Disables selection for an HTML element
-function disableSelect(el) {
-	el.style.userSelect = 'none'
-	el.style.webkitUserSelect = 'none' // for Safari on mac and iOS
-	el.style.mozUserSelect = 'none'    // for mobile FF
-	el.dataset.selectionEnabled = 'false'
-}
-
-// Enables selection for an HTML element
-function enableSelect(el) {
-	el.style.userSelect = 'auto'
-	el.style.webkitUserSelect = 'auto'
-	el.style.mozUserSelect = 'auto'
-	el.dataset.selectionEnabled = 'true'
-}
-
-// Copies the content of an element to the clipboard
-export function copyContent(el) {
-	// Store selection default
-	const selectionEnabled = !el.dataset.selectionEnabled == 'false'
-
-	// Enable selection if necessary
-	if (!selectionEnabled) enableSelect(el)
-
-	// Copy the text block
-	const range = document.createRange()
-	range.selectNode(el)
-	const sel = window.getSelection()
-	sel.removeAllRanges()
-	sel.addRange(range)
-	document.execCommand('copy')
-	sel.removeAllRanges()
-
-	// Restore default, if necessary
-	if (!selectionEnabled) disableSelect(el)
-}
-
-// Calcs width (fract), height, aspect of a monospaced char
-// assuming that the CSS font-family is a monospaced font.
-// Returns a mutable object.
-export function calcMetrics(el) {
-
-	const style = getComputedStyle(el)
-
-	// Extract info from the style: in case of a canvas element
-	// the style and font family should be set anyways.
-	const fontFamily = style.getPropertyValue('font-family')
-	const fontSize   = parseFloat(style.getPropertyValue('font-size'))
-	// Can’t rely on computed lineHeight since Safari 14.1
-	// See:  https://bugs.webkit.org/show_bug.cgi?id=225695
-	const lineHeight = parseFloat(style.getPropertyValue('line-height'))
-	let cellWidth
-
-	// If the output element is a canvas 'measureText()' is used
-	// else cellWidth is computed 'by hand' (should be the same, in any case)
-	if (el.nodeName == 'CANVAS') {
-		const ctx = el.getContext('2d')
-		ctx.font = fontSize + 'px ' + fontFamily
-		cellWidth = ctx.measureText(''.padEnd(50, 'X')).width / 50
-	} else {
-		const span = document.createElement('span')
-		el.appendChild(span)
-		span.innerHTML = ''.padEnd(50, 'X')
-		cellWidth = span.getBoundingClientRect().width / 50
-		el.removeChild(span)
-	}
-
-	const metrics = {
-		aspect : cellWidth / lineHeight,
-		cellWidth,
-		lineHeight,
-		fontFamily,
-		fontSize,
-		// Semi-hackish way to allow an update of the metrics object.
-		// This may be useful in some situations, for example
-		// responsive layouts with baseline or font change.
-		// NOTE: It’s not an immutable object anymore
-		_update : function() {
-			const tmp = calcMetrics(el)
-			for(var k in tmp) {
-				// NOTE: Object.assign won’t work
-				if (typeof tmp[k] == 'number' || typeof tmp[k] == 'string') {
-					m[k] = tmp[k]
-				}
-			}
+			handle.start()
 		}
 	}
 
-	return metrics
+	return handle
 }
 
+async function resolveRenderer(r) {
+	if (r === null || r === false) return headless
+	if (typeof r == 'function') return r
+	if (typeof r == 'string') {
+		try {
+			return (await import('./renderers/' + r + '.js')).default
+		} catch (err) {
+			throw new Error('Renderer not found: ' + r, { cause : err })
+		}
+	}
+	throw new Error('Invalid renderer: ' + r)
+}
 
+// No output: the buffer is computed and can be read through the handle
+function headless(element, settings) {
+	const cols = settings.cols || 80
+	const rows = settings.rows || 24
+	const metrics = Object.freeze({ cellWidth : 8, lineHeight : 16, aspect : 0.5, fontFamily : '', fontSize : 16 })
+	return {
+		element : null,
+		measure : () => ({ cols, rows, width : cols * 8, height : rows * 16, metrics }),
+		render() {},
+		dispose() {},
+	}
+}
+
+function toText(buffer) {
+	let out = ''
+	buffer.loop((c, x, y) => {
+		out += c.char
+		if (x == buffer.width - 1) out += '\n'
+	})
+	return out
+}
+
+function isDOMElement(el) {
+	return typeof Element == 'function' && el instanceof Element
+}
