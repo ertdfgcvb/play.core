@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Benchmark: canvas</title>
+	<link rel="stylesheet" type="text/css" href="../css/simple_console.css">
+	<style type="text/css" media="screen">
+		html, body {
+			padding: 0;
+			margin: 0;
+			font-size: 1em;
+			line-height: 1.2;
+			font-family: 'Simple Console', monospace;
+		}
+		pre, canvas {
+			position: absolute;
+			margin: 0;
+			left: 0;
+			top: 0;
+			width: 100vw;
+			height: 100vh;
+			font-family: inherit;
+		}
+	</style>
+	<script type="importmap">
+		{
+			"imports": {
+				"@ertdfgcvb/play"            : "../src/run.js",
+				"@ertdfgcvb/play/renderers/" : "../src/renderers/",
+				"@ertdfgcvb/play/"           : "../src/modules/"
+			}
+		}
+	</script>
+</head>
+<body>
+	<canvas></canvas>
+	<script type="module">
+		// Full page, uncapped (rAF still limits to the display rate). Click to switch the mode
+		import { run } from '@ertdfgcvb/play'
+		import { Desktop, infoText } from '@ertdfgcvb/play/window.js'
+
+		const MODES = ['plain chars', 'color per cell', 'color + bg per cell']
+		const COLORS = ['red', 'blue', 'black', 'darkorange']
+		const CHARS = 'ABCDEFG0123456789. '
+		let mode = 0
+
+		const desk = new Desktop()
+		desk.open({
+			x       : 2,
+			y       : 1,
+			title   : 'benchmark: canvas',
+			closable : false,
+			color           : 'white',
+			backgroundColor : 'royalblue',
+			paddingX : 1,
+			paddingY : 0,
+			content : ctx => infoText(ctx) + '\n' + ('mode    ' + mode).padEnd(20) + '\n' + MODES[mode].padEnd(20) + '\n' + 'click: next mode'.padEnd(20),
+		})
+
+		const program = {
+			main(coord, { frame }) {
+				const i = coord.x + coord.y * 7 + frame
+				if (mode == 0) return CHARS[i % CHARS.length]
+				if (mode == 1) return { char : CHARS[i % CHARS.length], color : COLORS[i % COLORS.length] }
+				return { char : CHARS[i % CHARS.length], color : COLORS[i % COLORS.length], backgroundColor : COLORS[(i + 1) % COLORS.length] }
+			},
+			pointerDown(ctx) {
+				if (!desk.hit(ctx.cursor.x, ctx.cursor.y)) mode = (mode + 1) % MODES.length
+			},
+			post(ctx) {
+				desk.update(ctx)
+			},
+		}
+
+		await run(program, { element : document.querySelector('canvas'), renderer : 'canvas', fps : 1000 })
+	</script>
+</body>
+</html>
