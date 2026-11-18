@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>View</title>
+	<link rel="stylesheet" type="text/css" href="../css/simple_console.css">
+	<style type="text/css" media="screen">
+		html, body {
+			padding: 0;
+			margin: 0;
+			font-size: 1em;
+			line-height: 1.2;
+			font-family: 'Simple Console', monospace;
+		}
+		pre {
+			position: absolute;
+			margin: 0;
+			left: 0;
+			top: 0;
+			width: 100vw;
+			height: 100vh;
+			font-family: inherit;
+		}
+	</style>
+	<script type="importmap">
+		{
+			"imports": {
+				"@ertdfgcvb/play"            : "../src/run.js",
+				"@ertdfgcvb/play/renderers/" : "../src/renderers/",
+				"@ertdfgcvb/play/"           : "../src/modules/"
+			}
+		}
+	</script>
+</head>
+<body>
+	<pre></pre>
+	<script type="module">
+		// view.html?basics/10print runs src/programs/basics/10print.js
+		import { run } from '@ertdfgcvb/play'
+		const name = decodeURIComponent(location.search.slice(1)) || 'basics/simple_output'
+		const pre = document.querySelector('pre')
+		document.title = name
+		try {
+			const h = await run('../src/programs/' + name + '.js', { element : pre })
+			h.onerror = e => {
+				console.error(e)
+				pre.textContent = e.stack || e.message
+			}
+		} catch (e) {
+			console.error(e)
+			pre.textContent = e.stack || e.message
+		}
+	</script>
+</body>
+</html>
