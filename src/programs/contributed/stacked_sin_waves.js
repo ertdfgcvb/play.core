@@ -2,6 +2,7 @@
 @author Raurir
 @title  Stacked sin waves
 @desc   noob at frag shaders
+
 Ported from v1 to v2 of the ASCII Playground (API changes only).
 */
 

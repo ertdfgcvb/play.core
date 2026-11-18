@@ -10,6 +10,7 @@ With inspiration from:
 - https://sagejenson.com/physarum
 - https://uwe-repository.worktribe.com/output/980579
 - http://www.tech-algorithm.com/articles/nearest-neighbor-image-scaling
+
 Ported from v1 to v2 of the ASCII Playground (API changes only).
 */
 

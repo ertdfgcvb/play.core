@@ -2,6 +2,7 @@
 @author Alex Miller
 @title  Sand game
 @desc   Click to drop sand
+
 Ported from v1 to v2 of the ASCII Playground (API changes only).
 */
 

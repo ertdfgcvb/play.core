@@ -3,6 +3,7 @@
 @title  Emoji Wave
 @desc   From wingdings icons to unicode emojis
 		Inspired by emojis evolution
+
 Ported from v1 to v2 of the ASCII Playground (API changes only).
 */
 
