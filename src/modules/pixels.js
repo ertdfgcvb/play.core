@@ -1,5 +1,12 @@
 import { Grid } from './grid.js'
 
+// Fetches an image as ImageBitmap (a source for Pixels.read); rejects with the reason
+export async function loadImage(url) {
+	const res = await fetch(url)
+	if (!res.ok) throw new Error('Could not load image: ' + url + ' (' + res.status + ')')
+	return createImageBitmap(await res.blob())
+}
+
 export class Pixels extends Grid {
 	constructor() {
 		super(0, 0)
@@ -7,12 +14,12 @@ export class Pixels extends Grid {
 		this.ctx = this.canvas.getContext('2d', { willReadFrequently : true })
 	}
 
-	// Draws a video, image, canvas or ImageData into w × h pixels (source size if omitted)
-	// and reads them as { r, g, b (0..255), a, gray (0..1) }.
+	// Reads the pixels of a video, image, canvas, ImageBitmap or ImageData at w × h
+	// (source size if omitted), as { r, g, b (0..255), a, gray (0..1) }.
 	// mode:   'cover', 'fit' (black bars) or 'stretch'
 	// aspect: the cell aspect (ctx.metrics.aspect), corrects the image proportions
 	// mirror: flips horizontally (selfie view)
-	draw(source, w, h, { mode = 'cover', aspect = 1, mirror = false } = {}) {
+	read(source, w, h, { mode = 'cover', aspect = 1, mirror = false } = {}) {
 		const s = sourceSize(source)
 		w = Math.max(1, Math.round(w || s.width))
 		h = Math.max(1, Math.round(h || s.height))
@@ -46,11 +53,11 @@ export class Pixels extends Grid {
 			ctx.restore()
 		}
 
-		return this.read()
+		this.#readCanvas()
+		return this
 	}
 
-	// Reads the pixels of the internal canvas
-	read() {
+	#readCanvas() {
 		const w = this.canvas.width
 		const h = this.canvas.height
 		const src = this.ctx.getImageData(0, 0, w, h).data
@@ -64,7 +71,6 @@ export class Pixels extends Grid {
 		this.width = w
 		this.height = h
 		this.data = out
-		return this
 	}
 
 	// Used by sample() and sampler(): mixes pixel objects

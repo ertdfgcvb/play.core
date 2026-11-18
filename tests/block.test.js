@@ -2,7 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { run } from '../src/run.js'
 import { Grid } from '../src/modules/grid.js'
-import { block, draw } from '../src/modules/draw.js'
+import { block, write } from '../src/modules/block.js'
 import { dedent, measure, wrap, align, truncate } from '../src/modules/text.js'
 
 const art = `
@@ -30,11 +30,11 @@ test('block: transparent and styles', () => {
 	assert.equal(b.get(5, 0), null)
 })
 
-test('block in main, draw in post', async () => {
+test('block in main, write in post', async () => {
 	const logo = block('AB\nC')
 	const program = {
 		main : ({ x, y }) => logo.get(x - 1, y) ?? '.',
-		post : ({ buffer }) => draw(buffer, 'xy', 3, 2, { color : 'red' }),
+		post : ({ buffer }) => write(buffer, 'xy', 3, 2, { color : 'red' }),
 	}
 	const h = await run(program, { renderer : null, cols : 5, rows : 3, once : true })
 	assert.equal(h.text(), '.AB..\n.C...\n...xy\n')
@@ -42,12 +42,12 @@ test('block in main, draw in post', async () => {
 	h.stop()
 })
 
-test('draw: centered, clipped, opaque strings', async () => {
+test('write: centered, clipped, opaque strings', async () => {
 	const h = await run({
 		main : () => '.',
 		post : ({ buffer }) => {
-			draw(buffer, 'a b', 2, 1, { align : 'center' })
-			draw(buffer, 'zzzz', 3, 0)
+			write(buffer, 'a b', 2, 1, { align : 'center' })
+			write(buffer, 'zzzz', 3, 0)
 			buffer.set(-0.5, 0.7, 'never')
 		},
 	}, { renderer : null, cols : 5, rows : 2, once : true })

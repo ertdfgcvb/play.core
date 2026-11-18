@@ -30,12 +30,12 @@ export function block(source, { transparent = ' ', styles = null } = {}) {
 	return g
 }
 
-// Stamps a Grid (or a string) into the buffer, clipped to its size.
+// Writes a Grid (or a string) into the buffer, clipped to its size.
 // Strings are drawn opaque, spaces included.
 // style: a cell style for all the chars; the chars of a styled block keep their own.
 // style.align = 'center': x, y is the center
 // Returns the drawn rect { x, y, width, height }
-export function draw(buffer, source, x = 0, y = 0, style = null) {
+export function write(buffer, source, x = 0, y = 0, style = null) {
 	const g = source instanceof Grid ? source : block(String(source), { transparent : null })
 
 	x = Math.round(x)
