@@ -34,6 +34,7 @@ const PANEL = {
 	paddingY   : 1,
 	title      : '',
 	titleStyle : null, // cell style of the title, or 'invert' (swaps color and backgroundColor)
+	titleX     : 2,    // column of the title, from the left border
 	align      : null, // 'center': x, y is the center
 }
 
@@ -88,7 +89,7 @@ export function panel(target, content = '', x = 0, y = 0, style = {}) {
 		ch = m.height
 	}
 
-	const w = s.width || Math.max(cw + 2 + 2 * px, s.title ? length(s.title) + 6 : 0)
+	const w = s.width || Math.max(cw + 2 + 2 * px, s.title ? length(s.title) + s.titleX + 4 : 0)
 	const h = s.height || ch + 2 + 2 * py
 	if (s.align == 'center') {
 		x = Math.round(x) - Math.floor(w / 2)
@@ -98,9 +99,8 @@ export function panel(target, content = '', x = 0, y = 0, style = {}) {
 	const r = box(buffer, x, y, w, h, s)
 	const cell = cellStyle(s)
 
-	if (s.title && w >= 6) {
-		const ts = s.titleStyle == 'invert' ? { ...cell, color : cell.backgroundColor, backgroundColor : cell.color } : { ...cell, ...s.titleStyle }
-		write(buffer, ' ' + truncate(s.title, w - 6) + ' ', x + 2, y, ts)
+	if (s.title && w >= s.titleX + 4) {
+		write(buffer, ' ' + truncate(s.title, w - s.titleX - 4) + ' ', x + s.titleX, y, variant(cell, s.titleStyle))
 	}
 
 	const ix = x + 1 + px
@@ -148,7 +148,7 @@ export function infoText(ctx) {
 // -- Desktop: a simple window manager -----------------------------------------
 
 // Windows on top of the output: click to bring to front, drag by the title bar,
-// close with the × in the title bar. Call update(ctx) in post().
+// close with [■] in the title bar (closeStyle: style of the ■). Call update(ctx) in post().
 // style: the default panel style of the windows, each window style overrides it
 export class Desktop {
 	constructor(style = {}) {
@@ -169,6 +169,11 @@ export class Desktop {
 		return win
 	}
 
+
+	// Opens the info box as a window, with the info() style; opts override it
+	info(opts = {}) {
+		return this.open({ x : 2, y : 1, ...INFO, content : infoText, ...opts })
+	}
 
 	close(win) {
 		const i = this.windows.indexOf(win)
@@ -207,7 +212,7 @@ export class Desktop {
 				this.front(win)
 				const r = win.rect
 				if (cy == r.y) {
-					if (win.closable && cx == r.x + r.width - 3) {
+					if (win.closable && cx >= r.x + 2 && cx <= r.x + 4) {
 						win.close()
 					} else {
 						this.drag = { win, dx : cx - win.x, dy : cy - win.y }
@@ -230,10 +235,23 @@ export class Desktop {
 		for (const win of this.windows) {
 			const style = { ...this.style, ...win.style, width : win.width, height : win.height, title : win.title }
 			const content = typeof win.content == 'function' ? win.content(ctx) : win.content
+			// Turbo Vision: the close button [■] at the left of the title bar, the title after it
+			const closable = win.closable && (win.width || 8) >= 8
+			if (closable) style.titleX = 6
 			win.rect = panel(ctx, content ?? '', win.x, win.y, style)
-			if (win.closable && win.rect.width >= 8) write(ctx, '×', win.rect.x + win.rect.width - 3, win.rect.y, cellStyle(style))
+			if (closable) {
+				const cell = cellStyle(style)
+				write(ctx, '[ ]', win.rect.x + 2, win.rect.y, cell)
+				write(ctx, '■', win.rect.x + 3, win.rect.y, variant(cell, style.closeStyle))
+			}
 		}
 	}
+}
+
+// A cell style, 'invert' or null (unchanged)
+function variant(cell, style) {
+	if (style == 'invert') return { ...cell, color : cell.backgroundColor, backgroundColor : cell.color }
+	return { ...cell, ...style }
 }
 
 function cellStyle(s) {

@@ -68,18 +68,18 @@ test('desktop: draw, drag, front, close', async () => {
 	const step = c => { prev = cursor; cursor = c; h.step() }
 
 	step({ x : 0, y : 0, pressed : false })
-	assert.equal(h.text(), '+- a ×-+......\n|A+----×-+....\n+-|Bxxxx…|....\n..+------+....\n..............\n..............\n', 'b on top of a, content clipped')
+	assert.equal(h.text(), '+-[■]--+......\n|A+-[■]--+....\n+-|Bxxxx…|....\n..+------+....\n..............\n..............\n', 'b on top of a, content clipped')
 
 	step({ x : 1, y : 1, pressed : true })
 	assert.equal(desk.windows[1], a, 'click brings a to front')
 
 	step({ x : 1, y : 1, pressed : false })
-	step({ x : 3, y : 0, pressed : true })
-	step({ x : 6, y : 2, pressed : true })
+	step({ x : 6, y : 0, pressed : true })
+	step({ x : 9, y : 2, pressed : true })
 	step({ x : 6, y : 2, pressed : false })
 	assert.deepEqual([a.x, a.y], [3, 2], 'dragged by the title bar')
 
-	step({ x : a.x + 5, y : a.y, pressed : true })
+	step({ x : a.x + 3, y : a.y, pressed : true })
 	assert.equal(desk.windows.length, 1, 'closed with ×')
 	assert.equal(desk.hit(3, 2), b)
 	h.stop()
@@ -89,11 +89,11 @@ test('desktop: style cascades, window style overrides, invert title', async () =
 	const { Desktop } = await import('../src/modules/window.js')
 	const desk = new Desktop({ color : 'white', backgroundColor : 'royalblue', titleStyle : 'invert' })
 	desk.open({ title : 'a', content : 'x' })
-	desk.open({ x : 10, title : 'b', content : 'y', backgroundColor : 'crimson' })
-	const h = await frame(ctx => desk.update(ctx), 20, 4)
-	assert.deepEqual([h.buffer.get(3, 0).color, h.buffer.get(3, 0).backgroundColor], ['royalblue', 'white'])
-	assert.equal(h.buffer.get(11, 1).backgroundColor, 'crimson')
-	assert.equal(h.buffer.get(11, 1).color, 'white')
+	desk.open({ x : 12, title : 'b', content : 'y', backgroundColor : 'crimson' })
+	const h = await frame(ctx => desk.update(ctx), 26, 4)
+	assert.deepEqual([h.buffer.get(7, 0).color, h.buffer.get(7, 0).backgroundColor], ['royalblue', 'white'])
+	assert.equal(h.buffer.get(13, 1).backgroundColor, 'crimson')
+	assert.equal(h.buffer.get(13, 1).color, 'white')
 })
 
 test('info defaults', async () => {
@@ -109,4 +109,16 @@ test('desktop: live content fits its text', async () => {
 	const h = await frame(ctx => desk.update(ctx), 40, 14)
 	assert.match(h.text(), /cursor  0,0/)
 	assert.equal(w.rect.height, 6 + 2 + 2)
+})
+
+test('desktop: info window with the info style', async () => {
+	const { Desktop } = await import('../src/modules/window.js')
+	const desk = new Desktop()
+	const w = desk.info({ x : 0, y : 0 })
+	const h = await frame(ctx => desk.update(ctx), 30, 10)
+	assert.match(h.text(), /\[■\]─ info/)
+	assert.equal(h.buffer.get(2, 2).backgroundColor, 'royalblue')
+	w.style.backgroundColor = 'crimson'
+	h.step()
+	assert.equal(h.buffer.get(2, 2).backgroundColor, 'crimson')
 })
