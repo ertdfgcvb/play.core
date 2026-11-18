@@ -265,7 +265,7 @@ async function resolveRenderer(r) {
 }
 
 // No output: the buffer is computed and can be read through the handle
-function headless(element, settings) {
+function headless(_element, settings) {
 	const cols = settings.cols || 80
 	const rows = settings.rows || 24
 	const metrics = Object.freeze({ cellWidth : 8, lineHeight : 16, aspect : 0.5, fontFamily : '', fontSize : 16 })
@@ -279,7 +279,7 @@ function headless(element, settings) {
 
 function toText(buffer) {
 	let out = ''
-	buffer.loop((c, x, y) => {
+	buffer.loop((c, x) => {
 		out += c.char
 		if (x == buffer.width - 1) out += '\n'
 	})

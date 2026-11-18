@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<title>Test single</title>
@@ -14,27 +14,32 @@
 		}
 		pre {
 			position: absolute;
-			margin:0;
-			padding:0;
-			left:0;
-			top:0;
-			width:100vw;
-			height:100vh;
+			margin: 0;
+			left: 0;
+			top: 0;
+			width: 100vw;
+			height: 100vh;
 			font-family: inherit;
 		}
 	</style>
+	<script type="importmap">
+		{
+			"imports": {
+				"@ertdfgcvb/play"            : "../src/run.js",
+				"@ertdfgcvb/play/grid.js"    : "../src/core/grid.js",
+				"@ertdfgcvb/play/renderers/" : "../src/renderers/",
+				"@ertdfgcvb/play/"           : "../src/modules/"
+			}
+		}
+	</script>
 </head>
 <body>
 	<pre></pre>
 	<script type="module">
-		import { run } from '/src/run.js'
-		import * as program from '/src/programs/basics/time_milliseconds.js'
-		run(program, { element : document.querySelector('pre') }).then(function(e){
-			console.log(e)
-		}).catch(function(e) {
-			console.warn(e.message)
-			console.log(e.error)
-		})
+		import { run } from '@ertdfgcvb/play'
+		import * as program from './progs/cursor.js'
+		const h = await run(program, { element : document.querySelector('pre') })
+		console.log(h.ctx)
 	</script>
 </body>
 </html>

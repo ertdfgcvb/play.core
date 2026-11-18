@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<title>Test multi</title>
@@ -7,42 +7,94 @@
 	<style type="text/css" media="screen">
 		body {
 			background-color: rgb(250, 250, 250);
-			margin:2em;
+			margin: 2em;
+			font-family: 'Simple Console', monospace;
 		}
-		pre {
+		.box {
+			display: inline-block;
 			margin: 1em;
+			vertical-align: top;
+		}
+		pre, canvas {
+			display: block;
+			margin: 0;
 			width: 40em;
 			height: 22em;
-			display: inline-block;
 			font-size: 1em;
 			line-height: 1.2;
 			font-family: 'Simple Console', monospace;
 			background-color: white;
 		}
-
+		button {
+			font: inherit;
+		}
+		.spacer {
+			height: 150vh;
+		}
 	</style>
+	<script type="importmap">
+		{
+			"imports": {
+				"@ertdfgcvb/play"            : "../src/run.js",
+				"@ertdfgcvb/play/grid.js"    : "../src/core/grid.js",
+				"@ertdfgcvb/play/renderers/" : "../src/renderers/",
+				"@ertdfgcvb/play/"           : "../src/modules/"
+			}
+		}
+	</script>
 </head>
 <body>
-	<pre></pre>
-	<pre></pre>
-	<pre></pre>
-	<pre></pre>
+	<div class="box"><pre id="a"></pre></div>
+	<div class="box"><canvas id="b"></canvas></div>
+	<div class="box"><pre id="c"></pre></div>
+	<div class="box"><canvas id="d"></canvas></div>
+	<div class="spacer"></div>
+	<div class="box"><pre id="e"></pre></div>
 	<script type="module">
-		import    { run } from '/src/run.js'
-		import * as prog0 from '/src/programs/basics/time_milliseconds.js'
-		import * as prog1 from '/src/programs/basics/cursor.js'
-		import * as prog2 from '/src/programs/sdf/balls.js'
-		import * as prog3 from '/src/programs/basics/time_frames.js'
+		import { run } from '@ertdfgcvb/play'
+		import * as flame from './progs/flame.js'
+		import * as cursor from './progs/cursor.js'
+		import * as time from './progs/time.js'
 
-		const pre = document.querySelectorAll('pre')
-		run(prog0, { element : pre[0] } ).catch(errorHandler)
-		run(prog1, { element : pre[1] } ).catch(errorHandler)
-		run(prog2, { element : pre[2] } ).catch(errorHandler)
-		run(prog3, { element : pre[3] } ).catch(errorHandler)
+		const handles = [
+			await run(flame,  { element : document.querySelector('#a') }),
+			await run(flame,  { element : document.querySelector('#b'), renderer : 'canvas', fps : 60 }),
+			await run(cursor, { element : document.querySelector('#c') }),
+			await run(cursor, { element : document.querySelector('#d'), renderer : 'canvas' }),
+			await run(time,   { element : document.querySelector('#e') }),
+		]
 
-		function errorHandler(e) {
-			console.warn(e.message)
-			console.log(e.error)
+		// Controls below each output
+		for (const h of handles) {
+			const bar = document.createElement('div')
+			for (const [label, fn] of [
+				['start', () => h.start()],
+				['pause', () => h.pause()],
+				['step',  () => h.step()],
+				['stop',  () => h.stop()],
+				['txt',   () => save(h, 'txt')],
+				['html',  () => save(h, 'html')],
+				['png',   () => save(h, 'png')],
+			]) {
+				const b = document.createElement('button')
+				b.textContent = label
+				b.onclick = fn
+				bar.appendChild(b)
+			}
+			h.element.after(bar)
+		}
+
+		async function save(h, format) {
+			try {
+				const blob = await h.snapshot(format)
+				const a = document.createElement('a')
+				a.href = URL.createObjectURL(blob)
+				a.download = 'snapshot.' + format
+				a.click()
+				URL.revokeObjectURL(a.href)
+			} catch (e) {
+				alert(e.message)
+			}
 		}
 	</script>
 </body>
