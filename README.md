@@ -449,7 +449,7 @@ src/core/         buffer, input, scheduler, styles
 src/renderers/    dom, canvas
 src/modules/      the modules
 src/programs/     the examples
-pages/            browser pages (directory, run, embedding, desktop, font, benchmark)
+pages/            browser pages (directory, run, embedding, desktop, font, benchmarks)
 test/             unit tests: npm test
 tools/            npm run list: regenerates pages/directory.html
 ```

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Benchmark</title>
+	<title>Benchmark: dom</title>
 	<link rel="stylesheet" type="text/css" href="../css/simple_console.css">
 	<style type="text/css" media="screen">
 		html, body {
@@ -35,8 +35,7 @@
 <body>
 	<pre></pre>
 	<script type="module">
-		// Full page, uncapped (rAF still limits to the display rate).
-		// Click to switch the mode, run.html-like: benchmark.html?canvas for the canvas renderer
+		// Full page, uncapped (rAF still limits to the display rate). Click to switch the mode
 		import { run } from '@ertdfgcvb/play'
 		import { Desktop, infoText } from '@ertdfgcvb/play/window.js'
 
@@ -49,7 +48,7 @@
 		desk.open({
 			x       : 2,
 			y       : 1,
-			title   : 'benchmark',
+			title   : 'benchmark: dom',
 			closable : false,
 			color           : 'white',
 			backgroundColor : 'royalblue',
@@ -73,8 +72,7 @@
 			},
 		}
 
-		const renderer = location.search.includes('canvas') ? 'canvas' : 'dom'
-		await run(program, { element : document.querySelector('pre'), renderer, fps : 1000 })
+		await run(program, { element : document.querySelector('pre'), renderer : 'dom', fps : 1000 })
 	</script>
 </body>
 </html>
