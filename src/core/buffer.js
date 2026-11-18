@@ -23,12 +23,17 @@ export class Buffer {
 		return this
 	}
 
+	// Fractional coords (cursor) address the cell they fall in
 	get(x, y) {
+		x = Math.floor(x)
+		y = Math.floor(y)
 		if (x < 0 || y < 0 || x >= this.width || y >= this.height) return null
 		return this.data[x + y * this.width]
 	}
 
 	set(x, y, value) {
+		x = Math.floor(x)
+		y = Math.floor(y)
 		if (x < 0 || y < 0 || x >= this.width || y >= this.height) return
 		this.merge(this.data[x + y * this.width], value)
 	}

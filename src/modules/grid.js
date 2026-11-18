@@ -117,25 +117,22 @@ export class Grid {
 		return out
 	}
 
-	// Normalized coords (0..1), mirrored outside the range
-	sampleNearest(sx, sy) {
-		const mx = 1 - Math.abs(Math.abs(sx) % 2 - 1)
-		const my = 1 - Math.abs(Math.abs(sy) % 2 - 1)
-		return this.get(Math.round(mx * (this.width - 1)), Math.round(my * (this.height - 1)))
+	// Normalized coords (0..1), bilinear, clamped edges; values are mixed with lerp()
+	sample(u, v) {
+		return sampleAt(this, u, v, 'linear', WRAP.clamp, this.lerp)
 	}
 
-	// Bilinear, normalized coords; edges are clamped
-	sample(sx, sy) {
-		const x = sx * this.width - 0.5
-		const y = sy * this.height - 0.5
-		const l = Math.floor(x)
-		const b = Math.floor(y)
-		const fx = x - l
-		const fy = y - b
-		const g = (i, j) => this.get(clamp(i, 0, this.width - 1), clamp(j, 0, this.height - 1))
-		const p1 = mix(g(l, b), g(l + 1, b), fx)
-		const p2 = mix(g(l, b + 1), g(l + 1, b + 1), fx)
-		return mix(p1, p2, fy)
+	// Returns a sampler (u, v) => value, configured once:
+	// filter: 'nearest' or 'linear'
+	// wrap:   'clamp', 'repeat' or 'mirror'
+	// lerp:   (a, b, t) => value, for values other than numbers
+	sampler({ filter = 'linear', wrap = 'clamp', lerp = this.lerp } = {}) {
+		const w = WRAP[wrap] || WRAP.clamp
+		return (u, v) => sampleAt(this, u, v, filter, w, lerp)
+	}
+
+	lerp(a, b, t) {
+		return a * (1 - t) + b * t
 	}
 
 	isEqual(grid) {
@@ -158,10 +155,30 @@ export class Grid {
 	}
 }
 
-function mix(a, b, t) {
-	return a * (1 - t) + b * t
+const WRAP = {
+	clamp  : (i, n) => i < 0 ? 0 : i >= n ? n - 1 : i,
+	repeat : (i, n) => ((i % n) + n) % n,
+	mirror : (i, n) => {
+		const p = 2 * n
+		i = ((i % p) + p) % p
+		return i < n ? i : p - 1 - i
+	},
 }
 
-function clamp(v, min, max) {
-	return v < min ? min : v > max ? max : v
+function sampleAt(g, u, v, filter, wrap, lerp) {
+	const w = g.width
+	const h = g.height
+	const d = g.data
+	const x = u * w - 0.5
+	const y = v * h - 0.5
+	if (filter == 'nearest') return d[wrap(Math.round(x), w) + wrap(Math.round(y), h) * w]
+	const l = Math.floor(x)
+	const t = Math.floor(y)
+	const fx = x - l
+	const fy = y - t
+	const x0 = wrap(l, w)
+	const x1 = wrap(l + 1, w)
+	const y0 = wrap(t, h) * w
+	const y1 = wrap(t + 1, h) * w
+	return lerp(lerp(d[x0 + y0], d[x1 + y0], fx), lerp(d[x0 + y1], d[x1 + y1], fx), fy)
 }

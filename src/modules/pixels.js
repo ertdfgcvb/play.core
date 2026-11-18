@@ -1,13 +1,8 @@
-import { clamp, mix } from './num.js'
+import { Grid } from './grid.js'
 
-// Returned outside the image by get()
-const BLACK = Object.freeze({ r : 0, g : 0, b : 0, a : 1, gray : 0 })
-
-export class Pixels {
+export class Pixels extends Grid {
 	constructor() {
-		this.width = 0
-		this.height = 0
-		this.data = []
+		super(0, 0)
 		this.canvas = typeof OffscreenCanvas == 'function' ? new OffscreenCanvas(1, 1) : document.createElement('canvas')
 		this.ctx = this.canvas.getContext('2d', { willReadFrequently : true })
 	}
@@ -72,26 +67,16 @@ export class Pixels {
 		return this
 	}
 
-	get(x, y) {
-		if (x < 0 || y < 0 || x >= this.width || y >= this.height) return BLACK
-		return this.data[x + y * this.width]
-	}
-
-	// Bilinear, normalized coords (0..1); edges are clamped
-	sample(u, v) {
-		const x = u * this.width - 0.5
-		const y = v * this.height - 0.5
-		const l = Math.floor(x)
-		const t = Math.floor(y)
-		const fx = x - l
-		const fy = y - t
-		const at = (i, j) => this.get(clamp(i, 0, this.width - 1), clamp(j, 0, this.height - 1))
-		const a = at(l, t)
-		const b = at(l + 1, t)
-		const c = at(l, t + 1)
-		const d = at(l + 1, t + 1)
-		const m = k => mix(mix(a[k], b[k], fx), mix(c[k], d[k], fx), fy)
-		return { r : m('r'), g : m('g'), b : m('b'), a : m('a'), gray : m('gray') }
+	// Used by sample() and sampler(): mixes pixel objects
+	lerp(a, b, t) {
+		const s = 1 - t
+		return {
+			r    : a.r * s + b.r * t,
+			g    : a.g * s + b.g * t,
+			b    : a.b * s + b.b * t,
+			a    : a.a * s + b.a * t,
+			gray : a.gray * s + b.gray * t,
+		}
 	}
 
 	// Nearest palette color ({ r, g, b, ... }, other fields are kept, for example hex);
