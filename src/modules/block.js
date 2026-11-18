@@ -6,9 +6,10 @@ import { dedent } from './text.js'
 // grid.get(x, y) ?? fallback works in main()
 // transparent: the char that does not overwrite (null: none)
 // styles:      { char : { color, backgroundColor, fontWeight } }
-export function block(source, { transparent = ' ', styles = null } = {}) {
+// dedent:      strips the common indentation of strings (template literals in code)
+export function block(source, { transparent = ' ', styles = null, dedent : dd = true } = {}) {
 	const rows = typeof source == 'string'
-		? dedent(source).split('\n').map(l => [...l])
+		? (dd ? dedent(source) : source).split('\n').map(l => [...l])
 		: source.map(r => typeof r == 'string' ? [...r] : r)
 
 	let w = 0
@@ -31,12 +32,12 @@ export function block(source, { transparent = ' ', styles = null } = {}) {
 }
 
 // Writes a Grid (or a string) into the buffer, clipped to its size.
-// Strings are drawn opaque, spaces included.
+// Strings are written as they are: opaque, spaces included, not dedented.
 // style: a cell style for all the chars; the chars of a styled block keep their own.
 // style.align = 'center': x, y is the center
 // Returns the drawn rect { x, y, width, height }
 export function write(buffer, source, x = 0, y = 0, style = null) {
-	const g = source instanceof Grid ? source : block(String(source), { transparent : null })
+	const g = source instanceof Grid ? source : block(String(source), { transparent : null, dedent : false })
 
 	x = Math.round(x)
 	y = Math.round(y)

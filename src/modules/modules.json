@@ -8,5 +8,6 @@
 	{ "name" : "sort.js",   "desc" : "Sorts chars by ink coverage in a given font (async)" },
 	{ "name" : "text.js",   "desc" : "String tools: dedent, measure, wrap, align, truncate" },
 	{ "name" : "vec2.js",   "desc" : "2D vector functions, GLSL style" },
-	{ "name" : "vec3.js",   "desc" : "3D vector functions, GLSL style" }
+	{ "name" : "vec3.js",   "desc" : "3D vector functions, GLSL style" },
+	{ "name" : "window.js", "desc" : "Boxes, panels with title and text, debug info" }
 ]

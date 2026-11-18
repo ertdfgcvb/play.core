@@ -63,3 +63,9 @@ test('grid sampler', () => {
 	assert.equal(g.sampler({ filter : 'nearest', wrap : 'repeat' })(1.2, 0), 0)
 	assert.equal(g.sampler({ lerp : (a, b, t) => Math.max(a, b) })(0.5, 0.5), 10)
 })
+
+test('write keeps leading spaces of strings', async () => {
+	const h = await run({ main : () => '.', post : ({ buffer }) => write(buffer, '  a', 0, 0) }, { renderer : null, cols : 4, rows : 1, once : true })
+	assert.equal(h.text(), '  a.\n')
+	h.stop()
+})
