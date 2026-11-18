@@ -1,6 +1,6 @@
 import { Grid } from './grid.js'
 
-// Fetches an image as ImageBitmap (a source for Pixels.read); rejects with the reason
+// Fetches an image as ImageBitmap (a source for Pixels); rejects with the reason
 export async function loadImage(url) {
 	const res = await fetch(url)
 	if (!res.ok) throw new Error('Could not load image: ' + url + ' (' + res.status + ')')
@@ -14,20 +14,83 @@ export class Pixels extends Grid {
 		this.ctx = this.canvas.getContext('2d', { willReadFrequently : true })
 	}
 
-	// Reads the pixels of a video, image, canvas, ImageBitmap or ImageData at w × h
-	// (source size if omitted), as { r, g, b (0..255), a, gray (0..1) }.
-	// mode:   'cover', 'fit' (black bars) or 'stretch'
-	// aspect: the cell aspect (ctx.metrics.aspect), corrects the image proportions
-	// mirror: flips horizontally (selfie view)
-	read(source, w, h, { mode = 'cover', aspect = 1, mirror = false } = {}) {
-		const s = sourceSize(source)
-		w = Math.max(1, Math.round(w || s.width))
-		h = Math.max(1, Math.round(h || s.height))
+	// The pixels are { r, g, b (0..255), a, gray (0..1) }. Chainable, for example:
+	//   px.resize(cols, rows).cover(cam, metrics.aspect).flipX().normalize()
+
+	// Size of the image the sources are drawn into (usually cols × rows)
+	resize(w, h) {
+		// Called by the Grid constructor, before the canvas exists
+		if (!this.canvas) {
+			this.width = 0
+			this.height = 0
+			this.data = []
+			return this
+		}
+		w = Math.max(1, Math.round(w))
+		h = Math.max(1, Math.round(h))
 		if (this.canvas.width != w || this.canvas.height != h) {
 			this.canvas.width = w
 			this.canvas.height = h
 		}
+		return this
+	}
 
+	// Sources: video, image, canvas, ImageBitmap or ImageData.
+	// aspect: the cell aspect (ctx.metrics.aspect), corrects the image proportions
+
+	// Fills the whole image, cropping the source
+	cover(source, aspect = 1) {
+		return this.#draw(source, 'cover', aspect)
+	}
+
+	// The whole source, with black bars
+	fit(source, aspect = 1) {
+		return this.#draw(source, 'fit', aspect)
+	}
+
+	// Distorted to the image size
+	stretch(source) {
+		return this.#draw(source, 'stretch', 1)
+	}
+
+	// Resizes to the source size and copies it
+	image(source) {
+		const s = sourceSize(source)
+		return this.resize(s.width, s.height).#draw(source, 'stretch', 1)
+	}
+
+	flipX() {
+		const w = this.width
+		for (let j=0; j<this.height; j++) {
+			const o = j * w
+			for (let i=0; i<w>>1; i++) {
+				const t = this.data[o + i]
+				this.data[o + i] = this.data[o + w - 1 - i]
+				this.data[o + w - 1 - i] = t
+			}
+		}
+		return this
+	}
+
+	flipY() {
+		const w = this.width
+		const h = this.height
+		for (let j=0; j<h>>1; j++) {
+			for (let i=0; i<w; i++) {
+				const a = j * w + i
+				const b = (h - 1 - j) * w + i
+				const t = this.data[a]
+				this.data[a] = this.data[b]
+				this.data[b] = t
+			}
+		}
+		return this
+	}
+
+	#draw(source, mode, aspect) {
+		const w = this.canvas.width
+		const h = this.canvas.height
+		const s = sourceSize(source)
 		const ctx = this.ctx
 		ctx.fillStyle = 'black'
 		ctx.fillRect(0, 0, w, h)
@@ -46,11 +109,7 @@ export class Pixels extends Grid {
 				if (sa > ta) dh = w / sa
 				else dw = h * sa
 			}
-			ctx.save()
-			ctx.translate(w / 2, h / 2)
-			if (mirror) ctx.scale(-1, 1)
-			ctx.drawImage(img, -dw / 2, -dh / 2, dw, dh)
-			ctx.restore()
+			ctx.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh)
 		}
 
 		this.#readCanvas()
