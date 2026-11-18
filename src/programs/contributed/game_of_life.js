@@ -8,12 +8,16 @@ Each frame of the animation depends on the previous frame. Code in the `pre()`
 function saves the previous frame so it can be used in `main()`.
 */
 
-import { dist, sub } from '/src/modules/vec2.js'
+import { distance, sub } from '@ertdfgcvb/play/vec2.js'
+
+// The buffer holds the state: it is not cleared each frame
+export const settings = { clear : false }
 
 let prevFrame;
 let width, height;
 
-export function pre(context, cursor, buffer) {
+export function pre(context) {
+	const buffer = context.buffer.data
 	if (width != context.cols || height != context.rows) {
 		const length = context.cols * context.rows
 		for (let i = 0; i < length; i++) {
@@ -23,14 +27,15 @@ export function pre(context, cursor, buffer) {
 		height = context.rows;
 	}
 
-	// Use the spread operator to copy the previous frame
+	// Copy the previous frame (the cells, not only the array)
 	// You must make a copy, otherwise `prevFrame` will be updated prematurely
-	prevFrame = [...buffer];
+	prevFrame = buffer.map(cell => ({ ...cell }));
 }
 
-export function main(coord, context, cursor, buffer) {
+export function main(coord, context) {
+	const { cursor } = context
 	if (cursor.pressed) {
-		if (dist(coord, cursor) < 3) {
+		if (distance(coord, cursor) < 3) {
 			return Math.random() > 0.5 ? '▒' : ' ';
 		}
 	}

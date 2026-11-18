@@ -6,8 +6,8 @@
 See: http://www.hammersleyfoundation.org/index.php/artwork/computer-drawings/184-computer-drawings/331-equal-tea-talk
 */
 
-import { map, step, mod } from '/src/modules/num.js'
-import { vec2, mul, fract as fract2 } from '/src/modules/vec2.js'
+import { map, step, mod } from '@ertdfgcvb/play/num.js'
+import { vec2, mul, fract as fract2 } from '@ertdfgcvb/play/vec2.js'
 
 const chars = '#BEFTI_'.split('')
 
@@ -31,7 +31,7 @@ export const settings = {
 	fontWeight: '100'
 }
 
-export function main(coord, context, cursor, buffer){
+export function main(coord, context){
 	const t = context.time * 0.0001
 
 	// compute resolution to fit geometry, not the screen

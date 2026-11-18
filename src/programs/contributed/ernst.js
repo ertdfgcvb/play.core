@@ -5,8 +5,8 @@
 @desc   Inspired by Ernst Jandl, 1964
 */
 
-import { dist, vec2, length, add, mulN } from '/src/modules/vec2.js'
-import { map, smoothstep } from '/src/modules/num.js';
+import { distance, vec2, length, add, mul } from '@ertdfgcvb/play/vec2.js'
+import { map, smoothstep } from '@ertdfgcvb/play/num.js';
 
 const { PI, atan2, floor, cos, max } = Math;
 
@@ -21,7 +21,7 @@ function polygon(center, edges, time) {
 	return smoothstep(0.3, 0.31, c);
 }
 
-export function main(coord, context, cursor, buffer){
+export function main(coord, context){
 	const m = max(context.cols, context.rows)
     const a = context.metrics.aspect
 
@@ -55,8 +55,12 @@ export function main(coord, context, cursor, buffer){
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer){
-	drawInfo(context, cursor, buffer)
+import { Desktop } from '@ertdfgcvb/play/window.js'
+
+const desk = new Desktop()
+desk.info()
+
+export function post(context) {
+	desk.update(context)
 }
 

@@ -246,7 +246,7 @@ let runCount = 0
 async function resolveProgram(p) {
 	if (typeof p != 'string' && !(p instanceof URL)) return p
 	// Relative to the page (browser) or the working directory (Node), not to this file
-	const base = typeof document != 'undefined' ? document.baseURI : (await import('node:url')).pathToFileURL(process.cwd() + '/').href
+	const base = typeof document != 'undefined' && document.baseURI ? document.baseURI : (await import('node:url')).pathToFileURL(process.cwd() + '/').href
 	const url = new URL(p, base)
 	// blob: and data: URLs are unique already and take no query
 	if (url.protocol != 'blob:' && url.protocol != 'data:') url.searchParams.set('run', ++runCount)

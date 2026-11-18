@@ -13,8 +13,8 @@ With inspiration from:
 - http://www.tech-algorithm.com/articles/nearest-neighbor-image-scaling
 */
 
-import * as v2 from '/src/modules/vec2.js'
-import { map } from '/src/modules/num.js'
+import * as v2 from '@ertdfgcvb/play/vec2.js'
+import { map } from '@ertdfgcvb/play/num.js'
 
 // Environment
 const WIDTH = 400;
@@ -48,7 +48,10 @@ export const settings = {
 	fontSize: '12px',
 }
 
-export function boot(context, buffer, data) {
+// State shared by the functions (was the data argument)
+const data = {}
+
+function boot(context) {
 	document.body.style.cursor = 'crosshair';
 
 	data.chem = new Float32Array(HEIGHT*WIDTH);
@@ -58,7 +61,7 @@ export function boot(context, buffer, data) {
 	for (let agent = 0; agent < NUM_AGENTS; agent++) {
 		data.agents.push(new Agent(
 			// Random position
-			v2.mulN(v2.addN(v2.mulN(randCircle(), 0.5), 1), 0.5 * WIDTH),
+			v2.mul(v2.add(v2.mul(randCircle(), 0.5), 1), 0.5 * WIDTH),
 			// Random direction
 			v2.rot(v2.vec2(1, 0), Math.random()*2*Math.PI),
 		));
@@ -68,7 +71,9 @@ export function boot(context, buffer, data) {
 	data.viewFocus = { y: 0.5, x: 0.5 };
 }
 
-export function pre(context, cursor, buffer, data) {
+export function pre(context) {
+	const { cursor } = context
+	if (!data.chem) boot(context)
 	// Diffuse & decay
 	for (let row = 0; row < HEIGHT; row++) {
 		for (let col = 0; col < WIDTH; col++) {
@@ -100,7 +105,7 @@ export function pre(context, cursor, buffer, data) {
 	updateView(cursor, context, data);
 }
 
-export function main(coord, context, cursor, buffer, data) {
+export function main(coord, context) {
 	const { viewFocus, viewScale } = data;
 
 	// A down and upscaling algorithm based on nearest-neighbor image scaling.
@@ -156,9 +161,11 @@ export function main(coord, context, cursor, buffer, data) {
 	return char;
 }
 
-// import { drawInfo } from '/src/modules/drawbox.js'
-// export function post(context, cursor, buffer) {
-// 	drawInfo(context, cursor, buffer)
+// import { Desktop } from '@ertdfgcvb/play/window.js'
+// const desk = new Desktop()
+// desk.info()
+// export function post(context) {
+// 	desk.update(context)
 // }
 
 function updateView(cursor, context, data) {
@@ -212,7 +219,7 @@ class Agent {
 	}
 
 	sense(m, chem) {
-		const senseVec = v2.mulN(v2.rot(this.dir, m * SENS_ANGLE), SENS_DIST);
+		const senseVec = v2.mul(v2.rot(this.dir, m * SENS_ANGLE), SENS_DIST);
 		const pos = v2.floor(v2.add(this.pos, senseVec));
 		if (!bounded(pos))
 			return -1;
@@ -254,7 +261,7 @@ class Agent {
 		this.dir = v2.rot(this.dir, rotate);
 
 		// Move
-		this.pos = v2.add(this.pos, v2.mulN(this.dir, AGT_SPEED));
+		this.pos = v2.add(this.pos, v2.mul(this.dir, AGT_SPEED));
 	}
 
 	deposit(chem) {

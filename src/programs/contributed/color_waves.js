@@ -11,7 +11,7 @@ export const settings = {
 	fontWeight : 700
 }
 
-export function main(coord, context, cursor){
+export function main(coord, context){
 	const t = context.time * 0.0001
 
 	const x = coord.x
@@ -32,7 +32,11 @@ export function main(coord, context, cursor){
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer){
-	drawInfo(context, cursor, buffer)
+import { Desktop } from '@ertdfgcvb/play/window.js'
+
+const desk = new Desktop()
+desk.info()
+
+export function post(context) {
+	desk.update(context)
 }

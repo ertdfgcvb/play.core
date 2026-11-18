@@ -5,8 +5,8 @@
 @desc   Click to spawn new path segments
 */
 
-import { dist, sub } from '/src/modules/vec2.js'
-import * as v2 from '/src/modules/vec2.js'
+import { distance, sub } from '@ertdfgcvb/play/vec2.js'
+import * as v2 from '@ertdfgcvb/play/vec2.js'
 
 const vec2 = v2.vec2
 
@@ -24,35 +24,38 @@ const colors = [
 ];
 
 export const settings = {
+	clear : false, // the buffer holds the state: it is not cleared each frame
 	fps             : 30,    // fps capping
 	backgroundColor : '#000000',    // background color of the container element
 }
 
 const roads = '┃━┏┓┗┛┣┫┳┻╋';
 
-export function pre(context, cursor, buffer) {
+export function pre(context) {
+	const buffer = context.buffer.data
 	if (width != context.cols || height != context.rows) {
 		const length = context.cols * context.rows
 		for (let i = 0; i < length; i++) {
 			buffer[i] = Math.random() < 0.001 ? {
 				char: choose(roads),
 				color: 'white'
-			} : ' ';
+			} : { char : ' ' };
         }
 		width = context.cols;
 		height = context.rows;
 	}
 
-	// Use the spread operator to copy the previous frame
+	// Copy the previous frame (the cells, not only the array)
 	// You must make a copy, otherwise `prevFrame` will be updated prematurely
-	prevFrame = [...buffer];
+	prevFrame = buffer.map(cell => ({ ...cell }));
 }
 
 function choose(list) {
 	return list.charAt(Math.floor(Math.random() * list.length))
 }
 
-export function main(coord, context, cursor, buffer) {
+export function main(coord, context) {
+	const { cursor } = context
 	const {x, y} = coord;
 	if (cursor.pressed &&
 			Math.floor(cursor.x) == x &&
