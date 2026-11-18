@@ -67,3 +67,27 @@ test('txt snapshot', async () => {
 	await assert.rejects(h.snapshot('png'), /not supported/)
 	h.stop()
 })
+
+test('a URL gives each run its own module copy', async () => {
+	const url = new URL('./fixtures/counter.js', import.meta.url)
+	const opts = { renderer : null, cols : 1, rows : 1, autoStart : false }
+	const a = await run(url, opts)
+	const b = await run(url, opts)
+	a.step(3)
+	b.step(1)
+	assert.equal(a.text(), '3\n')
+	assert.equal(b.text(), '1\n')
+	assert.notEqual(a.program, b.program)
+	a.stop()
+	b.stop()
+})
+
+test('relative URL strings resolve against the working directory in Node', async () => {
+	const h = await run('tests/fixtures/counter.js', { renderer : null, cols : 1, rows : 1, once : true })
+	assert.equal(h.text(), '1\n')
+	h.stop()
+})
+
+test('a missing module rejects', async () => {
+	await assert.rejects(run('tests/fixtures/missing.js', { renderer : null }))
+})

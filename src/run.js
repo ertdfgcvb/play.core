@@ -24,8 +24,11 @@ const DEFAULTS = {
 // Tolerance for the fps cap: rAF timestamps jitter around the display rate
 const FPS_TOLERANCE = 1
 
-export async function run(program, options = {}) {
+// program: a module object, or the URL of a module (string or URL).
+// A URL is imported as a separate copy for each run: module variables are not shared.
+export async function run(source, options = {}) {
 
+	const program = await resolveProgram(source)
 	const settings = Object.freeze({ ...DEFAULTS, ...program.settings, ...options })
 	const factory = await resolveRenderer(settings.renderer)
 	const renderer = await factory(settings.element, settings)
@@ -177,6 +180,7 @@ export async function run(program, options = {}) {
 	}
 
 	const handle = {
+		program,
 		element,
 		renderer,
 		onerror : null,
@@ -233,6 +237,18 @@ export async function run(program, options = {}) {
 	}
 
 	return handle
+}
+
+let runCount = 0
+
+async function resolveProgram(p) {
+	if (typeof p != 'string' && !(p instanceof URL)) return p
+	// Relative to the page (browser) or the working directory (Node), not to this file
+	const base = typeof document != 'undefined' ? document.baseURI : (await import('node:url')).pathToFileURL(process.cwd() + '/').href
+	const url = new URL(p, base)
+	// blob: and data: URLs are unique already and take no query
+	if (url.protocol != 'blob:' && url.protocol != 'data:') url.searchParams.set('run', ++runCount)
+	return import(url.href)
 }
 
 async function resolveRenderer(r) {
