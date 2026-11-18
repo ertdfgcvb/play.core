@@ -51,13 +51,15 @@
 	<div class="box"><pre id="e"></pre></div>
 	<script type="module">
 		import { run } from '@ertdfgcvb/play'
+		// A module is evaluated once per page: a second import with a query is a separate copy
 		import * as flame from './progs/flame.js'
+		import * as flame2 from './progs/flame.js?2'
 		import * as cursor from './progs/cursor.js'
 		import * as time from './progs/time.js'
 
 		const handles = [
 			await run(flame,  { element : document.querySelector('#a') }),
-			await run(flame,  { element : document.querySelector('#b'), renderer : 'canvas', fps : 60 }),
+			await run(flame2, { element : document.querySelector('#b'), renderer : 'canvas', fps : 60 }),
 			await run(cursor, { element : document.querySelector('#c') }),
 			await run(cursor, { element : document.querySelector('#d'), renderer : 'canvas' }),
 			await run(time,   { element : document.querySelector('#e') }),
