@@ -7,7 +7,7 @@ let count = 0
 
 for (const folder of readdirSync(root).sort()) {
 	if (!statSync(new URL(folder, root)).isDirectory()) continue
-	rows.push('\t\t<div class="folder">' + folder + '</div>')
+	let first = true
 	for (const file of readdirSync(new URL(folder + '/', root)).filter(f => f.endsWith('.js')).sort()) {
 		const src = readFileSync(new URL(folder + '/' + file, root), 'utf8')
 		const tag = t => {
@@ -15,7 +15,13 @@ for (const folder of readdirSync(root).sort()) {
 			return m ? esc(m[1].trim()) : ''
 		}
 		const name = file.slice(0, -3)
-		rows.push('\t\t<a href="run.html?' + folder + '/' + name + '">' + name + '</a><div>' + tag('title') + '</div><div>' + tag('author') + '</div><div>' + tag('desc') + '</div>')
+		// The author only for programs that are not mine
+		const by = folder == 'contributed' && tag('author') ? ' by ' + tag('author') : ''
+		rows.push('\t\t<div class="folder">' + (first ? folder : '') + '</div>'
+			+ '<a href="run.html?' + folder + '/' + name + '">' + name + '</a>'
+			+ '<div>' + tag('title') + '</div>'
+			+ '<div>' + tag('desc') + by + '</div>')
+		first = false
 		count++
 	}
 }
@@ -35,12 +41,11 @@ const page = `<!DOCTYPE html>
 		.list {
 			display: grid;
 			grid-template-columns: auto auto auto 1fr;
+			row-gap: 0.2em;
 			column-gap: 3ch;
 		}
 		.folder {
-			grid-column: span 4;
-			margin-top: 1.2em;
-			color: gray;
+			color: black;
 		}
 		a {
 			color: royalblue;
