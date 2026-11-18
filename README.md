@@ -226,10 +226,13 @@ Without a `main()`, or with `settings.clear : false`, the buffer persists from o
 Data lives in module variables. Arrays sized to the output are reset when the size changes:
 
 ```js
-let heat = []
+const heat = []
 
 export function pre({ cols, rows }) {
-	if (heat.length != cols * rows) heat = new Float32Array(cols * rows)
+	if (heat.length != cols * rows) {
+		heat.length = cols * rows
+		heat.fill(0)
+	}
 	// ...
 }
 
