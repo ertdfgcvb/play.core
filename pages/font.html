@@ -59,31 +59,33 @@ X-XXX-XXX-XXX-XXX-XXX-XX
 
 <script type="module">
 
-	import { calcMetrics } from "/src/run.js"
+	// Metrics as measured by the dom renderer (ctx.metrics), then the glyphs in three weights
+	import dom from '../src/renderers/dom.js'
 
-	const pattern = document.querySelector('template').innerHTML;
-
-	const p = document.querySelector("pre")
+	const pattern = document.querySelector('template').innerHTML
+	const p = document.querySelector('pre')
 	const weights = [300, 400, 700]
-	const s1 = getComputedStyle(p)
 
-	document.fonts.ready.then((e) => {
+	const probe = document.createElement('pre')
+	probe.style.cssText = 'position:absolute;visibility:hidden;width:40em;height:10em'
+	document.body.appendChild(probe)
+	const r = await dom(probe, {})
+	const m = r.measure().metrics
+	r.dispose()
+	probe.remove()
 
-		const s2 = getComputedStyle(p)
-		const m = calcMetrics(p)
-		const s = document.createElement("span")
-		s.style.display="block"
-		s.innerHTML =  JSON.stringify(m, null, 4)
+	const info = document.createElement('span')
+	info.style.display = 'block'
+	info.textContent = JSON.stringify(m, null, 4)
+	p.appendChild(info)
+
+	for (const w of weights) {
+		const s = document.createElement('span')
+		s.classList.add('test')
+		s.innerHTML = 'weight: ' + w + '\n' + pattern
+		s.style.fontWeight = w
 		p.appendChild(s)
-		for (let w of weights) {
-			const s = document.createElement("span")
-			s.classList.add("test")
-			s.innerHTML = 'weight: ' + w + '\n' + pattern
-			s.style.fontWeight = w
-			p.appendChild(s)
-		}
-
-	})
+	}
 
 </script>
 

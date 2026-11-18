@@ -61,5 +61,5 @@ const page = `<!DOCTYPE html>
 `
 
 // Run with: npm run list
-writeFileSync(new URL('../tests/all_programs.html', import.meta.url), page)
+writeFileSync(new URL('../pages/all_programs.html', import.meta.url), page)
 console.log('all_programs.html: ' + count + ' programs')
