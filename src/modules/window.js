@@ -36,10 +36,11 @@ const PANEL = {
 	align    : null,   // 'center': x, y is the center
 }
 
-// Border, fill and shadow. style: { border, shadow, shadowX, shadowY, color, backgroundColor, fontWeight }.
+// Border, fill and shadow, into the buffer (or ctx.buffer). style: { border, shadow, shadowX, shadowY, color, backgroundColor, fontWeight }.
 // Colors left undefined are the output defaults: the box is opaque.
 // Returns the rect and its inner area
-export function box(buffer, x, y, w, h, style = {}) {
+export function box(target, x, y, w, h, style = {}) {
+	const buffer = target.buffer || target
 	const s = { border : 'round', shadow : null, shadowX : 2, shadowY : 1, ...style }
 	const cell = cellStyle(s)
 	const b = [...(BORDERS[s.border] || (typeof s.border == 'string' && length(s.border) == 8 ? s.border : BORDERS.round))]
@@ -66,7 +67,8 @@ export function box(buffer, x, y, w, h, style = {}) {
 
 // A box with a title and content: a string (wrapped to width if set, clipped)
 // or a Grid (a block). style: box style plus width, height, paddingX, paddingY, title, align
-export function panel(buffer, content = '', x = 0, y = 0, style = {}) {
+export function panel(target, content = '', x = 0, y = 0, style = {}) {
+	const buffer = target.buffer || target
 	const s = { ...PANEL, ...style }
 	const px = s.paddingX
 	const py = s.paddingY
@@ -123,7 +125,7 @@ export function info(ctx, x = 2, y = 1, style = {}) {
 		'cursor  ' + Math.floor(ctx.cursor.x) + ',' + Math.floor(ctx.cursor.y),
 	].join('\n')
 	// Fixed width: the box does not change size with the numbers
-	return panel(ctx.buffer, text, x, y, { width : 24, ...style })
+	return panel(ctx, text, x, y, { width : 24, ...style })
 }
 
 function cellStyle(s) {

@@ -45,3 +45,11 @@ test('info', async () => {
 	assert.match(h.text(), /frame   0/)
 	assert.match(h.text(), /size    30×12/)
 })
+
+test('ctx or buffer as target', async () => {
+	const h = await frame(ctx => {
+		panel(ctx, 'a', 0, 0, { paddingX : 0, paddingY : 0, border : 'ascii' })
+		box(ctx.buffer, 4, 0, 3, 3, { border : 'ascii' })
+	}, 8, 3)
+	assert.equal(h.text(), '+-+.+-+.\n|a|.| |.\n+-+.+-+.\n')
+})

@@ -31,12 +31,13 @@ export function block(source, { transparent = ' ', styles = null, dedent : dd = 
 	return g
 }
 
-// Writes a Grid (or a string) into the buffer, clipped to its size.
+// Writes a Grid (or a string) into the buffer (or ctx.buffer), clipped to its size.
 // Strings are written as they are: opaque, spaces included, not dedented.
 // style: a cell style for all the chars; the chars of a styled block keep their own.
 // style.align = 'center': x, y is the center
 // Returns the drawn rect { x, y, width, height }
-export function write(buffer, source, x = 0, y = 0, style = null) {
+export function write(target, source, x = 0, y = 0, style = null) {
+	const buffer = target.buffer || target
 	const g = source instanceof Grid ? source : block(String(source), { transparent : null, dedent : false })
 
 	x = Math.round(x)
