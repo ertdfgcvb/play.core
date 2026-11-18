@@ -583,15 +583,15 @@ The canvas renderer is faster for programs with many style changes.
 
 ### Browsers
 
-During v1 development five bugs have been submitted to WebKit:
+During v1 development five bugs have been submitted to WebKit (status as of November 2026):
 
-- [217047](https://bugs.webkit.org/show_bug.cgi?id=217047): `document.fonts.ready` is resolved too quickly in first run of module.
-- [218275](https://bugs.webkit.org/show_bug.cgi?id=218275): Web Inspector: error line number missing when code is a module.
-- [218284](https://bugs.webkit.org/show_bug.cgi?id=218284): Error event not captured when error originates in module.
-- [225695](https://bugs.webkit.org/show_bug.cgi?id=225695): Fractional CSS line-height value translates to rounded (floored) element height.
-- [240213](https://bugs.webkit.org/show_bug.cgi?id=240213): `measureText()` returns TextMetrics with rounded values for the bounding box.
+- [217047](https://bugs.webkit.org/show_bug.cgi?id=217047): `document.fonts.ready` is resolved too quickly in first run of module. Open.
+- [218275](https://bugs.webkit.org/show_bug.cgi?id=218275): Web Inspector: error line number missing when code is a module. Open.
+- [218284](https://bugs.webkit.org/show_bug.cgi?id=218284): Error event not captured when error originates in module. Fixed (2022).
+- [225695](https://bugs.webkit.org/show_bug.cgi?id=225695): Fractional CSS line-height value translates to rounded (floored) element height. Open.
+- [240213](https://bugs.webkit.org/show_bug.cgi?id=240213): `measureText()` returns TextMetrics with rounded values for the bounding box. Fixed (2025).
 
-v2 avoids the font and metrics issues: the used font face is loaded explicitly and the cell size is measured on a block of text instead of the computed line-height.
+v2 avoids the open font and metrics issues: the used font face is loaded explicitly and the cell size is measured on a block of text instead of the computed line-height.
 
 ## Changes
 
