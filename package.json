@@ -15,7 +15,8 @@
 		"src/modules"
 	],
 	"scripts": {
-		"test": "node --test tests/*.test.js"
+		"test": "node --test tests/*.test.js",
+		"list": "node tests/list_programs.js"
 	},
 	"engines": {
 		"node": ">=18"
