@@ -26,25 +26,26 @@ export function unschedule(task) {
 	tasks.delete(task)
 }
 
-// Frame pacing for an fps cap: due(t) is true when a frame is due at time t.
-// Due times stay on a grid of the interval, a frame may come up to tolerance ms early
-// (rAF timestamps jitter, less than a display tick at 120 Hz); after a slow frame or a pause the grid restarts: no catch-up burst
-export function createPacer(interval, tolerance = 4) {
-	let next = null
+// Frame pacing for an fps cap, as in v1: a frame when a full interval has passed since the
+// last due time; the remainder keeps the phase. vsync timestamps are precise, a late frame is late
+export function createPacer(interval) {
+	// Floating point only (1000 / 60 is not exact), not a tolerance for jitter
+	const EPS = 0.1
+	let sample = null
 	return {
 		reset() {
-			next = null
+			sample = null
 		},
 		due(t) {
 			if (interval <= 0) return true
-			if (next === null) {
-				next = t + interval
+			if (sample === null) {
+				sample = t
 				return true
 			}
-			if (t < next - tolerance) return false
-			// A frame much later than due (a skipped tick) moves the grid: no short gap after it
-			next = t - next > interval / 2 ? t + interval : next + interval
-			if (next <= t) next = t + interval
+			const delta = t - sample
+			if (delta < interval - EPS) return false
+			// The remainder in (-EPS, interval - EPS]: a frame a hair early keeps the phase
+			sample = t - ((delta + EPS) % interval - EPS)
 			return true
 		},
 	}
