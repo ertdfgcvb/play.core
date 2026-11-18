@@ -1,61 +1,29 @@
-/**
-@module   loader.js
-@desc     Various file type loader, returns a Promise
-@category internal
+export default { image, text, json }
 
-Example:
+// All reject on errors: with a top-level await the program stops with the message
+//   const img = await Load.image('photo.png')
 
-import Load from './load.js'
-
-// Usage: load different file types with one callback
-Promise.all([
-	Load.text('assets/1/text.txt'),
-	Load.image('assets/1/blocks.png'),
-	Load.image('assets/1/colors.png'),
-	Load.json('data.json'),
-]).then(function(res) {
-	console.log('Everything has loaded!')
-	console.log(res)
-}).catch(function() {
-	console.log('Error')
-})
-
-// Usage: load a single resource
-Load.image('assets/1/colors.png').then( img => {
-	console.log(`Image has loaded, size is: ${img.width}x${img.height}`)
-})
-
-*/
-
-export default { json, image, text }
-
-function image (url) {
+export function image(url) {
 	return new Promise((resolve, reject) => {
 		const img = new Image()
+		// Pixels can be read from images of other origins that allow it
+		img.crossOrigin = 'anonymous'
 		img.onload = () => resolve(img)
-		img.onerror = () => {
-			console.log('Loader: error loading image ' + url)
-			resolve(null)
-		}
+		img.onerror = () => reject(new Error('Could not load image: ' + url))
 		img.src = url
 	})
 }
 
-function text (url) {
-	return fetch(url).then( response => {
-		return response.text()
-	}).catch( err => {
-		console.log('Loader: error loading text ' + url)
-		return ''
-	})
+export async function text(url) {
+	return (await get(url)).text()
 }
 
-function json (url) {
-	return fetch(url).then( response => {
-		return response.json()
-	}).catch( err => {
-		console.log('Loader: error loading json ' + url)
-		return {}
-	})
+export async function json(url) {
+	return (await get(url)).json()
 }
 
+async function get(url) {
+	const res = await fetch(url)
+	if (!res.ok) throw new Error('Could not load ' + url + ' (' + res.status + ')')
+	return res
+}
