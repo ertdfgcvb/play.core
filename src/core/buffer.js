@@ -1,5 +1,3 @@
-import { Grid2 } from './grid.js'
-
 export function createCell(settings) {
 	return {
 		char            : ' ',
@@ -9,11 +7,10 @@ export function createCell(settings) {
 	}
 }
 
-// A Grid2 of cells: writes are merged into the cell objects, which are never replaced.
+// The cells of a frame: writes are merged into the cell objects, which are never replaced.
 // A value is a char (string, number) or a partial cell { char, color, ... }
-export class Buffer extends Grid2 {
+export class Buffer {
 	constructor(w, h, settings) {
-		super(0, 0)
 		this.settings = settings
 		this.resize(w, h)
 	}
@@ -26,6 +23,11 @@ export class Buffer extends Grid2 {
 		return this
 	}
 
+	get(x, y) {
+		if (x < 0 || y < 0 || x >= this.width || y >= this.height) return null
+		return this.data[x + y * this.width]
+	}
+
 	set(x, y, value) {
 		if (x < 0 || y < 0 || x >= this.width || y >= this.height) return
 		this.merge(this.data[x + y * this.width], value)
@@ -35,8 +37,17 @@ export class Buffer extends Grid2 {
 		let idx = 0
 		for (let j=0; j<this.height; j++) {
 			for (let i=0; i<this.width; i++) {
-				this.merge(this.data[idx], fn(i, j, idx, this.width, this.height))
+				this.merge(this.data[idx], fn(i, j, idx))
 				idx++
+			}
+		}
+		return this
+	}
+
+	fillRect(x, y, w, h, value) {
+		for (let j=y; j<y+h; j++) {
+			for (let i=x; i<x+w; i++) {
+				this.set(i, j, value)
 			}
 		}
 		return this
@@ -61,5 +72,6 @@ export class Buffer extends Grid2 {
 			c.backgroundColor = s.backgroundColor
 			c.fontWeight      = s.fontWeight
 		}
+		return this
 	}
 }

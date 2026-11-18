@@ -8,7 +8,7 @@ const palette = ['black', 'purple', 'darkred', 'red', 'orangered', 'gold', 'lemo
 const flame = '011222233334444444455566667'.split('').map(Number)
 
 export function pre({ cols, rows, time, cursor, grid }) {
-	const d = grid('heat', Uint8Array).data
+	const d = grid('heat', Uint8Array)
 	const last = cols * (rows - 1)
 	for (let i=0; i<cols; i++) {
 		const n = sin(i * 0.11 + time * 0.002) * sin(i * 0.037 - time * 0.0013) * 0.5 + 0.5
@@ -23,7 +23,7 @@ export function pre({ cols, rows, time, cursor, grid }) {
 }
 
 export function main({ index }, { grid }) {
-	const u = grid('heat').data[index]
+	const u = grid('heat')[index]
 	const v = flame[min(u, flame.length - 1)]
 	if (v === 0) return ' '
 	return {

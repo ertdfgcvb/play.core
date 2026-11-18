@@ -1,4 +1,4 @@
-export class Grid2 {
+export class Grid {
 	constructor(w, h, type = Array) {
 		this.type = type
 		this.resize(w, h)
@@ -81,7 +81,7 @@ export class Grid2 {
 	}
 
 	getRect(gx, gy, rw, rh) {
-		const out = new Grid2(rw, rh, this.type)
+		const out = new Grid(rw, rh, this.type)
 		for (let j=0; j<rh; j++) {
 			for (let i=0; i<rw; i++) {
 				out.set(i, j, this.get(i + gx, j + gy))
@@ -92,7 +92,7 @@ export class Grid2 {
 
 	getTransformed(flipX = 0, flipY = 0, rot = 0) {
 		const swap = rot == 1 || rot == 3
-		const out = new Grid2(swap ? this.height : this.width, swap ? this.width : this.height, this.type)
+		const out = new Grid(swap ? this.height : this.width, swap ? this.width : this.height, this.type)
 		for (let j=0; j<out.height; j++) {
 			for (let i=0; i<out.width; i++) {
 				let ti, tj

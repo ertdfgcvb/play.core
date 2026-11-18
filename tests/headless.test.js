@@ -42,8 +42,8 @@ test('without main the buffer persists', async () => {
 
 test('grid() is per instance and sized to the buffer', async () => {
 	const program = {
-		pre  : ({ grid }) => { grid('n', Uint8Array).data[0]++ },
-		main : ({ index }, { grid }) => grid('n').data[index],
+		pre  : ({ grid }) => { grid('n', Uint8Array)[0]++ },
+		main : ({ index }, { grid }) => grid('n')[index],
 	}
 	const a = await run(program, { renderer : null, cols : 2, rows : 2, autoStart : false })
 	const b = await run(program, { renderer : null, cols : 2, rows : 2, autoStart : false })
@@ -51,7 +51,7 @@ test('grid() is per instance and sized to the buffer', async () => {
 	b.step(1)
 	assert.equal(a.text(), '30\n00\n')
 	assert.equal(b.text(), '10\n00\n')
-	assert.equal(a.ctx.grid('n').data.length, 4)
+	assert.equal(a.ctx.grid('n').length, 4)
 	a.stop()
 	b.stop()
 })

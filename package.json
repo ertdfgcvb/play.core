@@ -6,7 +6,6 @@
 	"exports": {
 		".": "./src/run.js",
 		"./renderers/*": "./src/renderers/*",
-		"./grid.js": "./src/core/grid.js",
 		"./*": "./src/modules/*"
 	},
 	"files": [

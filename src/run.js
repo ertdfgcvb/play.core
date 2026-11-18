@@ -1,10 +1,9 @@
-import { Grid2 } from './core/grid.js'
 import { Buffer } from './core/buffer.js'
 import { schedule, unschedule } from './core/scheduler.js'
 import { domInput } from './core/input_dom.js'
 import VERSION from './core/version.js'
 
-export { VERSION, Grid2 }
+export { VERSION }
 
 // Order of precedence: defaults < program.settings < run() options
 const DEFAULTS = {
@@ -52,14 +51,19 @@ export async function run(program, options = {}) {
 	let fpsFrames = 0
 	let fpsT = 0
 
+	function allocate(entry) {
+		entry.data = new entry.type(buffer.width * buffer.height)
+		entry.data.fill(entry.fill)
+	}
+
 	function grid(name, type = Array, fill = 0) {
 		let entry = grids.get(name)
 		if (!entry) {
-			entry = { fill, grid : new Grid2(0, 0, type) }
-			entry.grid.resize(buffer.width, buffer.height, fill)
+			entry = { type, fill, data : null }
+			allocate(entry)
 			grids.set(name, entry)
 		}
-		return entry.grid
+		return entry.data
 	}
 
 	function renderFrame(dt) {
@@ -67,7 +71,7 @@ export async function run(program, options = {}) {
 
 		if (m.cols != buffer.width || m.rows != buffer.height) {
 			buffer.resize(m.cols, m.rows)
-			for (const e of grids.values()) e.grid.resize(m.cols, m.rows, e.fill)
+			for (const e of grids.values()) allocate(e)
 		}
 
 		time += dt
@@ -279,10 +283,11 @@ function headless(_element, settings) {
 
 function toText(buffer) {
 	let out = ''
-	buffer.loop((c, x) => {
-		out += c.char
-		if (x == buffer.width - 1) out += '\n'
-	})
+	const { width, data } = buffer
+	for (let i=0; i<data.length; i++) {
+		out += data[i].char
+		if (i % width == width - 1) out += '\n'
+	}
 	return out
 }
 
