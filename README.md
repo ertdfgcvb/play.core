@@ -390,14 +390,15 @@ Text and art (`block.js`): a block is a `Grid` of chars, indented template liter
 ```js
 import { block, write } from '@ertdfgcvb/play/block.js'
 
-const logo = block(`
-	╭──────╮
-	│ PLAY │
-	╰──────╯
+const art = block(`
+	┌─┬┐  ╔═╦╗  ╓─╥╖  ╒═╤╕
+	│ ││  ║ ║║  ║ ║║  │ ││
+	├─┼┤  ╠═╬╣  ╟─╫╢  ╞═╪╡
+	└─┴┘  ╚═╩╝  ╙─╨╜  ╘═╧╛
 `)
 
 export function main(coord, { frame }) {
-	return logo.get(coord.x - 4, coord.y - 2) ?? '.:'[(coord.x + coord.y + frame) % 2]
+	return art.get(coord.x - 4, coord.y - 2) ?? '.:'[(coord.x + coord.y + frame) % 2]
 }
 
 export function post(ctx) {
