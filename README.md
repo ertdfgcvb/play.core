@@ -438,6 +438,122 @@ export function main(coord) {
 }
 ```
 
+### Reference
+
+`block.js`
+
+```js
+block(source, { transparent = ' ', styles = null, dedent = true }) // Grid of chars or cells; transparent chars are null
+write(target, source, x, y, style)  // target: ctx or buffer; source: Grid, string, or a run's buffer
+                                    // style.align = 'center': x, y is the center; returns { x, y, width, height }
+```
+
+`camera.js`
+
+```js
+Camera.init(constraints)  // Promise<video>, the same on every call
+```
+
+`color.js`
+
+```js
+rgb(r, g, b, a)        // { r, g, b (0..255), a (0..1) }
+hex(r, g, b, a)        // '#rrggbb', '#rrggbbaa' if not opaque
+css(r, g, b, a)        // 'rgb(r,g,b)', 'rgba(r,g,b,a)'
+rgb2hex(c)  rgb2css(c)  rgb2gray(c)  int2rgb(0xff0000)
+hsl(h, s, l, a)        // h in degrees, s and l 0..1
+mixColor(a, b, t)
+nearest(c, palette)    // closest entry of a palette (array or map)
+parseColor(css)        // names, hex, rgb(), hsl() -> frozen { r, g, b, a } or null; cached
+```
+
+`grid.js`
+
+```js
+const g = new Grid(w, h, type = Array)
+g.width  g.height  g.data
+g.get(x, y)  g.getWrapped(x, y)  g.set(x, y, v)  g.resize(w, h, fill)
+g.fill((x, y, i) => v)  g.fillRect(x, y, w, h, v)  g.loop((v, x, y, i) => {})
+g.setArray(a)  g.setRectArray(x, y, w, h, a)  g.setGrid(x, y, grid)
+g.getRect(x, y, w, h)  g.getTransformed(flipX, flipY, rot)  // new Grids
+g.sample(u, v)                                              // bilinear, clamped, 0..1
+g.sampler({ filter : 'nearest' | 'linear', wrap : 'clamp' | 'repeat' | 'mirror', lerp }) // (u, v) => value
+g.isEqual(grid)  g.toString()
+```
+
+`num.js`
+
+```js
+// GLSL
+fract  mod  clamp  sign  mix  step  smoothstep  radians  degrees  inversesqrt  atan(y, x)
+// Not GLSL
+smootherstep  map  mapClamped  unmix(a, b, v)  wrap(v, min, max)  pingpong(v, len)  quantize(v, n)
+lenEuclidean(x, y)  lenManhattan(x, y)  lenChebyshev(x, y)
+distEuclidean(ax, ay, bx, by)  distManhattan(...)  distChebyshev(...)
+```
+
+`palettes.js`
+
+```js
+C64  CGA  EGA          // arrays, in hardware order
+CSS1  CSS2  CSS3  CSS4 // maps by name: CSS4.tomato
+// entries: { name, int, r, g, b, a, gray, hex, css }
+```
+
+`pixels.js`
+
+```js
+const img = await loadImage(url)   // ImageBitmap
+const px = new Pixels()            // a Grid of { r, g, b (0..255), a, gray (0..1) }
+px.resize(w, h)                    // usually cols, rows
+px.cover(src, aspect)  px.fit(src, aspect)  px.stretch(src)  px.read(src) // draw a source and read it
+px.flipX()  px.flipY()  px.normalize(lower, upper)  px.quantize(palette)  px.threshold(t)
+px.data  px.get(x, y)  px.sample(u, v)  // chainable: px.resize(cols, rows).cover(cam, aspect).flipX()
+```
+
+`sort.js`
+
+```js
+await sort(chars, fontFamily, { ascending = false, fontWeight, size }) // densest first
+```
+
+`text.js`
+
+```js
+dedent(str)  measure(str)  // { width, height }
+length(str)                // in code points
+wrap(str, width)  align(str, width, 'left' | 'center' | 'right')  truncate(str, width, '…')
+```
+
+`vec2.js`, `vec3.js`: plain `{ x, y(, z) }` objects; `out` is optional and can be the input.
+
+```js
+vec2(x, y = x)  copy(a, out)
+add  sub  mul  div  min  max  mod   (a, b, out)  // b: vector or number
+step(edge, x, out)  clamp(a, lo, hi, out)  mix(a, b, t, out)
+neg  abs  sign  floor  ceil  round  fract  normalize  (a, out)
+dot(a, b)  length(a)  lengthSq(a)  distance(a, b)  distSq(a, b)  reflect(i, n, out)
+rot(a, ang, out)                                  // vec2
+cross(a, b, out)  rotX  rotY  rotZ (a, ang, out)  // vec3
+```
+
+`window.js`
+
+```js
+box(target, x, y, w, h, style)          // style: border, shadow, shadowX, shadowY, color, backgroundColor, fontWeight
+panel(target, content, x, y, style)     // box + width, height (0: fit), paddingX, paddingY,
+                                        // title, titleStyle ('invert'), titleAlign ('center' | 'left')
+infoText(ctx)                           // fps, frame, time, size, aspect, cursor
+BORDERS  SHADOWS                        // a custom border is any 8 chars string: '┌─┐│┘─└│'
+
+const desk = new Desktop(style)         // default style of the windows
+const win = desk.open({ x, y, width, height, title, content, closable, ...style })
+                                        // content: string, block, ctx => string | block, a module or a URL (a program)
+desk.info(opts)                         // the info window
+desk.update(ctx)                        // in post(): pointer, then draws the windows
+desk.hit(x, y)  desk.front(win)  desk.close(win)  win.close()
+```
+
 ## Examples
 
 The examples are in [`src/programs`](src/programs).
