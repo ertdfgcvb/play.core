@@ -5,15 +5,12 @@
 @desc   Color input from camera (quantised)
 */
 
-import { map } from '/src/modules/num.js'
-import { rgb2hex, rgb}  from '/src/modules/color.js'
-import Camera from '/src/modules/camera.js'
-import Canvas from '/src/modules/canvas.js'
+import { rgb, rgb2hex } from '@ertdfgcvb/play/color.js'
+import Camera from '@ertdfgcvb/play/camera.js'
+import { Pixels } from '@ertdfgcvb/play/pixels.js'
 
-const cam = Camera.init()
-const can = new Canvas()
-// For a debug view uncomment the following line:
-// can.display(document.body, 10, 10)
+const cam = await Camera.init()
+const px = new Pixels()
 
 const density = ' .+=?X#ABC'
 
@@ -27,33 +24,30 @@ pal.push(rgb(100, 255, 255))
 //pal.push(rgb(255, 182, 193))
 //pal.push(rgb(255, 255, 255))
 
-const data = []
-
-export function pre(context, cursor, buffer) {
-	const a = context.metrics.aspect
-
-	// The canvas is resized so that 1 cell -> 1 pixel
-	can.resize(context.cols, context.rows)
-	// The cover() function draws an image (cam) to the canvas covering
-	// the whole frame. The aspect ratio can be adjusted with the second
-	// parameter.
-	can.cover(cam, a).mirrorX().quantize(pal).writeTo(data)
+export function pre({ cols, rows, metrics }) {
+	// The image is resized so that 1 cell -> 1 pixel,
+	// cover() draws the camera covering the whole frame
+	px.resize(cols, rows).cover(cam, metrics.aspect).flipX().quantize(pal)
 }
 
-export function main(coord, context, cursor, buffer) {
+export function main(coord) {
 	// Coord also contains the index of each cell
-	const color = data[coord.index]
+	const color = px.data[coord.index]
 	// Add some chars to the output
-	const index = Math.floor(color.v * (density.length-1))
+	const index = Math.floor(color.gray * (density.length - 1))
 	return {
-		char       : density[index],
-		color      : 'white',
+		char            : density[index],
+		color           : 'white',
 		// convert {r,g,b} obj to a valid CSS hex string
 		backgroundColor : rgb2hex(color)
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer) {
-	drawInfo(context, cursor, buffer)
+import { Desktop } from '@ertdfgcvb/play/window.js'
+
+const desk = new Desktop()
+desk.info()
+
+export function post(ctx) {
+	desk.update(ctx)
 }

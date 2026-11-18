@@ -5,51 +5,39 @@
 @desc   Doubled vertical resolution input from camera
 */
 
-import { CSS3 } from '/src/modules/color.js'
-import Camera from '/src/modules/camera.js'
-import Canvas from '/src/modules/canvas.js'
+import { CSS3 } from '@ertdfgcvb/play/color.js'
+import Camera from '@ertdfgcvb/play/camera.js'
+import { Pixels } from '@ertdfgcvb/play/pixels.js'
 
-const cam = Camera.init()
-const can = new Canvas()
-// For a debug view uncomment the following line:
-// can.display(document.body, 10, 10)
+const cam = await Camera.init()
+const px = new Pixels()
 
 // Palette for quantization
-const pal = []
-pal.push(CSS3.red)
-pal.push(CSS3.blue)
-pal.push(CSS3.white)
-pal.push(CSS3.black)
-pal.push(CSS3.lightblue)
+const pal = [CSS3.red, CSS3.blue, CSS3.white, CSS3.black, CSS3.lightblue]
 
-// Camera data
-const data = []
-
-export function pre(context, cursor, buffer) {
-	const a = context.metrics.aspect
-
-	// The canvas is resized to the double of the height of the context
-	can.resize(context.cols, context.rows * 2)
-
-	// Also the aspect ratio needs to be doubled
-	can.cover(cam, a * 2).quantize(pal).mirrorX().writeTo(data)
+export function pre({ cols, rows, metrics }) {
+	// The image is resized to double the height of the grid:
+	// the aspect ratio needs to be doubled too
+	px.resize(cols, rows * 2).cover(cam, metrics.aspect * 2).quantize(pal).flipX()
 }
 
-export function main(coord, context, cursor, buffer) {
-	// Coord also contains the index of each cell:
-	const idx   = coord.y * context.cols * 2 + coord.x
-	const upper = data[idx]
-	const lower = data[idx + context.cols]
-
+export function main(coord, { cols }) {
+	// Two pixels per cell: upper and lower half
+	const idx   = coord.y * cols * 2 + coord.x
+	const upper = px.data[idx]
+	const lower = px.data[idx + cols]
 	return {
-		char :'▄',
-		color : lower.hex,
+		char            : '▄',
+		color           : lower.hex,
 		backgroundColor : upper.hex
 	}
 }
 
-import { drawInfo } from '/src/modules/drawbox.js'
-export function post(context, cursor, buffer) {
-	drawInfo(context, cursor, buffer)
-}
+import { Desktop } from '@ertdfgcvb/play/window.js'
 
+const desk = new Desktop()
+desk.info()
+
+export function post(ctx) {
+	desk.update(ctx)
+}
