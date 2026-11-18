@@ -1,5 +1,4 @@
 /**
-[header]
 @author ertdfgcvb
 @title  Numbers
 @desc   Fun with integers

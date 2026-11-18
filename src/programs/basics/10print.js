@@ -1,5 +1,4 @@
 /**
-[header]
 @author ertdfgcvb
 @title  10 PRINT
 @desc   10 PRINT CHR$(205.5+RND(1)); : GOTO 10

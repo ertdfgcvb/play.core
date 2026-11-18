@@ -1,5 +1,4 @@
 /**
-[header]
 @author ertdfgcvb
 @title  Hotlink
 @desc   Function hotlink example (GitHub)

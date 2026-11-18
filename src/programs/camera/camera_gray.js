@@ -1,5 +1,4 @@
 /**
-[header]
 @author ertdfgcvb
 @title  Camera grayscale
 @desc   Grayscale input from camera

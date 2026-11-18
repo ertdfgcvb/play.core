@@ -1,5 +1,4 @@
 /**
-[header]
 @author ertdfgcvb
 @title  How to draw a circle
 @desc   Use of context.metrics.aspect

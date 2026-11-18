@@ -1,5 +1,4 @@
 /**
-[header]
 @author ertdfgcvb
 @title  Wobbly
 @desc   Draw donuts with SDF

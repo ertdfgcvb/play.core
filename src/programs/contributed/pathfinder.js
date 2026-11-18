@@ -1,8 +1,8 @@
 /**
-[header]
 @author Alex Miller
 @title  Pathfinder
 @desc   Click to spawn new path segments
+Ported from v1 to v2 of the ASCII Playground (API changes only).
 */
 
 import { distance, sub } from '@ertdfgcvb/play/vec2.js'

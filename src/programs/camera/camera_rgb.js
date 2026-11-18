@@ -1,5 +1,4 @@
 /**
-[header]
 @author ertdfgcvb
 @title  Camera RGB
 @desc   Color input from camera (quantised)

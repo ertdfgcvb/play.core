@@ -1,11 +1,11 @@
 /**
-[header]
 @author Alex Miller
 @title  GOL
 @desc   Conway's Game of Life
 See https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
 Each frame of the animation depends on the previous frame. Code in the `pre()`
 function saves the previous frame so it can be used in `main()`.
+Ported from v1 to v2 of the ASCII Playground (API changes only).
 */
 
 import { distance, sub } from '@ertdfgcvb/play/vec2.js'

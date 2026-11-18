@@ -1,9 +1,9 @@
 /**
-[header]
 @author nkint
 @title  EQUAL TEA TALK, #65
 @desc   Inspired by Frederick Hammersley, 1969
 See: http://www.hammersleyfoundation.org/index.php/artwork/computer-drawings/184-computer-drawings/331-equal-tea-talk
+Ported from v1 to v2 of the ASCII Playground (API changes only).
 */
 
 import { map, step, mod } from '@ertdfgcvb/play/num.js'

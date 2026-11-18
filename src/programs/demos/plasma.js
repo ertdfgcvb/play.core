@@ -1,5 +1,4 @@
 /**
-[header]
 @author ertdfgcvb
 @title  Plasma
 @desc   Oldschool plasma demo

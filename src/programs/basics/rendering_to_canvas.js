@@ -1,5 +1,4 @@
 /**
-[header]
 @author ertdfgcvb
 @title  Canvas renderer
 @desc   Rendering to a canvas element

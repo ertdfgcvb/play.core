@@ -1,5 +1,4 @@
 /**
-[header]
 @author ertdfgcvb
 @title  Circle
 @desc   Draw a smooth circle with exp()

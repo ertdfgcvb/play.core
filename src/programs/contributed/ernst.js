@@ -1,8 +1,8 @@
 /**
-[header]
 @author nkint
 @title  oeö
 @desc   Inspired by Ernst Jandl, 1964
+Ported from v1 to v2 of the ASCII Playground (API changes only).
 */
 
 import { distance, vec2, length, add, mul } from '@ertdfgcvb/play/vec2.js'

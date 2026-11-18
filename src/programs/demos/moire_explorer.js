@@ -1,5 +1,4 @@
 /**
-[header]
 @author ertdfgcvb
 @title  Moiré explorer
 @desc   Click or tap to toggle mode

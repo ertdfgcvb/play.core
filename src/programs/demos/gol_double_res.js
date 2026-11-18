@@ -1,5 +1,4 @@
 /**
-[header]
 @author ertdfgcvb
 @title  Golgol
 @desc   Double resolution version of GOL

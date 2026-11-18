@@ -1,5 +1,4 @@
 /**
-[header]
 @author ertdfgcvb
 @title  Two circles
 @desc   Smooth union of two circles

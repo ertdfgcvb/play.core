@@ -1,5 +1,4 @@
 /**
-[header]
 @author ertdfgcvb
 @title  Dyna
 @desc   A remix of Paul Haeberli’s Dynadraw

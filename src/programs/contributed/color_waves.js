@@ -1,8 +1,8 @@
 /**
-[header]
 @author Eliza
 @title  Color Waves
 @desc   ¯\_(ツ)_/¯
+Ported from v1 to v2 of the ASCII Playground (API changes only).
 */
 
 const chars = '¯\_(ツ)_/¯.::.ᕦ(ò_óˇ)ᕤ '.split('')

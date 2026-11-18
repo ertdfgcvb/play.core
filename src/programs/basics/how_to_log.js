@@ -1,5 +1,4 @@
 /**
-[header]
 @author ertdfgcvb
 @title  How to log
 @desc   Console output inside the main() loop
