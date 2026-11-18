@@ -103,3 +103,10 @@ test('clear : false keeps the buffer with main()', async () => {
 	assert.equal(h.text(), '#2\n')
 	h.stop()
 })
+
+test('fps 0 is uncapped; step() advances at 60 fps', async () => {
+	const h = await run({ main : () => '.' }, { renderer : null, cols : 1, rows : 1, fps : 0, autoStart : false })
+	h.step(4)
+	assert.equal(h.ctx.time, 3 * 1000 / 60)
+	h.stop()
+})

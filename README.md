@@ -252,7 +252,7 @@ export const settings = {
 	renderer        : 'dom',  // 'dom', 'canvas', null (headless), or a renderer function
 	cols            : 0,      // number of columns, 0 is 'auto'
 	rows            : 0,      // number of rows, 0 is 'auto'
-	fps             : 30,     // fps capping
+	fps             : 30,     // fps capping, 0 is uncapped
 	once            : false,  // render a single frame
 	autoStart       : true,   // start the loop when run() is called
 	pauseOffscreen  : true,   // pause while the element is out of view

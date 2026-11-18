@@ -40,7 +40,8 @@ export async function run(source, options = {}) {
 
 	const buffer = new Buffer(0, 0, settings)
 	const data = settings.data || {}
-	const interval = 1000 / settings.fps
+	// fps 0 (or less): uncapped, a frame on every tick of the loop
+	const interval = settings.fps > 0 ? 1000 / settings.fps : 0
 
 	let frame = settings.startFrame
 	let time = settings.startTime
@@ -142,9 +143,11 @@ export async function run(source, options = {}) {
 			lastFrameT = t
 			sampleT = t - interval
 		}
-		const delta = t - sampleT
-		if (delta < interval - FPS_TOLERANCE) return
-		sampleT = t - (delta % interval)
+		if (interval > 0) {
+			const delta = t - sampleT
+			if (delta < interval - FPS_TOLERANCE) return
+			sampleT = t - (delta % interval)
+		}
 
 		fpsFrames++
 		if (t >= fpsT + 1000) {
@@ -207,8 +210,8 @@ export async function run(source, options = {}) {
 			for (const fn of cleanup) fn()
 			renderer.dispose()
 		},
-		// dt: ms per frame, the fps interval by default
-		step(n = 1, dt = interval) {
+		// dt: ms per frame, the fps interval by default (60 fps when uncapped)
+		step(n = 1, dt = interval || 1000 / 60) {
 			for (let i=0; i<n; i++) renderFrame(frame == settings.startFrame ? 0 : dt)
 		},
 		text() {
