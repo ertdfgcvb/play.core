@@ -83,13 +83,13 @@ test('a URL gives each run its own module copy', async () => {
 })
 
 test('relative URL strings resolve against the working directory in Node', async () => {
-	const h = await run('tests/fixtures/counter.js', { renderer : null, cols : 1, rows : 1, once : true })
+	const h = await run('test/fixtures/counter.js', { renderer : null, cols : 1, rows : 1, once : true })
 	assert.equal(h.text(), '1\n')
 	h.stop()
 })
 
 test('a missing module rejects', async () => {
-	await assert.rejects(run('tests/fixtures/missing.js', { renderer : null }))
+	await assert.rejects(run('test/fixtures/missing.js', { renderer : null }))
 })
 
 test('clear : false keeps the buffer with main()', async () => {
