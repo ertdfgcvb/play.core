@@ -1,6 +1,6 @@
 import { Grid } from './grid.js'
 import { write } from './block.js'
-import { wrap, measure, truncate, length } from './text.js'
+import { wrap, measure, truncate, length, align } from './text.js'
 
 // Clockwise from the top left corner: ┌ ─ ┐ │ ┘ ─ └ │
 // A custom border is any string of 8 chars
@@ -120,14 +120,11 @@ export function panel(target, content = '', x = 0, y = 0, style = {}) {
 
 // Frame, time, size and cursor info, for debugging
 export function info(ctx, x = 2, y = 1, style = {}) {
-	// Fixed size: the box does not change with the numbers
 	return panel(ctx, infoText(ctx), x, y, { ...INFO, ...style })
 }
 
 const INFO = {
 	title           : 'info',
-	width           : 24,
-	height          : 8,
 	paddingX        : 1,
 	paddingY        : 0,
 	color           : 'white',
@@ -136,6 +133,7 @@ const INFO = {
 	titleStyle      : 'invert',
 }
 
+// Lines padded to a fixed width: a window fitting the text keeps its size
 export function infoText(ctx) {
 	return [
 		'fps     ' + Math.round(ctx.fps),
@@ -144,40 +142,10 @@ export function infoText(ctx) {
 		'size    ' + ctx.cols + '×' + ctx.rows,
 		'aspect  ' + ctx.metrics.aspect.toFixed(2),
 		'cursor  ' + Math.floor(ctx.cursor.x) + ',' + Math.floor(ctx.cursor.y),
-	].join('\n')
+	].map(l => align(l, 20)).join('\n')
 }
 
 // -- Desktop: a simple window manager -----------------------------------------
-
-// Content functions get a view of the inner area: local coords, clipped
-class View {
-	constructor(buffer, x, y, width, height) {
-		this.target = buffer
-		this.ox = x
-		this.oy = y
-		this.width = width
-		this.height = height
-	}
-
-	get(x, y) {
-		if (x < 0 || y < 0 || x >= this.width || y >= this.height) return null
-		return this.target.get(this.ox + x, this.oy + y)
-	}
-
-	set(x, y, value) {
-		x = Math.floor(x)
-		y = Math.floor(y)
-		if (x < 0 || y < 0 || x >= this.width || y >= this.height) return
-		this.target.set(this.ox + x, this.oy + y, value)
-	}
-
-	fillRect(x, y, w, h, value) {
-		for (let j=y; j<y+h; j++) {
-			for (let i=x; i<x+w; i++) this.set(i, j, value)
-		}
-		return this
-	}
-}
 
 // Windows on top of the output: click to bring to front, drag by the title bar,
 // close with the × in the title bar. Call update(ctx) in post().
@@ -189,23 +157,13 @@ export class Desktop {
 		this.drag = null
 	}
 
-	// opts: x, y, width, height, title, content, closable, style
-	// content: a string, a block, or a function (view, ctx) drawing into the inner area
+	// opts: x, y, width, height (0: fit), title, content, closable,
+	// and any panel style (color, border, shadow, ...) overriding the Desktop style.
+	// content: a string, a block (Grid), or a function ctx => string or block, called each frame.
 	// Returns the window: its fields can be changed, close() removes it
 	open(opts = {}) {
-		const fn = typeof opts.content == 'function'
-		const win = {
-			x        : 0,
-			y        : 0,
-			width    : fn ? 24 : 0,
-			height   : fn ? 8 : 0,
-			title    : '',
-			content  : '',
-			closable : true,
-			style    : {},
-			rect     : null,
-			...opts,
-		}
+		const { x = 0, y = 0, width = 0, height = 0, title = '', content = '', closable = true, ...style } = opts
+		const win = { x, y, width, height, title, content, closable, style, rect : null }
 		win.close = () => this.close(win)
 		this.windows.push(win)
 		return win
@@ -271,13 +229,9 @@ export class Desktop {
 
 		for (const win of this.windows) {
 			const style = { ...this.style, ...win.style, width : win.width, height : win.height, title : win.title }
-			const fn = typeof win.content == 'function'
-			win.rect = panel(ctx, fn ? '' : win.content, win.x, win.y, style)
+			const content = typeof win.content == 'function' ? win.content(ctx) : win.content
+			win.rect = panel(ctx, content ?? '', win.x, win.y, style)
 			if (win.closable && win.rect.width >= 8) write(ctx, '×', win.rect.x + win.rect.width - 3, win.rect.y, cellStyle(style))
-			if (fn) {
-				const i = win.rect.inner
-				win.content(new View(ctx.buffer, i.x, i.y, i.width, i.height), ctx)
-			}
 		}
 	}
 }
