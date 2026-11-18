@@ -13,6 +13,15 @@ export default async function canvas(target, settings) {
 	applyStyle(element, settings)
 	await loadFont(element)
 
+	// A canvas without a CSS size takes the size of its attributes: setting them to the
+	// device resolution would grow it at each resize. Such a canvas (default size 300×150,
+	// no inline size) gets a fixed CSS size once; a canvas sized by CSS is left alone
+	const r0 = element.getBoundingClientRect()
+	if (!element.style.width && !element.style.height && r0.width == element.width && r0.height == element.height) {
+		element.style.width = r0.width + 'px'
+		element.style.height = r0.height + 'px'
+	}
+
 	const c2d = element.getContext('2d')
 	let rw = -1
 	let rh = -1
@@ -30,12 +39,6 @@ export default async function canvas(target, settings) {
 			dpr = ndpr
 			element.width = Math.round(rw * dpr)
 			element.height = Math.round(rh * dpr)
-			// A canvas without a CSS size takes the size of its attributes and would grow each frame
-			const r2 = element.getBoundingClientRect()
-			if (Math.abs(r2.width - rw) > 0.5 || Math.abs(r2.height - rh) > 0.5) {
-				element.style.width = rw + 'px'
-				element.style.height = rh + 'px'
-			}
 			const f = fontInfo(element)
 			defaults = cellDefaults(f, settings)
 			metrics = measureFont(c2d, f)
