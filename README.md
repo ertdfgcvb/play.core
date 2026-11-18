@@ -9,18 +9,18 @@ Published on npm as `@ertdfgcvb/play`.
 
 ## About
 
-[This playground](https://play.ertdfgcvb.xyz) is an attempt of a browser-based live-code environment with text-only output.  
-It is born from the joy and pleasure ASCII, ANSI and in general text-based art can give and it is an homage to all the artists, poets and designers which used and use text as their medium.  
-From the design perspective it is also an exercise in reduction: there is almost no interface, just a preview window and a code editor; margins and line numbers are removed as well.  
-All the possible interactions are handled by a few hotkeys and some special “[bang](https://play.ertdfgcvb.xyz/abc.html#livecoding:bangs)” commands; feedback is given through the default browser modal dialogs “alert” and “confirm” (since v1.1 of the playground a more friendly and less brutalist navigation has been added).  
-The API follows a similar philosophy: the problem is not complex (the whole program is basically a loop) and the exposed features are just the essential ones. Eventually some extra functionality can be imported through ES6 modules (details about modules and the hack to make them work can be found in the [technical notes](https://play.ertdfgcvb.xyz/abc.html#notes:technical)).  
-Finally, programs can be saved in the browser’s local storage ([Local Storage Directory](https://play.ertdfgcvb.xyz/lsd.html)) or uploaded to this playground and shared through a permalink. In favour of a frictionless experience no credentials are asked and no account is needed to store a program on the server.  
+[This playground](https://play.ertdfgcvb.xyz) is an attempt of a browser-based live-code environment with text-only output.\
+It is born from the joy and pleasure ASCII, ANSI and in general text-based art can give and it is an homage to all the artists, poets and designers which used and use text as their medium.\
+From the design perspective it is also an exercise in reduction: there is almost no interface, just a preview window and a code editor; margins and line numbers are removed as well.\
+All the possible interactions are handled by a few hotkeys and some special “[bang](https://play.ertdfgcvb.xyz/abc.html#livecoding:bangs)” commands; feedback is given through the default browser modal dialogs “alert” and “confirm” (since v1.1 of the playground a more friendly and less brutalist navigation has been added).\
+The API follows a similar philosophy: the problem is not complex (the whole program is basically a loop) and the exposed features are just the essential ones. Eventually some extra functionality can be imported through ES6 modules (details about modules and the hack to make them work can be found in the [technical notes](https://play.ertdfgcvb.xyz/abc.html#notes:technical)).\
+Finally, programs can be saved in the browser’s local storage ([Local Storage Directory](https://play.ertdfgcvb.xyz/lsd.html)) or uploaded to this playground and shared through a permalink. In favour of a frictionless experience no credentials are asked and no account is needed to store a program on the server.\
 The project will stay up until it breaks.
 
 ## Background
 
-The API is inspired by GLSL programming/rasterisation: instead of thinking in geometric primitives painted on a canvas this approach enforces to write a single function which will be invoked against each cell, an approach not so different from fragment shaders.  
-If the number of “fragment” operations is low common shader techniques can be used even in (comparably slow) JavaScript: a maximised browser window on a typical laptop screen holds about 5-8000 monospaced characters. Even a low performing computer can do enough computation on this amount of characters, at 30 frames per second.  
+The API is inspired by GLSL programming/rasterisation: instead of thinking in geometric primitives painted on a canvas this approach enforces to write a single function which will be invoked against each cell, an approach not so different from fragment shaders.\
+If the number of “fragment” operations is low common shader techniques can be used even in (comparably slow) JavaScript: a maximised browser window on a typical laptop screen holds about 5-8000 monospaced characters. Even a low performing computer can do enough computation on this amount of characters, at 30 frames per second.\
 By default the output is rendered as text inside a DOM element; a canvas renderer is available as well (WebGL and terminal renderers are planned).
 
 ## Install
