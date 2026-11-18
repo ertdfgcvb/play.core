@@ -40,22 +40,6 @@ test('without main the buffer persists', async () => {
 	h.stop()
 })
 
-test('grid() is per instance and sized to the buffer', async () => {
-	const program = {
-		pre  : ({ grid }) => { grid('n', Uint8Array)[0]++ },
-		main : ({ index }, { grid }) => grid('n')[index],
-	}
-	const a = await run(program, { renderer : null, cols : 2, rows : 2, autoStart : false })
-	const b = await run(program, { renderer : null, cols : 2, rows : 2, autoStart : false })
-	a.step(3)
-	b.step(1)
-	assert.equal(a.text(), '30\n00\n')
-	assert.equal(b.text(), '10\n00\n')
-	assert.equal(a.ctx.grid('n').length, 4)
-	a.stop()
-	b.stop()
-})
-
 test('ctx is frozen, settings precedence', async () => {
 	const program = { settings : { fps : 10, cols : 5 }, main : () => 'x' }
 	const h = await run(program, { renderer : null, cols : 2, rows : 1, once : true })

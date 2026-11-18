@@ -35,7 +35,6 @@ export async function run(program, options = {}) {
 	const keys = input ? input.state.keys : new Set()
 
 	const buffer = new Buffer(0, 0, settings)
-	const grids = new Map()
 	const data = settings.data || {}
 	const interval = 1000 / settings.fps
 
@@ -51,28 +50,10 @@ export async function run(program, options = {}) {
 	let fpsFrames = 0
 	let fpsT = 0
 
-	function allocate(entry) {
-		entry.data = new entry.type(buffer.width * buffer.height)
-		entry.data.fill(entry.fill)
-	}
-
-	function grid(name, type = Array, fill = 0) {
-		let entry = grids.get(name)
-		if (!entry) {
-			entry = { type, fill, data : null }
-			allocate(entry)
-			grids.set(name, entry)
-		}
-		return entry.data
-	}
-
 	function renderFrame(dt) {
 		const m = renderer.measure()
 
-		if (m.cols != buffer.width || m.rows != buffer.height) {
-			buffer.resize(m.cols, m.rows)
-			for (const e of grids.values()) allocate(e)
-		}
+		if (m.cols != buffer.width || m.rows != buffer.height) buffer.resize(m.cols, m.rows)
 
 		time += dt
 
@@ -99,7 +80,6 @@ export async function run(program, options = {}) {
 			cursor,
 			keys,
 			buffer,
-			grid,
 			data,
 			settings,
 			fps,
