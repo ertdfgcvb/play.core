@@ -112,3 +112,28 @@ test('desktop: info window with the info style', async () => {
 	h.step()
 	assert.equal(h.buffer.get(2, 2).backgroundColor, 'crimson')
 })
+
+test('desktop: a program running inside a window', async () => {
+	const { Desktop } = await import('../src/modules/window.js')
+	const desk = new Desktop({ border : 'ascii', paddingX : 0, paddingY : 0 })
+	const w = desk.open({ x : 1, y : 1, width : 6, height : 5, closable : false, content : new URL('./fixtures/cells.js', import.meta.url) })
+
+	let cursor = { x : 0, y : 0, pressed : false }
+	let prev = cursor
+	const h = await run({ main : () => '.', post : ctx => desk.update({ ...ctx, cursor : { ...cursor, prev } }) }, { renderer : null, cols : 9, rows : 6, autoStart : false })
+	const step = c => { prev = cursor; cursor = c; h.step() }
+
+	step(cursor)
+	await new Promise(r => setTimeout(r, 50))
+	step(cursor)
+	assert.equal(h.text(), '.........\n.+----+..\n.|00:#|..\n.|:::#|..\n.|####|..\n.+----+..\n', 'inner program at inner size')
+
+	step({ x : 4, y : 3, pressed : true })
+	step({ x : 4, y : 3, pressed : false })
+	const rows = h.text().split('\n')
+	assert.equal(rows[2], '.|21:#|..', 'frames advance, pointerDown reaches the program')
+	assert.equal(rows[3], '.|::+#|..', 'cursor relative to the inner area')
+
+	w.close()
+	h.stop()
+})

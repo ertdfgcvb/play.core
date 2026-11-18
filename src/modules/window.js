@@ -1,5 +1,6 @@
 import { Grid } from './grid.js'
-import { write } from './block.js'
+import { write, isGridLike } from './block.js'
+import { run } from '../run.js'
 import { wrap, measure, truncate, length, align } from './text.js'
 
 // Clockwise from the top left corner: ┌ ─ ┐ │ ┘ ─ └ │
@@ -75,7 +76,7 @@ export function panel(target, content = '', x = 0, y = 0, style = {}) {
 	const s = { ...PANEL, ...style }
 	const px = s.paddingX
 	const py = s.paddingY
-	const isGrid = content instanceof Grid
+	const isGrid = isGridLike(content)
 
 	let str = ''
 	let cw, ch
@@ -112,7 +113,8 @@ export function panel(target, content = '', x = 0, y = 0, style = {}) {
 	const ih = Math.max(0, h - 2 - 2 * py)
 
 	if (isGrid) {
-		write(buffer, content.getRect(0, 0, Math.min(iw, cw), Math.min(ih, ch)), ix, iy, cell)
+		const src = content instanceof Grid ? content.getRect(0, 0, Math.min(iw, cw), Math.min(ih, ch)) : content
+		write(buffer, src, ix, iy, cell)
 	} else {
 		const lines = str.split('\n').slice(0, ih)
 		for (let i=0; i<lines.length; i++) write(buffer, truncate(lines[i], iw), ix, iy + i, cell)
@@ -159,11 +161,18 @@ export class Desktop {
 
 	// opts: x, y, width, height (0: fit), title, content, closable,
 	// and any panel style (color, border, shadow, ...) overriding the Desktop style.
-	// content: a string, a block (Grid), or a function ctx => string or block, called each frame.
+	// content: a string, a block (Grid), a function ctx => string or block (called each frame),
+	// or a program (a module, or a URL object: a separate copy) running inside the window.
 	// Returns the window: its fields can be changed, close() removes it
 	open(opts = {}) {
 		const { x = 0, y = 0, width = 0, height = 0, title = '', content = '', closable = true, ...style } = opts
-		const win = { x, y, width, height, title, content, closable, style, rect : null }
+		const win = { x, y, width, height, title, content, closable, style, rect : null, program : null }
+		if (isProgram(content)) {
+			// A program needs a size: it does not fit its content
+			win.width = width || 32
+			win.height = height || 12
+			win.program = startProgram(content)
+		}
 		win.close = () => this.close(win)
 		this.windows.push(win)
 		return win
@@ -178,6 +187,7 @@ export class Desktop {
 	close(win) {
 		const i = this.windows.indexOf(win)
 		if (i >= 0) this.windows.splice(i, 1)
+		if (win.program) win.program.stop()
 		if (this.drag && this.drag.win == win) this.drag = null
 	}
 
@@ -232,9 +242,24 @@ export class Desktop {
 			}
 		}
 
+		const top = this.windows[this.windows.length - 1]
 		for (const win of this.windows) {
 			const style = { ...this.style, ...win.style, width : win.width, height : win.height, title : win.title }
-			const content = typeof win.content == 'function' ? win.content(ctx) : win.content
+			let content
+			if (win.program) {
+				const s = { ...PANEL, ...style }
+				const inner = {
+					x      : win.x + 1 + s.paddingX,
+					y      : win.y + 1 + s.paddingY,
+					width  : Math.max(1, win.width - 2 - 2 * s.paddingX),
+					height : Math.max(1, win.height - 2 - 2 * s.paddingY),
+				}
+				// The pointer belongs to the program only on the topmost window, not while dragging
+				const active = win == top && !this.drag
+				content = win.program.step(ctx, inner, active)
+			} else {
+				content = typeof win.content == 'function' ? win.content(ctx) : win.content
+			}
 			// Turbo Vision: the close button [■] at the left of the title bar, the title after it
 			const closable = win.closable && (win.width || 8) >= 8
 			if (closable) style.titleX = 6
@@ -252,6 +277,80 @@ export class Desktop {
 function variant(cell, style) {
 	if (style == 'invert') return { ...cell, color : cell.backgroundColor, backgroundColor : cell.color }
 	return { ...cell, ...style }
+}
+
+function isProgram(c) {
+	if (typeof URL == 'function' && c instanceof URL) return true
+	return typeof c == 'object' && c !== null && !isGridLike(c) && ['main', 'pre', 'post'].some(k => typeof c[k] == 'function')
+}
+
+// A program inside a window: run() with a renderer that has the size of the window,
+// stepped by the Desktop each frame; the cursor is relative to the inner area
+function startProgram(source) {
+	const size = { cols : 1, rows : 1 }
+	let metrics = Object.freeze({ cellWidth : 1, lineHeight : 1, aspect : 0.5, fontFamily : '', fontSize : 16 })
+	const state = { x : 0, y : 0, pressed : false, keys : new Set(), events : [] }
+	let handle = null
+	let error = null
+	let stopped = false
+
+	const renderer = () => ({
+		element : null,
+		input   : { state, dispose() {} },
+		measure : () => ({
+			cols    : size.cols,
+			rows    : size.rows,
+			width   : size.cols * metrics.cellWidth,
+			height  : size.rows * metrics.lineHeight,
+			metrics,
+		}),
+		render() {},
+		dispose() {},
+	})
+
+	run(source, { renderer, autoStart : false, pauseOffscreen : false }).then(h => {
+		if (stopped) h.stop()
+		else handle = h
+	}).catch(err => error = err)
+
+	return {
+		get handle() { return handle },
+		step(ctx, inner, active) {
+			if (error) return String(error.message || error)
+			if (!handle) return ''
+			size.cols = inner.width
+			size.rows = inner.height
+			metrics = ctx.metrics
+			const cw = metrics.cellWidth
+			const lh = metrics.lineHeight
+			const c = ctx.cursor
+			const lx = c.x - inner.x
+			const ly = c.y - inner.y
+			const inside = lx >= 0 && ly >= 0 && lx < inner.width && ly < inner.height
+			const pressed = active && inside && c.pressed
+			const push = type => state.events.push({ type, x : lx * cw, y : ly * lh })
+			if (active && inside && (lx != state.x / cw || ly != state.y / lh)) push('pointerMove')
+			state.x = lx * cw
+			state.y = ly * lh
+			if (pressed && !state.pressed) push('pointerDown')
+			if (!pressed && state.pressed) push('pointerUp')
+			state.pressed = pressed
+			state.keys.clear()
+			for (const k of ctx.keys) state.keys.add(k)
+			try {
+				handle.step(1, ctx.dt)
+			} catch (err) {
+				error = err
+				handle.stop()
+				return String(err.message || err)
+			}
+			return handle.buffer
+		},
+		stop() {
+			stopped = true
+			if (handle) handle.stop()
+		},
+	}
 }
 
 function cellStyle(s) {

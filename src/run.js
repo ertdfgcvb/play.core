@@ -206,8 +206,9 @@ export async function run(source, options = {}) {
 			for (const fn of cleanup) fn()
 			renderer.dispose()
 		},
-		step(n = 1) {
-			for (let i=0; i<n; i++) renderFrame(frame == settings.startFrame ? 0 : interval)
+		// dt: ms per frame, the fps interval by default
+		step(n = 1, dt = interval) {
+			for (let i=0; i<n; i++) renderFrame(frame == settings.startFrame ? 0 : dt)
 		},
 		text() {
 			return toText(buffer)
