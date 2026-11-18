@@ -85,18 +85,19 @@ test('desktop: draw, drag, front, close', async () => {
 	h.stop()
 })
 
-test('desktop: palette colors, invert title, info window', async () => {
-	const { Desktop, PALETTE } = await import('../src/modules/window.js')
-	const desk = new Desktop()
-	const a = desk.open({ title : 'a', content : 'x' })
-	const b = desk.open({ x : 10, title : 'b', content : 'y' })
-	const c = desk.open({ x : 20, content : 'z', style : { backgroundColor : 'black' } })
-	assert.equal(a.style.backgroundColor, PALETTE[0])
-	assert.equal(b.style.backgroundColor, PALETTE[1])
-	assert.equal(c.style.backgroundColor, 'black')
-	const i = desk.info({ y : 5 })
-	assert.equal(i.title, 'info')
-	const h = await frame(ctx => desk.update(ctx), 40, 14)
-	assert.deepEqual([h.buffer.get(3, 0).color, h.buffer.get(3, 0).backgroundColor], [PALETTE[0], 'white'], 'inverted title')
-	assert.match(h.text(), /frame   0/)
+test('desktop: style cascades, window style overrides, invert title', async () => {
+	const { Desktop } = await import('../src/modules/window.js')
+	const desk = new Desktop({ color : 'white', backgroundColor : 'royalblue', titleStyle : 'invert' })
+	desk.open({ title : 'a', content : 'x' })
+	desk.open({ x : 10, title : 'b', content : 'y', style : { backgroundColor : 'crimson' } })
+	const h = await frame(ctx => desk.update(ctx), 20, 4)
+	assert.deepEqual([h.buffer.get(3, 0).color, h.buffer.get(3, 0).backgroundColor], ['royalblue', 'white'])
+	assert.equal(h.buffer.get(11, 1).backgroundColor, 'crimson')
+	assert.equal(h.buffer.get(11, 1).color, 'white')
+})
+
+test('info defaults', async () => {
+	const h = await frame(ctx => info(ctx), 30, 10)
+	assert.match(h.text(), /─ info ─/)
+	assert.equal(h.buffer.get(3, 2).backgroundColor, 'royalblue')
 })

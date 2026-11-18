@@ -27,17 +27,6 @@ export const SHADOWS = {
 	gray    : { color : 'dimgray', backgroundColor : 'lightgray' },
 }
 
-// Background colors given in turn to the Desktop windows (white text)
-export const PALETTE = ['royalblue', 'crimson', 'seagreen', 'darkorange', 'darkviolet', 'teal', 'sienna', 'slategray']
-
-// The look of the Desktop windows and of info()
-const WINDOW = {
-	paddingX   : 1,
-	paddingY   : 0,
-	shadow     : 'gray',
-	titleStyle : 'invert',
-}
-
 const PANEL = {
 	width      : 0,    // 0: fits the content
 	height     : 0,
@@ -136,12 +125,15 @@ export function info(ctx, x = 2, y = 1, style = {}) {
 }
 
 const INFO = {
-	...WINDOW,
 	title           : 'info',
 	width           : 24,
 	height          : 8,
+	paddingX        : 1,
+	paddingY        : 0,
 	color           : 'white',
 	backgroundColor : 'royalblue',
+	shadow          : 'gray',
+	titleStyle      : 'invert',
 }
 
 export function infoText(ctx) {
@@ -189,13 +181,10 @@ class View {
 
 // Windows on top of the output: click to bring to front, drag by the title bar,
 // close with the × in the title bar. Call update(ctx) in post().
-// style: the panel style of all the windows (overrides the window look and the palette)
-// palette: background colors given in turn to windows without colors
+// style: the default panel style of the windows, each window style overrides it
 export class Desktop {
-	constructor(style = {}, palette = PALETTE) {
-		this.style = { ...WINDOW, ...style }
-		this.palette = palette
-		this.count = 0
+	constructor(style = {}) {
+		this.style = style
 		this.windows = []
 		this.drag = null
 	}
@@ -217,26 +206,11 @@ export class Desktop {
 			rect     : null,
 			...opts,
 		}
-		const colored = c => c && (c.color !== undefined || c.backgroundColor !== undefined)
-		if (!colored(this.style) && !colored(win.style) && this.palette.length) {
-			win.style = { color : 'white', backgroundColor : this.palette[this.count % this.palette.length], ...win.style }
-		}
-		this.count++
 		win.close = () => this.close(win)
 		this.windows.push(win)
 		return win
 	}
 
-	// Opens the info box (frame, time, size, cursor) as a window
-	info(opts = {}) {
-		const { width, height, title, color, backgroundColor } = INFO
-		return this.open({
-			x : 2, y : 1, width, height, title,
-			style   : { color, backgroundColor },
-			content : (view, ctx) => write(view, infoText(ctx), 0, 0),
-			...opts,
-		})
-	}
 
 	close(win) {
 		const i = this.windows.indexOf(win)
