@@ -52,6 +52,8 @@ export async function run(source, options = {}) {
 	let lastFrameT = null
 	let sampleT = 0
 	let fps = 0
+	let fpsFrames = 0
+	let fpsT = 0
 
 	function renderFrame(dt) {
 		const m = renderer.measure()
@@ -147,10 +149,15 @@ export async function run(source, options = {}) {
 			sampleT = t - (delta % interval)
 		}
 
+		fpsFrames++
+		if (t >= fpsT + 1000) {
+			fps = fpsFrames * 1000 / (t - fpsT)
+			fpsT = t
+			fpsFrames = 0
+		}
+
 		const dt = t - lastFrameT
 		lastFrameT = t
-		// Smoothed per frame: a value from the second frame on, also right after a (re)start
-		if (dt > 0) fps = fps ? fps * 0.9 + 100 / dt : 1000 / dt
 		try {
 			renderFrame(dt)
 		} catch (err) {
