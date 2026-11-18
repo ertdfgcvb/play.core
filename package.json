@@ -16,7 +16,7 @@
 	],
 	"scripts": {
 		"test": "node --test test/*.test.js",
-		"list": "node tools/list_programs.js"
+		"list": "node tools/directory.js"
 	},
 	"engines": {
 		"node": ">=18"
