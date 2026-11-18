@@ -128,6 +128,140 @@ export function info(ctx, x = 2, y = 1, style = {}) {
 	return panel(ctx, text, x, y, { width : 24, ...style })
 }
 
+// -- Desktop: a simple window manager -----------------------------------------
+
+// Content functions get a view of the inner area: local coords, clipped
+class View {
+	constructor(buffer, x, y, width, height) {
+		this.target = buffer
+		this.ox = x
+		this.oy = y
+		this.width = width
+		this.height = height
+	}
+
+	get(x, y) {
+		if (x < 0 || y < 0 || x >= this.width || y >= this.height) return null
+		return this.target.get(this.ox + x, this.oy + y)
+	}
+
+	set(x, y, value) {
+		x = Math.floor(x)
+		y = Math.floor(y)
+		if (x < 0 || y < 0 || x >= this.width || y >= this.height) return
+		this.target.set(this.ox + x, this.oy + y, value)
+	}
+
+	fillRect(x, y, w, h, value) {
+		for (let j=y; j<y+h; j++) {
+			for (let i=x; i<x+w; i++) this.set(i, j, value)
+		}
+		return this
+	}
+}
+
+// Windows on top of the output: click to bring to front, drag by the title bar,
+// close with the × in the title bar. Call update(ctx) in post().
+// style: the default panel style of all the windows
+export class Desktop {
+	constructor(style = {}) {
+		this.style = style
+		this.windows = []
+		this.drag = null
+	}
+
+	// opts: x, y, width, height, title, content, closable, style
+	// content: a string, a block, or a function (view, ctx) drawing into the inner area
+	// Returns the window: its fields can be changed, close() removes it
+	open(opts = {}) {
+		const fn = typeof opts.content == 'function'
+		const win = {
+			x        : 0,
+			y        : 0,
+			width    : fn ? 24 : 0,
+			height   : fn ? 8 : 0,
+			title    : '',
+			content  : '',
+			closable : true,
+			style    : {},
+			rect     : null,
+			...opts,
+		}
+		win.close = () => this.close(win)
+		this.windows.push(win)
+		return win
+	}
+
+	close(win) {
+		const i = this.windows.indexOf(win)
+		if (i >= 0) this.windows.splice(i, 1)
+		if (this.drag && this.drag.win == win) this.drag = null
+	}
+
+	front(win) {
+		const i = this.windows.indexOf(win)
+		if (i >= 0 && i < this.windows.length - 1) {
+			this.windows.splice(i, 1)
+			this.windows.push(win)
+		}
+	}
+
+	// The topmost window covering the cell, or null
+	hit(x, y) {
+		x = Math.floor(x)
+		y = Math.floor(y)
+		for (let i=this.windows.length - 1; i>=0; i--) {
+			const r = this.windows[i].rect
+			if (r && x >= r.x && y >= r.y && x < r.x + r.width && y < r.y + r.height) return this.windows[i]
+		}
+		return null
+	}
+
+	update(ctx) {
+		const c = ctx.cursor
+		const cx = Math.floor(c.x)
+		const cy = Math.floor(c.y)
+
+		// A press shorter than a frame is missed: the cursor is sampled per frame
+		if (c.pressed && !c.prev.pressed) {
+			const win = this.hit(cx, cy)
+			if (win) {
+				this.front(win)
+				const r = win.rect
+				if (cy == r.y) {
+					if (win.closable && cx == r.x + r.width - 3) {
+						win.close()
+					} else {
+						this.drag = { win, dx : cx - win.x, dy : cy - win.y }
+					}
+				}
+			}
+		}
+
+		if (this.drag) {
+			if (c.pressed) {
+				const w = this.drag.win
+				// The title bar stays reachable
+				w.x = Math.max(4 - w.rect.width, Math.min(ctx.cols - 4, cx - this.drag.dx))
+				w.y = Math.max(0, Math.min(ctx.rows - 1, cy - this.drag.dy))
+			} else {
+				this.drag = null
+			}
+		}
+
+		for (const win of this.windows) {
+			const style = { ...this.style, ...win.style, width : win.width, height : win.height, title : win.title }
+			const fn = typeof win.content == 'function'
+			win.rect = panel(ctx, fn ? '' : win.content, win.x, win.y, style)
+			if (win.closable && win.rect.width >= 8) write(ctx, '×', win.rect.x + win.rect.width - 3, win.rect.y, cellStyle(style))
+			if (fn) {
+				const i = win.rect.inner
+				win.content(new View(ctx.buffer, i.x, i.y, i.width, i.height), ctx)
+			}
+		}
+	}
+}
+
 function cellStyle(s) {
 	return { color : s.color, backgroundColor : s.backgroundColor, fontWeight : s.fontWeight }
 }
