@@ -53,8 +53,8 @@ export class Pixels extends Grid {
 		return this.#draw(source, 'stretch', 1)
 	}
 
-	// Resizes to the source size and copies it
-	image(source) {
+	// A flat copy of the source: resizes to its size, no scaling
+	read(source) {
 		const s = sourceSize(source)
 		return this.resize(s.width, s.height).#draw(source, 'stretch', 1)
 	}
