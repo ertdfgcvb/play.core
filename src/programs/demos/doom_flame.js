@@ -5,7 +5,7 @@
 */
 
 import { clamp, map } from '@ertdfgcvb/play/num.js'
-import { CSS4 } from '@ertdfgcvb/play/color.js'
+import { CSS4 } from '@ertdfgcvb/play/palettes.js'
 import { mix, smoothstep } from '@ertdfgcvb/play/num.js'
 
 export const settings = { fps : 30, backgroundColor : 'black', color : 'white' }

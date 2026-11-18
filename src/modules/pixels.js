@@ -1,6 +1,7 @@
 // pixels.js: Pixels of a video, image or canvas at grid size; loadImage()
 
 import { Grid } from './grid.js'
+import { nearest } from './color.js'
 
 // Fetches an image as ImageBitmap (a source for Pixels); rejects with the reason
 export async function loadImage(url) {
@@ -151,16 +152,7 @@ export class Pixels extends Grid {
 	quantize(palette) {
 		for (let i=0; i<this.data.length; i++) {
 			const p = this.data[i]
-			let best = palette[0]
-			let dist = Infinity
-			for (const c of palette) {
-				const d = redmean(p, c)
-				if (d < dist) {
-					dist = d
-					best = c
-				}
-			}
-			this.data[i] = { ...best, a : p.a, gray : p.gray }
+			this.data[i] = { ...nearest(p, palette), a : p.a, gray : p.gray }
 		}
 		return this
 	}
@@ -189,15 +181,6 @@ export class Pixels extends Grid {
 // Rec. 709 luma, 0..1
 function gray(r, g, b) {
 	return (r * 0.2126 + g * 0.7152 + b * 0.0722) / 255
-}
-
-// Perceptual color distance, cheap: https://en.wikipedia.org/wiki/Color_difference
-function redmean(a, b) {
-	const r = (a.r + b.r) * 0.5
-	const dr = a.r - b.r
-	const dg = a.g - b.g
-	const db = a.b - b.b
-	return (2 + r / 256) * dr * dr + 4 * dg * dg + (2 + (255 - r) / 256) * db * db
 }
 
 function sourceSize(s) {

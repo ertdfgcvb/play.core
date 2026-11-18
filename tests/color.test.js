@@ -1,6 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { parseColor, CSS4, rgb2hex } from '../src/modules/color.js'
+import { parseColor, rgb2hex } from '../src/modules/color.js'
+import { CSS4 } from '../src/modules/palettes.js'
 
 test('parseColor', () => {
 	assert.deepEqual(parseColor('tomato'), { r : 255, g : 99, b : 71, a : 1 })
@@ -24,7 +25,7 @@ test('palettes', () => {
 })
 
 test('tables and conversions', async () => {
-	const C = await import('../src/modules/color.js')
+	const C = { ...await import('../src/modules/color.js'), ...await import('../src/modules/palettes.js') }
 	assert.equal(Object.keys(C.CSS4).length, 148)
 	assert.equal(Object.keys(C.CSS3).length, 147)
 	assert.equal(C.CSS4.cyan.hex, '#00ffff')
@@ -33,4 +34,15 @@ test('tables and conversions', async () => {
 	assert.equal(C.rgb2gray({ r : 128, g : 128, b : 128 }), 128 / 255)
 	assert.equal(C.css(1, 2, 3), 'rgb(1,2,3)')
 	assert.equal(C.css(1, 2, 3, 0.5), 'rgba(1,2,3,0.5)')
+})
+
+test('mixColor, hsl, nearest, C64', async () => {
+	const { mixColor, hsl, nearest } = await import('../src/modules/color.js')
+	const { C64, CSS1 } = await import('../src/modules/palettes.js')
+	assert.deepEqual(mixColor({ r : 0, g : 0, b : 0 }, { r : 255, g : 100, b : 50, a : 0 }, 0.5), { r : 127.5, g : 50, b : 25, a : 0.5 })
+	assert.deepEqual(hsl(240, 1, 0.5), { r : 0, g : 0, b : 255, a : 1 })
+	assert.equal(nearest({ r : 250, g : 10, b : 5 }, CSS1).name, 'red')
+	assert.equal(nearest({ r : 0, g : 130, b : 250 }, C64).name, 'lightblue')
+	assert.equal(C64.length, 16)
+	assert.equal(C64[14].hex, '#0088ff')
 })

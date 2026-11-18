@@ -5,7 +5,7 @@
 */
 
 import { map } from '@ertdfgcvb/play/num.js'
-import { CGA } from '@ertdfgcvb/play/color.js'
+import { CGA } from '@ertdfgcvb/play/palettes.js'
 
 export const settings = {
 	backgroundColor : 'black'

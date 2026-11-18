@@ -4,7 +4,7 @@
 @desc   Doubled vertical resolution input from camera
 */
 
-import { CSS3 } from '@ertdfgcvb/play/color.js'
+import { CSS3 } from '@ertdfgcvb/play/palettes.js'
 import Camera from '@ertdfgcvb/play/camera.js'
 import { Pixels } from '@ertdfgcvb/play/pixels.js'
 
