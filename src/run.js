@@ -40,7 +40,7 @@ export async function run(source, options = {}) {
 
 	const buffer = new Buffer(0, 0, settings)
 	const data = settings.data || {}
-	// fps 0 (or less): uncapped, a frame on every tick of the loop
+	// fps 0 (or less): uncapped, a frame on every tick of the loop (vsync in the browser)
 	const interval = settings.fps > 0 ? 1000 / settings.fps : 0
 
 	let frame = settings.startFrame
