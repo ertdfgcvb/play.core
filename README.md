@@ -530,4 +530,5 @@ Alex Miller, iamelizasj, masshuudojo, Maxwell Neely-Cohen, nkint, raurir, Romain
 
 [Apache License 2.0](LICENSE)
 
-Winter, 2020
+Winter, 2020\
+Autumn, 2026 (v2)
