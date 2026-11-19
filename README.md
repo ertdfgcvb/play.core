@@ -1,7 +1,6 @@
 # play.core
 
 Core of the [ASCII Playground](https://play.ertdfgcvb.xyz): the program runner, the renderers and the modules.
-Published on npm as `@ertdfgcvb/play`.
 
 > **v2** is a rewrite of the runner, with breaking changes in the API (see [Changes](#changes)).
 > v1 is archived on the [`v1`](https://github.com/ertdfgcvb/play.core/tree/v1) branch (tag `v1.1`).
@@ -11,10 +10,11 @@ Published on npm as `@ertdfgcvb/play`.
 
 [This playground](https://play.ertdfgcvb.xyz) is an attempt of a browser-based live-code environment with text-only output.\
 It is born from the joy and pleasure ASCII, ANSI and in general text-based art can give and it is an homage to all the artists, poets and designers which used and use text as their medium.\
-From the design perspective it is also an exercise in reduction: there is almost no interface, just a preview window and a code editor; margins and line numbers are removed as well.\
-All the possible interactions are handled by a few hotkeys and some special “[bang](https://play.ertdfgcvb.xyz/abc.html#livecoding:bangs)” commands; feedback is given through the default browser modal dialogs “alert” and “confirm” (since v1.1 of the playground a more friendly and less brutalist navigation has been added).\
-The API follows a similar philosophy: the problem is not complex (the whole program is basically a loop) and the exposed features are just the essential ones. Eventually some extra functionality can be imported through ES6 modules (details about modules and the hack to make them work can be found in the [technical notes](https://play.ertdfgcvb.xyz/abc.html#notes:technical)).\
-Finally, programs can be saved in the browser’s local storage ([Local Storage Directory](https://play.ertdfgcvb.xyz/lsd.html)) or uploaded to this playground and shared through a permalink. In favour of a frictionless experience no credentials are asked and no account is needed to store a program on the server.\
+From the design perspective it is also an exercise in reduction: there is almost no interface, just a preview window, a code editor and a console; margins are removed as well and line numbers can be hidden.\
+All the possible interactions are handled by a few hotkeys and a console with a handful of commands (`man` lists them); feedback is given in the console as well.\
+The API follows a similar philosophy: the problem is not complex (the whole program is basically a loop) and the exposed features are just the essential ones. Eventually some extra functionality can be imported through ES6 modules (see [Modules](#modules)).\
+Finally, programs can be saved in the browser’s local storage (the Local Storage Directory, command `lsd`) or uploaded to this playground and shared through a permalink. In favour of a frictionless experience no credentials are asked and no account is needed to store a program on the server.\
+Programs can also be written together with an AI agent: [llms.txt](https://play.ertdfgcvb.xyz/llms.txt) describes the API for language models (the command `llm` shows how).\
 The project will stay up until it breaks.
 
 ## Background
@@ -391,10 +391,13 @@ Text and art (`block.js`): a block is a `Grid` of chars, indented template liter
 import { block, write } from '@ertdfgcvb/play/block.js'
 
 const art = block(`
-	┌─┬┐  ╔═╦╗  ╓─╥╖  ╒═╤╕
-	│ ││  ║ ║║  ║ ║║  │ ││
-	├─┼┤  ╠═╬╣  ╟─╫╢  ╞═╪╡
-	└─┴┘  ╚═╩╝  ╙─╨╜  ╘═╧╛
+	╔══╦══╗ ┌──┬──┐ ╭──┬──╮ ┏━━┳━━┓
+	║┌─╨─┐║ │╔═╧═╗│ │╒═╪═╕│ ┃┌─╂─┐┃
+	║│╲ ╱│║ │║╲╲╲║│ ││ │ ││ ┃│ ╿ │┃
+	╠╡ ╳ ╞╣ ├╢╱╱╱╟┤ ├┼─┼─┼┤ ┣┿╾┼╼┿┫
+	║│╱ ╲│║ │║╲╲╲║│ ││ │ ││ ┃│ ╽ │┃
+	║└─╥─┘║ │╚═╤═╝│ │╘═╪═╛│ ┃└─╂─┘┃
+	╚══╩══╝ └──┴──┘ ╰──┴──╯ ┗━━┻━━┛
 `)
 
 export function main(coord, { frame }) {
@@ -544,14 +547,14 @@ cross(a, b, out)  rotX  rotY  rotZ (a, ang, out)  // vec3
 box(target, x, y, w, h, style)          // style: border, shadow, shadowX, shadowY, color, backgroundColor, fontWeight
 panel(target, content, x, y, style)     // box + width, height (0: fit), paddingX, paddingY,
                                         // title, titleStyle ('invert'), titleAlign ('center' | 'left')
-infoText(context)                           // fps, frame, time, size, aspect, cursor
+infoText(context)                       // fps, frame, time, size, aspect, cursor
 BORDERS  SHADOWS                        // a custom border is any 8 chars string: '┌─┐│┘─└│'
 
 const desk = new Desktop(style)         // default style of the windows
 const win = desk.open({ x, y, width, height, title, content, closable, ...style })
                                         // content: string, block, context => string | block, a module or a URL (a program)
 desk.info(opts)                         // the info window
-desk.update(context)                        // in post(): pointer, then draws the windows
+desk.update(context)                    // in post(): pointer, then draws the windows
 desk.hit(x, y)  desk.front(win)  desk.close(win)  win.close()
 ```
 
@@ -571,7 +574,7 @@ src/modules/      the modules
 src/programs/     the examples
 pages/            browser pages (directory, run, embedding, desktop, font, benchmarks)
 test/             unit tests: npm test
-tools/            npm run list: regenerates pages/directory.html
+tools/            npm run list: regenerates pages/directory.html and src/programs/programs.json
 ```
 
 ## Notes
@@ -580,6 +583,12 @@ tools/            npm run list: regenerates pages/directory.html
 
 The DOM renderer writes the buffer by row, and only the rows that changed. Frequent *horizontal* changes in weight, color or background will slow down the rendering considerably: each change in style wraps the characters in an inline `<span>`, augmenting the complexity of the DOM tree.
 The canvas renderer is faster for programs with many style changes.
+
+### Fonts
+
+The playground uses two fonts: Simple Console (a custom version of LL Simple) and Riforma Mono, both © [Norm](https://norm.to) / [Lineto](https://lineto.com).
+They are proprietary, licensed to ertdfgcvb.xyz, and not part of this repository: the pages load them from `css/` (not included) and fall back to the default monospace font.
+Any monospaced font works; the metrics are measured at runtime.
 
 ### Browsers
 
@@ -624,9 +633,9 @@ v2 avoids the open font and metrics issues: the used font face is loaded explici
 | num: `mod()` is `%` | `mod()` is floored, as GLSL |
 | palettes in `color.js`, `v` for gray | `palettes.js`, `gray` |
 | `sdf.js`, `exportframe.js`, `filedownload.js` | removed (frames: `h.step()` and `h.snapshot()`) |
+| `fps` is a cap only | `fps : 0` is uncapped (vsync) |
 
 Also: one loop for all instances, pause when offscreen, headless mode, snapshots, key events, programs as URLs, programs inside windows, HTML escaping in the DOM renderer, faster canvas renderer, better metrics.
-
 
 ## Contributors
 
