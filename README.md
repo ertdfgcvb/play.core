@@ -38,7 +38,7 @@ Browser, with an import map (no build step):
 </script>
 ```
 
-Node or bundlers, from npm ([`@ertdfgcvb/play`](https://www.npmjs.com/package/@ertdfgcvb/play)):
+Node or bundlers, from npm ([`@ertdfgcvb/play`](https://www.npmjs.com/package/@ertdfgcvb/play), zero dependencies):
 
 ```
 npm install @ertdfgcvb/play
