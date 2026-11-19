@@ -1,7 +1,25 @@
 {
 	"name": "@ertdfgcvb/play",
-	"version": "2.0.0-alpha.0",
-	"description": "ASCII Playground core: run programs that output text grids, in the browser or in the terminal",
+	"version": "2.0.0-alpha.1",
+	"description": "ASCII Playground core: run programs that output text grids, in the browser or headless in Node",
+	"keywords": [
+		"ascii",
+		"ascii-art",
+		"asciiart",
+		"ansi",
+		"textmode",
+		"text-mode",
+		"creative-coding",
+		"generative",
+		"live-coding",
+		"realtime",
+		"shader",
+		"glsl",
+		"demoscene",
+		"grid",
+		"terminal",
+		"canvas"
+	],
 	"type": "module",
 	"exports": {
 		".": "./src/run.js",
