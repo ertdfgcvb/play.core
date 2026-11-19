@@ -78,7 +78,8 @@ X-XXX-XXX-XXX-XXX-XXX-XX
 		const metrics = {}
 		for (const [name, renderer] of [['dom', dom], ['canvas', canvas]]) {
 			const probe = document.createElement('pre')
-			probe.style.cssText = 'position:absolute;visibility:hidden;width:40em;height:10em;margin:0'
+			// A pre gets font-family: monospace from the browser: the font of the section instead
+			probe.style.cssText = 'position:absolute;visibility:hidden;width:40em;height:10em;margin:0;font-family:inherit'
 			p.appendChild(probe)
 			const r = await renderer(probe, {})
 			metrics[name] = r.measure().metrics
