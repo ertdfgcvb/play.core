@@ -55,7 +55,7 @@ export default async function canvas(target, settings) {
 	return {
 		element,
 		measure,
-		render(ctx, buffer) {
+		render(context, buffer) {
 			drawCells(c2d, buffer, metrics, defaults, dpr)
 		},
 		snapshot(format) {

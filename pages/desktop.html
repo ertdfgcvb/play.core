@@ -50,7 +50,7 @@
 
 		const program = {
 			main : coord => (coord.x + coord.y) % 2 ? '·' : ' ',
-			post : ctx => desk.update(ctx),
+			post : context => desk.update(context),
 		}
 
 		await run(program, { element : document.querySelector('pre') })

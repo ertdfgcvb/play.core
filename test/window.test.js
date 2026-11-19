@@ -41,10 +41,10 @@ test('panel: block content keeps transparency over the fill', async () => {
 })
 
 
-test('ctx or buffer as target', async () => {
-	const h = await frame(ctx => {
-		panel(ctx, 'a', 0, 0, { paddingX : 0, paddingY : 0, border : 'ascii' })
-		box(ctx.buffer, 4, 0, 3, 3, { border : 'ascii' })
+test('context or buffer as target', async () => {
+	const h = await frame(context => {
+		panel(context, 'a', 0, 0, { paddingX : 0, paddingY : 0, border : 'ascii' })
+		box(context.buffer, 4, 0, 3, 3, { border : 'ascii' })
 	}, 8, 3)
 	assert.equal(h.text(), '+-+.+-+.\n|a|.| |.\n+-+.+-+.\n')
 })
@@ -53,11 +53,11 @@ test('desktop: draw, drag, front, close', async () => {
 	const { Desktop } = await import('../src/modules/window.js')
 	const desk = new Desktop({ border : 'ascii', paddingX : 0, paddingY : 0 })
 	const a = desk.open({ x : 0, y : 0, width : 8, height : 3, title : 'a', content : 'A' })
-	const b = desk.open({ x : 2, y : 1, width : 8, height : 3, content : ctx => 'Bxxxxxxxxx' })
+	const b = desk.open({ x : 2, y : 1, width : 8, height : 3, content : context => 'Bxxxxxxxxx' })
 
 	// Scripted cursor: the program is driven with step()
 	let cursor = { x : 0, y : 0, pressed : false }
-	const program = { main : () => '.', post : ctx => desk.update({ ...ctx, cursor : { ...cursor, prev : prev } }) }
+	const program = { main : () => '.', post : context => desk.update({ ...context, cursor : { ...cursor, prev : prev } }) }
 	let prev = { ...cursor }
 	const h = await run(program, { renderer : null, cols : 14, rows : 6, autoStart : false })
 	const step = c => { prev = cursor; cursor = c; h.step() }
@@ -85,7 +85,7 @@ test('desktop: style cascades, window style overrides, invert title', async () =
 	const desk = new Desktop({ color : 'white', backgroundColor : 'royalblue', titleStyle : 'invert' })
 	desk.open({ title : 'a', content : 'x' })
 	desk.open({ x : 12, title : 'b', content : 'y', backgroundColor : 'crimson' })
-	const h = await frame(ctx => desk.update(ctx), 26, 4)
+	const h = await frame(context => desk.update(context), 26, 4)
 	assert.deepEqual([h.buffer.get(7, 0).color, h.buffer.get(7, 0).backgroundColor], ['royalblue', 'white'])
 	assert.equal(h.buffer.get(13, 1).backgroundColor, 'crimson')
 	assert.equal(h.buffer.get(13, 1).color, 'white')
@@ -96,7 +96,7 @@ test('desktop: live content fits its text', async () => {
 	const { Desktop, infoText } = await import('../src/modules/window.js')
 	const desk = new Desktop()
 	const w = desk.open({ title : 'info', content : infoText })
-	const h = await frame(ctx => desk.update(ctx), 40, 14)
+	const h = await frame(context => desk.update(context), 40, 14)
 	assert.match(h.text(), /cursor  0,0/)
 	assert.equal(w.rect.height, 6 + 2 + 2)
 })
@@ -105,7 +105,7 @@ test('desktop: info window with the info style', async () => {
 	const { Desktop } = await import('../src/modules/window.js')
 	const desk = new Desktop()
 	const w = desk.info({ x : 0, y : 0 })
-	const h = await frame(ctx => desk.update(ctx), 30, 10)
+	const h = await frame(context => desk.update(context), 30, 10)
 	assert.match(h.text(), /\[■\]─+ info ─/)
 	assert.equal(h.buffer.get(2, 2).backgroundColor, 'royalblue')
 	w.style.backgroundColor = 'crimson'
@@ -120,7 +120,7 @@ test('desktop: a program running inside a window', async () => {
 
 	let cursor = { x : 0, y : 0, pressed : false }
 	let prev = cursor
-	const h = await run({ main : () => '.', post : ctx => desk.update({ ...ctx, cursor : { ...cursor, prev } }) }, { renderer : null, cols : 9, rows : 6, autoStart : false })
+	const h = await run({ main : () => '.', post : context => desk.update({ ...context, cursor : { ...cursor, prev } }) }, { renderer : null, cols : 9, rows : 6, autoStart : false })
 	const step = c => { prev = cursor; cursor = c; h.step() }
 
 	step(cursor)

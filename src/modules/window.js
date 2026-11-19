@@ -42,7 +42,7 @@ const PANEL = {
 	align      : null, // 'center': x, y is the center
 }
 
-// Border, fill and shadow, into the buffer (or ctx.buffer). style: { border, shadow, shadowX, shadowY, color, backgroundColor, fontWeight }.
+// Border, fill and shadow, into the buffer (or context.buffer). style: { border, shadow, shadowX, shadowY, color, backgroundColor, fontWeight }.
 // Colors left undefined are the output defaults: the box is opaque.
 // Returns the rect and its inner area
 export function box(target, x, y, w, h, style = {}) {
@@ -136,23 +136,23 @@ const INFO = {
 	titleStyle      : 'invert',
 }
 
-// Frame, time, size and cursor info, for debugging: write(ctx, infoText(ctx), 0, 0)
+// Frame, time, size and cursor info, for debugging: write(context, infoText(context), 0, 0)
 // Lines padded to a fixed width: a window fitting the text keeps its size
-export function infoText(ctx) {
+export function infoText(context) {
 	return [
-		'fps     ' + Math.round(ctx.fps),
-		'frame   ' + ctx.frame,
-		'time    ' + Math.floor(ctx.time),
-		'size    ' + ctx.cols + '×' + ctx.rows,
-		'aspect  ' + ctx.metrics.aspect.toFixed(2),
-		'cursor  ' + Math.floor(ctx.cursor.x) + ',' + Math.floor(ctx.cursor.y),
+		'fps     ' + Math.round(context.fps),
+		'frame   ' + context.frame,
+		'time    ' + Math.floor(context.time),
+		'size    ' + context.cols + '×' + context.rows,
+		'aspect  ' + context.metrics.aspect.toFixed(2),
+		'cursor  ' + Math.floor(context.cursor.x) + ',' + Math.floor(context.cursor.y),
 	].map(l => align(l, 20)).join('\n')
 }
 
 // -- Desktop: a simple window manager -----------------------------------------
 
 // Windows on top of the output: click to bring to front, drag by the title bar,
-// close with [■] in the title bar (closeStyle: style of the ■). Call update(ctx) in post().
+// close with [■] in the title bar (closeStyle: style of the ■). Call update(context) in post().
 // style: the default panel style of the windows, each window style overrides it
 export class Desktop {
 	constructor(style = {}) {
@@ -163,7 +163,7 @@ export class Desktop {
 
 	// opts: x, y, width, height (0: fit), title, content, closable,
 	// and any panel style (color, border, shadow, ...) overriding the Desktop style.
-	// content: a string, a block (Grid), a function ctx => string or block (called each frame),
+	// content: a string, a block (Grid), a function context => string or block (called each frame),
 	// or a program (a module, or a URL object: a separate copy) running inside the window.
 	// Returns the window: its fields can be changed, close() removes it
 	open(opts = {}) {
@@ -212,8 +212,8 @@ export class Desktop {
 		return null
 	}
 
-	update(ctx) {
-		const c = ctx.cursor
+	update(context) {
+		const c = context.cursor
 		const cx = Math.floor(c.x)
 		const cy = Math.floor(c.y)
 
@@ -237,8 +237,8 @@ export class Desktop {
 			if (c.pressed) {
 				const w = this.drag.win
 				// The title bar stays reachable
-				w.x = Math.max(4 - w.rect.width, Math.min(ctx.cols - 4, cx - this.drag.dx))
-				w.y = Math.max(0, Math.min(ctx.rows - 1, cy - this.drag.dy))
+				w.x = Math.max(4 - w.rect.width, Math.min(context.cols - 4, cx - this.drag.dx))
+				w.y = Math.max(0, Math.min(context.rows - 1, cy - this.drag.dy))
 			} else {
 				this.drag = null
 			}
@@ -258,18 +258,18 @@ export class Desktop {
 				}
 				// The pointer belongs to the program only on the topmost window, not while dragging
 				const active = win == top && !this.drag
-				content = win.program.step(ctx, inner, active)
+				content = win.program.step(context, inner, active)
 			} else {
-				content = typeof win.content == 'function' ? win.content(ctx) : win.content
+				content = typeof win.content == 'function' ? win.content(context) : win.content
 			}
 			// Turbo Vision: the close button [■] at the left of the title bar, the title after it
 			const closable = win.closable && (win.width || 8) >= 8
 			if (closable) style.titleX = 6
-			win.rect = panel(ctx, content ?? '', win.x, win.y, style)
+			win.rect = panel(context, content ?? '', win.x, win.y, style)
 			if (closable) {
 				const cell = cellStyle(style)
-				write(ctx, '[ ]', win.rect.x + 2, win.rect.y, cell)
-				write(ctx, '■', win.rect.x + 3, win.rect.y, variant(cell, style.closeStyle))
+				write(context, '[ ]', win.rect.x + 2, win.rect.y, cell)
+				write(context, '■', win.rect.x + 3, win.rect.y, variant(cell, style.closeStyle))
 			}
 		}
 	}
@@ -317,15 +317,15 @@ function startProgram(source) {
 
 	return {
 		get handle() { return handle },
-		step(ctx, inner, active) {
+		step(context, inner, active) {
 			if (error) return String(error.message || error)
 			if (!handle) return ''
 			size.cols = inner.width
 			size.rows = inner.height
-			metrics = ctx.metrics
+			metrics = context.metrics
 			const cw = metrics.cellWidth
 			const lh = metrics.lineHeight
-			const c = ctx.cursor
+			const c = context.cursor
 			const lx = c.x - inner.x
 			const ly = c.y - inner.y
 			const inside = lx >= 0 && ly >= 0 && lx < inner.width && ly < inner.height
@@ -338,9 +338,9 @@ function startProgram(source) {
 			if (!pressed && state.pressed) push('pointerUp')
 			state.pressed = pressed
 			state.keys.clear()
-			for (const k of ctx.keys) state.keys.add(k)
+			for (const k of context.keys) state.keys.add(k)
 			try {
-				handle.step(1, ctx.dt)
+				handle.step(1, context.dt)
 			} catch (err) {
 				error = err
 				handle.stop()

@@ -54,7 +54,7 @@
 			backgroundColor : 'royalblue',
 			paddingX : 1,
 			paddingY : 0,
-			content : ctx => infoText(ctx) + '\n' + ('mode    ' + mode).padEnd(20) + '\n' + MODES[mode].padEnd(20) + '\n' + 'click: next mode'.padEnd(20),
+			content : context => infoText(context) + '\n' + ('mode    ' + mode).padEnd(20) + '\n' + MODES[mode].padEnd(20) + '\n' + 'click: next mode'.padEnd(20),
 		})
 
 		const program = {
@@ -64,11 +64,11 @@
 				if (mode == 1) return { char : CHARS[i % CHARS.length], color : COLORS[i % COLORS.length] }
 				return { char : CHARS[i % CHARS.length], color : COLORS[i % COLORS.length], backgroundColor : COLORS[(i + 1) % COLORS.length] }
 			},
-			pointerDown(ctx) {
-				if (!desk.hit(ctx.cursor.x, ctx.cursor.y)) mode = (mode + 1) % MODES.length
+			pointerDown(context) {
+				if (!desk.hit(context.cursor.x, context.cursor.y)) mode = (mode + 1) % MODES.length
 			},
-			post(ctx) {
-				desk.update(ctx)
+			post(context) {
+				desk.update(context)
 			},
 		}
 

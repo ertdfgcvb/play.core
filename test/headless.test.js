@@ -11,11 +11,11 @@ test('main() fills the grid', async () => {
 
 test('autoStart false and step()', async () => {
 	const h = await run({ main : (c, { frame }) => frame % 10 }, { renderer : null, cols : 3, rows : 1, autoStart : false })
-	assert.equal(h.ctx, null)
+	assert.equal(h.context, null)
 	h.step(4)
 	assert.equal(h.text(), '333\n')
-	assert.equal(h.ctx.frame, 3)
-	assert.equal(h.ctx.time, 3 * 1000 / 30)
+	assert.equal(h.context.frame, 3)
+	assert.equal(h.context.time, 3 * 1000 / 30)
 	h.stop()
 })
 
@@ -40,12 +40,12 @@ test('without main the buffer persists', async () => {
 	h.stop()
 })
 
-test('ctx is frozen, settings precedence', async () => {
+test('context is frozen, settings precedence', async () => {
 	const program = { settings : { fps : 10, cols : 5 }, main : () => 'x' }
 	const h = await run(program, { renderer : null, cols : 2, rows : 1, once : true })
-	assert.throws(() => { h.ctx.cols = 9 })
-	assert.equal(h.ctx.settings.fps, 10)
-	assert.equal(h.ctx.cols, 2)
+	assert.throws(() => { h.context.cols = 9 })
+	assert.equal(h.context.settings.fps, 10)
+	assert.equal(h.context.cols, 2)
 	h.stop()
 })
 
@@ -107,6 +107,6 @@ test('clear : false keeps the buffer with main()', async () => {
 test('fps 0 is uncapped; step() advances at 60 fps', async () => {
 	const h = await run({ main : () => '.' }, { renderer : null, cols : 1, rows : 1, fps : 0, autoStart : false })
 	h.step(4)
-	assert.equal(h.ctx.time, 3 * 1000 / 60)
+	assert.equal(h.context.time, 3 * 1000 / 60)
 	h.stop()
 })

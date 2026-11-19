@@ -33,7 +33,7 @@ export function block(source, { transparent = ' ', styles = null, dedent : dd = 
 	return g
 }
 
-// Writes a Grid, a run's buffer or a string into the buffer (or ctx.buffer), clipped to its size.
+// Writes a Grid, a run's buffer or a string into the buffer (or context.buffer), clipped to its size.
 // Strings are written as they are: opaque, spaces included, not dedented.
 // style: a cell style for all the chars; the chars of a styled block keep their own.
 // style.align = 'center': x, y is the center

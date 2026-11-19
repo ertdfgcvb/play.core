@@ -50,14 +50,14 @@ Programs are ES6 modules. All code is sealed inside the module and there are no 
 External modules can be imported, also with top-level `await`: the runner starts once the module is loaded.
 A program can export three optional functions:
 
-- `pre(ctx)` is called *once per frame*, before `main`;
+- `pre(context)` is called *once per frame*, before `main`;
   it can be used to prepare data (for example bitmaps, webcam data or simulations).
-- `main(coord, ctx)` is called *once per cell*;
+- `main(coord, context)` is called *once per cell*;
   it returns a single character, or an object (see [the return value](#the-return-value-of-main)).
-- `post(ctx)` is called *once per frame*, after `main`, just before rendering;
+- `post(context)` is called *once per frame*, after `main`, just before rendering;
   it can be used to draw over the buffer (for example a window overlay).
 
-Plus the event handlers `pointerMove`, `pointerDown`, `pointerUp`, `keyDown` and `keyUp`, called with `(ctx, event)` at the start of a frame.
+Plus the event handlers `pointerMove`, `pointerDown`, `pointerUp`, `keyDown` and `keyUp`, called with `(context, event)` at the start of a frame.
 
 Smallest program possible (with an output):
 
@@ -78,8 +78,8 @@ export function main(coord) {
 Timing:
 
 ```js
-export function main(coord, ctx) {
-	const f = ctx.frame
+export function main(coord, context) {
+	const f = context.frame
 	return String.fromCharCode((coord.y + coord.x + f) % 32 + 65)
 }
 ```
@@ -118,11 +118,11 @@ export function main(coord) {
 ### Signatures
 
 ```js
-function pre (       ctx) {} // every frame
-function main(coord, ctx) {} // every cell, returns the cell content
-function post(       ctx) {} // every frame
+function pre (       context) {} // every frame
+function main(coord, context) {} // every cell, returns the cell content
+function post(       context) {} // every frame
 
-function pointerDown(ctx, event) {} // also pointerMove, pointerUp, keyDown, keyUp
+function pointerDown(context, event) {} // also pointerMove, pointerUp, keyDown, keyUp
 ```
 
 `coord` holds the coordinates of the cell; the same object is reused for every cell.
@@ -135,11 +135,11 @@ const coord = {
 }
 ```
 
-`ctx` holds everything about the current frame.
+`context` holds everything about the current frame.
 It is frozen: a new one is created each frame. `buffer` and `data` are mutable.
 
 ```js
-const ctx = {
+const context = {
 	frame,          // frame number, starts at 0
 	time,           // time in ms, pauses excluded
 	dt,             // ms since the previous frame
@@ -205,7 +205,7 @@ Returning nothing (`undefined`, `null`, `''`) leaves the cell as it is, for exam
 
 ### The buffer
 
-`ctx.buffer` holds the cells: `{ char, color, backgroundColor, fontWeight }`, plus `width`, `height` and `data` (the flat array).
+`context.buffer` holds the cells: `{ char, color, backgroundColor, fontWeight }`, plus `width`, `height` and `data` (the flat array).
 It can be drawn in `pre()` and (especially) in `post()`.
 Writes are merged into the cells: a value is a char or a partial cell.
 
@@ -242,7 +242,7 @@ export function main(coord) {
 ```
 
 A module is evaluated once per page: the same program running twice shares its module variables, unless it is passed to `run()` as a URL (see [Running](#running)).
-A program that keeps its state in the buffer sets `clear : false` and reads `ctx.buffer.data`.
+A program that keeps its state in the buffer sets `clear : false` and reads `context.buffer.data`.
 
 ## Settings
 
@@ -263,7 +263,7 @@ export const settings = {
 	clear           : true,   // clears the buffer each frame (with main)
 	startTime       : 0,      // initial time (ms)
 	startFrame      : 0,      // initial frame
-	data            : null,   // object available as ctx.data
+	data            : null,   // object available as context.data
 
 	// CSS settings for the output element (override the document CSS)
 	backgroundColor : '',
@@ -297,7 +297,7 @@ h.step(n)             // render n frames right away (fixed dt)
 h.text()              // the current frame as plain text
 h.snapshot(format)    // Promise<Blob>, see below
 h.onerror = e => {}   // errors after the first frame; the instance stops
-h.ctx                 // the last ctx
+h.context             // the last context
 h.buffer
 h.element
 h.state               // 'idle', 'running', 'paused', 'stopped'
@@ -351,7 +351,7 @@ A renderer is a function `(element, settings)` returning (or resolving to) an ob
 {
 	element,          // the output element, also the pointer target
 	measure(),        // { cols, rows, width, height, metrics }
-	render(ctx, buffer),
+	render(context, buffer),
 	snapshot(format), // optional, Promise<Blob>
 	dispose(),
 }
@@ -401,12 +401,12 @@ export function main(coord, { frame }) {
 	return art.get(coord.x - 4, coord.y - 2) ?? '.:'[(coord.x + coord.y + frame) % 2]
 }
 
-export function post(ctx) {
-	write(ctx, 'frame ' + ctx.frame, 2, 0, { color : 'red' })
+export function post(context) {
+	write(context, 'frame ' + context.frame, 2, 0, { color : 'red' })
 }
 ```
 
-Windows (`window.js`): draggable, closable, with a style of their own. The content is text, a block, a function of `ctx`, or a program running inside the window.
+Windows (`window.js`): draggable, closable, with a style of their own. The content is text, a block, a function of `context`, or a program running inside the window.
 
 ```js
 import { Desktop } from '@ertdfgcvb/play/window.js'
@@ -416,8 +416,8 @@ desk.info()
 desk.open({ x : 30, y : 4, title : 'note', backgroundColor : 'tomato', content : 'Drag me' })
 desk.open({ x : 4, y : 12, width : 40, height : 12, title : 'flame', content : new URL('./flame.js', import.meta.url) })
 
-export function post(ctx) {
-	desk.update(ctx)
+export function post(context) {
+	desk.update(context)
 }
 ```
 
@@ -445,7 +445,7 @@ export function main(coord) {
 
 ```js
 block(source, { transparent = ' ', styles = null, dedent = true }) // Grid of chars or cells; transparent chars are null
-write(target, source, x, y, style)  // target: ctx or buffer; source: Grid, string, or a run's buffer
+write(target, source, x, y, style)  // target: context or buffer; source: Grid, string, or a run's buffer
                                     // style.align = 'center': x, y is the center; returns { x, y, width, height }
 ```
 
@@ -544,14 +544,14 @@ cross(a, b, out)  rotX  rotY  rotZ (a, ang, out)  // vec3
 box(target, x, y, w, h, style)          // style: border, shadow, shadowX, shadowY, color, backgroundColor, fontWeight
 panel(target, content, x, y, style)     // box + width, height (0: fit), paddingX, paddingY,
                                         // title, titleStyle ('invert'), titleAlign ('center' | 'left')
-infoText(ctx)                           // fps, frame, time, size, aspect, cursor
+infoText(context)                           // fps, frame, time, size, aspect, cursor
 BORDERS  SHADOWS                        // a custom border is any 8 chars string: '┌─┐│┘─└│'
 
 const desk = new Desktop(style)         // default style of the windows
 const win = desk.open({ x, y, width, height, title, content, closable, ...style })
-                                        // content: string, block, ctx => string | block, a module or a URL (a program)
+                                        // content: string, block, context => string | block, a module or a URL (a program)
 desk.info(opts)                         // the info window
-desk.update(ctx)                        // in post(): pointer, then draws the windows
+desk.update(context)                        // in post(): pointer, then draws the windows
 desk.hit(x, y)  desk.front(win)  desk.close(win)  win.close()
 ```
 
@@ -599,18 +599,18 @@ v2 avoids the open font and metrics issues: the used font face is loaded explici
 
 | v1 | v2 |
 |----|----|
-| `main(coord, context, cursor, buffer, data)` | `main(coord, ctx)` |
-| `pre(context, cursor, buffer, data)`, `post(...)` | `pre(ctx)`, `post(ctx)` |
+| `main(coord, context, cursor, buffer, data)` | `main(coord, context)` |
+| `pre(context, cursor, buffer, data)`, `post(...)` | `pre(context)`, `post(context)` |
 | `boot()` | removed: top-level `await` in the module |
 | `run()` returns a promise | `run()` is async and returns a handle |
-| `context.runtime.fps` | `ctx.fps` |
+| `context.runtime.fps` | `context.fps` |
 | `cursor.p` | `cursor.prev` |
 | buffer: array of cells | `buffer.get()`, `buffer.set()`: writes are merged |
 | `renderer : 'text'` | `renderer : 'dom'` |
 | `restoreState` | `startTime`, `startFrame` |
 | `canvasSize`, `canvasOffset` | removed: the canvas follows its CSS size |
 | program settings override run() settings | run() options override program settings |
-| `calcMetrics()`, `copyContent()` | removed: `ctx.metrics`, `h.text()` |
+| `calcMetrics()`, `copyContent()` | removed: `context.metrics`, `h.text()` |
 | first frame is 1 | first frame is 0 |
 | `/src/modules/...` imports | `@ertdfgcvb/play/...` (import map or npm) |
 | `drawBox()`, `drawInfo()` (drawbox.js) | `panel()`, `Desktop`, `desk.info()` (window.js) |

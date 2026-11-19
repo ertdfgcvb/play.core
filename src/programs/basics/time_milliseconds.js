@@ -33,6 +33,6 @@ desk.info()
 
 // This function is called after the main loop and is useful
 // to manipulate the buffer; in this case with a window overlay.
-export function post(ctx) {
-	desk.update(ctx)
+export function post(context) {
+	desk.update(context)
 }

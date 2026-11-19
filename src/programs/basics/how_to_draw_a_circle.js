@@ -47,6 +47,6 @@ desk.open({
 	},
 })
 
-export function post(ctx) {
-	desk.update(ctx)
+export function post(context) {
+	desk.update(context)
 }

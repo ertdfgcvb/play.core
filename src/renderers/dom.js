@@ -58,7 +58,7 @@ export default async function dom(target, settings) {
 		}
 	}
 
-	function render(ctx, buffer) {
+	function render(context, buffer) {
 		const { width : c, height : r, data } = buffer
 
 		if (c != cols || r != rows) {
@@ -131,7 +131,7 @@ export default async function dom(target, settings) {
 		element,
 		measure,
 		render,
-		snapshot(format, ctx, buffer) {
+		snapshot(format, context, buffer) {
 			if (format == 'html') return snapshotHTML(buffer)
 			if (format == 'png') return snapshotPNG(buffer)
 			return null

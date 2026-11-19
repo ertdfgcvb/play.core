@@ -44,7 +44,7 @@ export async function run(source, options = {}) {
 
 	let frame = settings.startFrame
 	let time = settings.startTime
-	let ctx = null
+	let context = null
 	let cursorPrev = Object.freeze({ x : 0, y : 0, pressed : false })
 	let state = 'idle'
 	let visible = true
@@ -71,7 +71,7 @@ export async function run(source, options = {}) {
 			prev    : cursorPrev,
 		})
 
-		ctx = Object.freeze({
+		context = Object.freeze({
 			frame,
 			time,
 			dt,
@@ -91,7 +91,7 @@ export async function run(source, options = {}) {
 		if (input) {
 			for (const e of input.state.events) {
 				const fn = program[e.type]
-				if (typeof fn == 'function') fn(ctx, { ...e, x : e.x / cw, y : e.y / lh })
+				if (typeof fn == 'function') fn(context, { ...e, x : e.x / cw, y : e.y / lh })
 			}
 			input.state.events.length = 0
 		}
@@ -101,7 +101,7 @@ export async function run(source, options = {}) {
 		// With main() the buffer is redrawn each frame, without it (or with clear : false) it persists
 		if (typeof main == 'function' && settings.clear) buffer.clear()
 
-		if (typeof pre == 'function') pre(ctx)
+		if (typeof pre == 'function') pre(context)
 
 		if (typeof main == 'function') {
 			const cell = { x : 0, y : 0, index : 0 }
@@ -112,15 +112,15 @@ export async function run(source, options = {}) {
 					cell.x = i
 					cell.y = j
 					cell.index = idx
-					buffer.merge(cells[idx], main(cell, ctx))
+					buffer.merge(cells[idx], main(cell, context))
 					idx++
 				}
 			}
 		}
 
-		if (typeof post == 'function') post(ctx)
+		if (typeof post == 'function') post(context)
 
-		renderer.render(ctx, buffer)
+		renderer.render(context, buffer)
 
 		cursorPrev = Object.freeze({ x : cursor.x, y : cursor.y, pressed : cursor.pressed })
 		frame++
@@ -182,7 +182,7 @@ export async function run(source, options = {}) {
 		element,
 		renderer,
 		onerror : null,
-		get ctx() { return ctx },
+		get context() { return context },
 		get buffer() { return buffer },
 		get state() { return state },
 		start() {
@@ -214,7 +214,7 @@ export async function run(source, options = {}) {
 		async snapshot(format = 'txt') {
 			if (format == 'txt') return new Blob([toText(buffer)], { type : 'text/plain;charset=utf-8' })
 			if (typeof renderer.snapshot == 'function') {
-				const blob = await renderer.snapshot(format, ctx, buffer)
+				const blob = await renderer.snapshot(format, context, buffer)
 				if (blob) return blob
 			}
 			throw new Error('Snapshot format not supported by this renderer: ' + format)

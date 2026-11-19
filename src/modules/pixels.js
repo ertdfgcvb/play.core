@@ -39,7 +39,7 @@ export class Pixels extends Grid {
 	}
 
 	// Sources: video, image, canvas, ImageBitmap or ImageData.
-	// aspect: the cell aspect (ctx.metrics.aspect), corrects the image proportions
+	// aspect: the cell aspect (context.metrics.aspect), corrects the image proportions
 
 	// Fills the whole image, cropping the source
 	cover(source, aspect = 1) {
