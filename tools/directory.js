@@ -3,6 +3,7 @@ import { readdirSync, readFileSync, writeFileSync, statSync } from 'node:fs'
 const root = new URL('../src/programs/', import.meta.url)
 const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 const rows = []
+const manifest = []
 let count = 0
 
 for (const folder of readdirSync(root).sort()) {
@@ -17,6 +18,7 @@ for (const folder of readdirSync(root).sort()) {
 		const name = file.slice(0, -3)
 		// The author only for programs that are not mine
 		const by = folder == 'contributed' && tag('author') ? ' by ' + tag('author') : ''
+		manifest.push({ path : folder + '/' + name, title : raw(src, 'title'), desc : raw(src, 'desc'), author : raw(src, 'author') })
 		rows.push('\t\t<div class="folder">' + (first ? folder : '') + '</div>'
 			+ '<a href="run.html?' + folder + '/' + name + '">' + name + '</a>'
 			+ '<div>' + tag('title') + '</div>'
@@ -67,4 +69,11 @@ const page = `<!DOCTYPE html>
 
 // Run with: npm run list
 writeFileSync(new URL('../pages/directory.html', import.meta.url), page)
-console.log('directory.html: ' + count + ' programs')
+// The same list for the editor menu and the site
+writeFileSync(new URL('../src/programs/programs.json', import.meta.url), JSON.stringify(manifest, null, '\t') + '\n')
+console.log('directory.html, programs.json: ' + count + ' programs')
+
+function raw(src, t) {
+	const m = src.match(new RegExp('^@' + t + '[ \\t]+(.+)$', 'm'))
+	return m ? m[1].trim() : ''
+}

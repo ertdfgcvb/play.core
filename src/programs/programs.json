@@ -1,0 +1,278 @@
+[
+	{
+		"path": "basics/10print",
+		"title": "10 PRINT",
+		"desc": "10 PRINT CHR$(205.5+RND(1)); : GOTO 10",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "basics/coordinates_index",
+		"title": "Coordinates: index",
+		"desc": "Use of coord.index",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "basics/coordinates_xy",
+		"title": "Coordinates: x, y",
+		"desc": "Use of coord.x and coord.y",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "basics/cursor",
+		"title": "Cursor",
+		"desc": "Crosshair example with mouse cursor",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "basics/how_to_draw_a_circle",
+		"title": "How to draw a circle",
+		"desc": "Use of context.metrics.aspect",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "basics/how_to_draw_a_square",
+		"title": "How to draw a square",
+		"desc": "Draw a square using a distance function",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "basics/how_to_log",
+		"title": "How to log",
+		"desc": "Console output inside the main() loop",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "basics/name_game",
+		"title": "Name game",
+		"desc": "What’s your name?",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "basics/performance_test",
+		"title": "Perfomance test",
+		"desc": "Vertical vs horizontal changes impact FPS",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "basics/rendering_to_canvas",
+		"title": "Canvas renderer",
+		"desc": "Rendering to a canvas element",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "basics/simple_output",
+		"title": "Simple output",
+		"desc": "The smallest program possible?",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "basics/time_frames",
+		"title": "Time: frames",
+		"desc": "Use of context.frame (ASCII horizon)",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "basics/time_milliseconds",
+		"title": "Time: milliseconds",
+		"desc": "Use of context.time",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "camera/camera_double_res",
+		"title": "Camera double resolution",
+		"desc": "Doubled vertical resolution input from camera",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "camera/camera_gray",
+		"title": "Camera grayscale",
+		"desc": "Grayscale input from camera",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "camera/camera_rgb",
+		"title": "Camera RGB",
+		"desc": "Color input from camera (quantised)",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "contributed/color_waves",
+		"title": "Color Waves",
+		"desc": "¯\\_(ツ)_/¯",
+		"author": "Eliza"
+	},
+	{
+		"path": "contributed/emoji_wave",
+		"title": "Emoji Wave",
+		"desc": "From wingdings icons to unicode emojis",
+		"author": "ilithya"
+	},
+	{
+		"path": "contributed/equal_tea_talk",
+		"title": "EQUAL TEA TALK, #65",
+		"desc": "Inspired by Frederick Hammersley, 1969",
+		"author": "nkint"
+	},
+	{
+		"path": "contributed/ernst",
+		"title": "oeö",
+		"desc": "Inspired by Ernst Jandl, 1964",
+		"author": "nkint"
+	},
+	{
+		"path": "contributed/game_of_life",
+		"title": "GOL",
+		"desc": "Conway's Game of Life",
+		"author": "Alex Miller"
+	},
+	{
+		"path": "contributed/pathfinder",
+		"title": "Pathfinder",
+		"desc": "Click to spawn new path segments",
+		"author": "Alex Miller"
+	},
+	{
+		"path": "contributed/sand_game",
+		"title": "Sand game",
+		"desc": "Click to drop sand",
+		"author": "Alex Miller"
+	},
+	{
+		"path": "contributed/slime_dish",
+		"title": "Slime Dish",
+		"desc": "Low-res physarum slime mold simulation",
+		"author": "zspotter"
+	},
+	{
+		"path": "contributed/stacked_sin_waves",
+		"title": "Stacked sin waves",
+		"desc": "noob at frag shaders",
+		"author": "Raurir"
+	},
+	{
+		"path": "demos/box_fun",
+		"title": "Box fun",
+		"desc": "Think inside of the box",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "demos/chromaspiral",
+		"title": "Chroma Spiral",
+		"desc": "Shadertoy port",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "demos/donut",
+		"title": "Donut",
+		"desc": "Ported from a1k0n’s donut demo.",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "demos/doom_flame",
+		"title": "Doom Flame",
+		"desc": "Oldschool flame effect",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "demos/doom_flame_full_color",
+		"title": "Doom Flame (full color)",
+		"desc": "Oldschool flame effect",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "demos/dyna",
+		"title": "Dyna",
+		"desc": "A remix of Paul Haeberli’s Dynadraw",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "demos/gol_double_res",
+		"title": "Golgol",
+		"desc": "Double resolution version of GOL",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "demos/hotlink",
+		"title": "Hotlink",
+		"desc": "Function hotlink example (GitHub)",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "demos/mod_xor",
+		"title": "Mod Xor",
+		"desc": "Patterns obtained trough modulo and xor",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "demos/moire_explorer",
+		"title": "Moiré explorer",
+		"desc": "Click or tap to toggle mode",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "demos/numbers",
+		"title": "Numbers",
+		"desc": "Fun with integers",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "demos/plasma",
+		"title": "Plasma",
+		"desc": "Oldschool plasma demo",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "demos/sinsin_checker",
+		"title": "Sin Sin",
+		"desc": "Checker variation",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "demos/sinsin_wave",
+		"title": "Sin Sin",
+		"desc": "Wave variation",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "demos/spiral",
+		"title": "Spiral",
+		"desc": "Shadertoy port",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "demos/wobbly",
+		"title": "Wobbly",
+		"desc": "Draw donuts with SDF",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "sdf/balls",
+		"title": "Balls",
+		"desc": "Smooth SDF balls",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "sdf/circle",
+		"title": "Circle",
+		"desc": "Draw a smooth circle with exp()",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "sdf/cube",
+		"title": "Wireframe cube",
+		"desc": "The cursor controls box thickness and exp",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "sdf/rectangles",
+		"title": "Rectangles",
+		"desc": "Smooth SDF Rectangles",
+		"author": "ertdfgcvb"
+	},
+	{
+		"path": "sdf/two_circles",
+		"title": "Two circles",
+		"desc": "Smooth union of two circles",
+		"author": "ertdfgcvb"
+	}
+]
