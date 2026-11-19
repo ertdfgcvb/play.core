@@ -4,18 +4,19 @@
 	<meta charset="utf-8">
 	<title>Test font</title>
 	<link rel="stylesheet" type="text/css" href="../css/simple_console.css">
+	<link rel="stylesheet" type="text/css" href="../css/riforma_mono.css">
 	<style type="text/css" media="screen">
 		pre {
 			margin: 2em;
 			font-size: 1em;
 			line-height: 1.2;
-			font-family: 'Simple Console', monospace;
 			font-variant-ligatures: none;
 		}
 		pre .test{
 			background-color: rgb(240, 240, 240);
 			padding: 1em;
 			display: inline-block;
+			vertical-align: top;
 		}
 	</style>
 </head>
@@ -55,36 +56,49 @@ X-XXX-XXX-XXX-XXX-XXX-XX
   ╲╱╲╱╲╱╳╳
 </template>
 
-<pre></pre>
+<main></main>
 
 <script type="module">
 
-	// Metrics as measured by the dom renderer (context.metrics), then the glyphs in three weights
+	// Per font: the metrics as measured by each renderer (context.metrics), then the glyphs per style
 	import dom from '../src/renderers/dom.js'
+	import canvas from '../src/renderers/canvas.js'
 
+	const FONTS = [
+		{ family : 'Simple Console', styles : [[300, 'normal'], [400, 'normal'], [700, 'normal']] },
+		{ family : 'Riforma Mono',   styles : [[300, 'normal'], [300, 'italic'], [400, 'normal'], [400, 'italic'], [700, 'normal'], [700, 'italic']] },
+	]
 	const pattern = document.querySelector('template').innerHTML
-	const p = document.querySelector('pre')
-	const weights = [300, 400, 700]
 
-	const probe = document.createElement('pre')
-	probe.style.cssText = 'position:absolute;visibility:hidden;width:40em;height:10em'
-	document.body.appendChild(probe)
-	const r = await dom(probe, {})
-	const m = r.measure().metrics
-	r.dispose()
-	probe.remove()
+	for (const font of FONTS) {
+		const p = document.createElement('pre')
+		p.style.fontFamily = "'" + font.family + "', monospace"
+		document.querySelector('main').appendChild(p)
 
-	const info = document.createElement('span')
-	info.style.display = 'block'
-	info.textContent = JSON.stringify(m, null, 4)
-	p.appendChild(info)
+		const metrics = {}
+		for (const [name, renderer] of [['dom', dom], ['canvas', canvas]]) {
+			const probe = document.createElement('pre')
+			probe.style.cssText = 'position:absolute;visibility:hidden;width:40em;height:10em;margin:0'
+			p.appendChild(probe)
+			const r = await renderer(probe, {})
+			metrics[name] = r.measure().metrics
+			r.dispose()
+			probe.remove()
+		}
 
-	for (const w of weights) {
-		const s = document.createElement('span')
-		s.classList.add('test')
-		s.innerHTML = 'weight: ' + w + '\n' + pattern
-		s.style.fontWeight = w
-		p.appendChild(s)
+		const info = document.createElement('span')
+		info.style.display = 'block'
+		info.textContent = font.family + '\n' + JSON.stringify(metrics, null, 4)
+		p.appendChild(info)
+
+		for (const [w, style] of font.styles) {
+			const s = document.createElement('span')
+			s.classList.add('test')
+			s.innerHTML = 'weight: ' + w + (style == 'italic' ? ' italic' : '') + '\n' + pattern
+			s.style.fontWeight = w
+			s.style.fontStyle = style
+			p.appendChild(s)
+		}
 	}
 
 </script>
