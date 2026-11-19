@@ -468,6 +468,17 @@ tools/            npm run list: regenerates pages/directory.html and src/program
 The DOM renderer writes the buffer by row, and only the rows that changed. Frequent *horizontal* changes in weight, color or background will slow down the rendering considerably: each change in style wraps the characters in an inline `<span>`, augmenting the complexity of the DOM tree.
 The canvas renderer is faster for programs with many style changes.
 
+### Accessibility
+
+A screen reader reads the output as text: hundreds of chars, every frame.
+For decorative output, hide the element (or a parent) from assistive technology, and describe it elsewhere if needed:
+
+```html
+<pre aria-hidden="true"></pre>
+```
+
+The runner leaves the attribute to the page, as it doesn't know how the output is used.
+
 ### Fonts
 
 The playground uses two fonts: Simple Console (a custom version of LL Simple) and Riforma Mono, both © [Norm](https://norm.to) / [Lineto](https://lineto.com).
