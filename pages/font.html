@@ -91,13 +91,18 @@ X-XXX-XXX-XXX-XXX-XXX-XX
 		info.textContent = font.family + '\n' + JSON.stringify(metrics, null, 4)
 		p.appendChild(info)
 
-		for (const [w, style] of font.styles) {
-			const s = document.createElement('span')
-			s.classList.add('test')
-			s.innerHTML = 'weight: ' + w + (style == 'italic' ? ' italic' : '') + '\n' + pattern
-			s.style.fontWeight = w
-			s.style.fontStyle = style
-			p.appendChild(s)
+		// One row per style: normal, then italic
+		for (const style of ['normal', 'italic']) {
+			const row = document.createElement('div')
+			for (const [w, st] of font.styles.filter(([w, st]) => st == style)) {
+				const s = document.createElement('span')
+				s.classList.add('test')
+				s.innerHTML = 'weight: ' + w + (st == 'italic' ? ' italic' : '') + '\n' + pattern
+				s.style.fontWeight = w
+				s.style.fontStyle = st
+				row.appendChild(s)
+			}
+			if (row.childElementCount) p.appendChild(row)
 		}
 	}
 
