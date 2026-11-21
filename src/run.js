@@ -250,15 +250,18 @@ async function resolveProgram(p) {
 	return import(url.href)
 }
 
+// Literal imports: a bundler can include them
+const RENDERERS = {
+	dom    : () => import('./renderers/dom.js'),
+	canvas : () => import('./renderers/canvas.js'),
+}
+
 async function resolveRenderer(r) {
 	if (r === null || r === false) return headless
 	if (typeof r == 'function') return r
 	if (typeof r == 'string') {
-		try {
-			return (await import('./renderers/' + r + '.js')).default
-		} catch (err) {
-			throw new Error('Renderer not found: ' + r, { cause : err })
-		}
+		if (!RENDERERS[r]) throw new Error('Renderer not found: ' + r)
+		return (await RENDERERS[r]()).default
 	}
 	throw new Error('Invalid renderer: ' + r)
 }
