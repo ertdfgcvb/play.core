@@ -8,10 +8,8 @@ export default async function dom(target, settings) {
 	element.textContent = ''
 
 	const rowElements = []
-	let prevChar = []
-	let prevColor = []
-	let prevBg = []
-	let prevWeight = []
+	// The HTML of each row in the previous frame: a row is written only when it changes
+	let prevRows = []
 	let cols = 0
 	let rows = 0
 	let metrics = null
@@ -65,10 +63,7 @@ export default async function dom(target, settings) {
 			cols = c
 			rows = r
 			// Empty: every row is written on the next pass
-			prevChar = new Array(c * r)
-			prevColor = new Array(c * r)
-			prevBg = new Array(c * r)
-			prevWeight = new Array(c * r)
+			prevRows = []
 		}
 
 		while (rowElements.length < r) {
@@ -80,20 +75,11 @@ export default async function dom(target, settings) {
 		while (rowElements.length > r) rowElements.pop().remove()
 
 		for (let j=0; j<r; j++) {
-			const offs = j * c
-			let dirty = false
-			for (let i=0; i<c; i++) {
-				const idx = offs + i
-				const cell = data[idx]
-				if (cell.char !== prevChar[idx] || cell.color !== prevColor[idx] || cell.backgroundColor !== prevBg[idx] || cell.fontWeight !== prevWeight[idx]) {
-					dirty = true
-					prevChar[idx] = cell.char
-					prevColor[idx] = cell.color
-					prevBg[idx] = cell.backgroundColor
-					prevWeight[idx] = cell.fontWeight
-				}
+			const html = rowHTML(data, j * c, c, settings)
+			if (html !== prevRows[j]) {
+				prevRows[j] = html
+				rowElements[j].innerHTML = html
 			}
-			if (dirty) rowElements[j].innerHTML = rowHTML(data, offs, c, settings)
 		}
 	}
 
