@@ -6,7 +6,6 @@
 Ported from v1 to v2 of the ASCII Playground (API changes only).
 */
 
-import { distance, sub } from '@ertdfgcvb/play/vec2.js'
 import * as v2 from '@ertdfgcvb/play/vec2.js'
 
 const vec2 = v2.vec2

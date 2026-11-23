@@ -5,7 +5,7 @@
 Plasma primer: https://www.bidouille.org/prog/plasma
 */
 
-import { vec2, dot, add, sub, length } from '@ertdfgcvb/play/vec2.js'
+import { vec2, dot, sub, length } from '@ertdfgcvb/play/vec2.js'
 import { map } from '@ertdfgcvb/play/num.js'
 import { css } from '@ertdfgcvb/play/color.js'
 

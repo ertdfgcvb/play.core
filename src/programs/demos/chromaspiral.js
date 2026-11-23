@@ -7,7 +7,6 @@ https://www.shadertoy.com/view/tdsyRf
 */
 
 import { map } from '@ertdfgcvb/play/num.js'
-import { sort } from '@ertdfgcvb/play/sort.js'
 import { vec2, rot, add, mul, sub, length } from '@ertdfgcvb/play/vec2.js'
 
 const { min, sin, cos, floor } = Math

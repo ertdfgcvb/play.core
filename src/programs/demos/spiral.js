@@ -6,8 +6,7 @@ Inspired by this shader by ahihi
 https://www.shadertoy.com/view/XdSGzR
 */
 
-import { vec2, dot, add, sub, length } from '@ertdfgcvb/play/vec2.js'
-import { map } from '@ertdfgcvb/play/num.js'
+import { length } from '@ertdfgcvb/play/vec2.js'
 import { sort } from '@ertdfgcvb/play/sort.js'
 
 export const settings = { fps : 60 }

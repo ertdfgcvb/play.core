@@ -26,6 +26,7 @@ const style = {
 }
 
 export function main(coord) {
+	// Background pattern for the desktop
 	return (coord.x + coord.y) % 2 ? '·' : ' '
 }
 

@@ -6,8 +6,8 @@
 Ported from v1 to v2 of the ASCII Playground (API changes only).
 */
 
-import { distance, vec2, length, add, mul } from '@ertdfgcvb/play/vec2.js'
-import { map, smoothstep } from '@ertdfgcvb/play/num.js';
+import { vec2, length, add } from '@ertdfgcvb/play/vec2.js'
+import { smoothstep } from '@ertdfgcvb/play/num.js';
 
 const { PI, atan2, floor, cos, max } = Math;
 

@@ -8,8 +8,6 @@ Ported from v1 to v2 of the ASCII Playground (API changes only).
 
 const chars = "█▓▒░ ".split('')
 
-import { fract } from "@ertdfgcvb/play/num.js"
-
 export function main(coord, context){
 	const t = context.time * 0.002
 	const x = coord.x

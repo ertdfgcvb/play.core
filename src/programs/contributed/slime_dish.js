@@ -15,7 +15,6 @@ Ported from v1 to v2 of the ASCII Playground (API changes only).
 */
 
 import * as v2 from '@ertdfgcvb/play/vec2.js'
-import { map } from '@ertdfgcvb/play/num.js'
 
 // Environment
 const WIDTH = 400;

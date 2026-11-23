@@ -6,7 +6,7 @@
 Ported from v1 to v2 of the ASCII Playground (API changes only).
 */
 
-import { distance, sub } from '@ertdfgcvb/play/vec2.js'
+import { distance } from '@ertdfgcvb/play/vec2.js'
 
 // The buffer holds the state: it is not cleared each frame
 export const settings = { clear : false }
