@@ -104,7 +104,7 @@ export function panel(target, content = '', x = 0, y = 0, style = {}) {
 	const cell = cellStyle(s)
 
 	if (s.title && w >= s.titleX + 4) {
-		const t = ' ' + truncate(s.title, w - s.titleX - 4) + ' '
+		const t = '┤' + truncate(s.title, w - s.titleX - 4) + '├'
 		const tx = s.titleAlign == 'left' ? s.titleX : Math.max(s.titleX, Math.floor((w - length(t)) / 2))
 		write(buffer, t, x + tx, y, variant(cell, s.titleStyle))
 	}
@@ -133,7 +133,6 @@ const INFO = {
 	color           : 'white',
 	backgroundColor : 'royalblue',
 	shadow          : 'gray',
-	titleStyle      : 'invert',
 }
 
 // Frame, time, size and cursor info, for debugging: write(context, infoText(context), 0, 0)
@@ -152,7 +151,7 @@ export function infoText(context) {
 // -- Desktop: a simple window manager -----------------------------------------
 
 // Windows on top of the output: click to bring to front, drag by the title bar,
-// close with [■] in the title bar (closeStyle: style of the ■). Call update(context) in post().
+// close with ┤●├ in the title bar (closeStyle: style of the ●). Call update(context) in post().
 // style: the default panel style of the windows, each window style overrides it
 export class Desktop {
 	constructor(style = {}) {
@@ -224,7 +223,7 @@ export class Desktop {
 				this.front(win)
 				const r = win.rect
 				if (cy == r.y) {
-					if (win.closable && cx >= r.x + 2 && cx <= r.x + 4) {
+					if (win.closable && cx >= r.x + 1 && cx <= r.x + 3) {
 						win.close()
 					} else {
 						this.drag = { win, dx : cx - win.x, dy : cy - win.y }
@@ -262,14 +261,14 @@ export class Desktop {
 			} else {
 				content = typeof win.content == 'function' ? win.content(context) : win.content
 			}
-			// Turbo Vision: the close button [■] at the left of the title bar, the title after it
+			// Turbo Vision: the close button ┤●├ at the left of the title bar, the title after it
 			const closable = win.closable && (win.width || 8) >= 8
-			if (closable) style.titleX = 6
+			if (closable) style.titleX = 5
 			win.rect = panel(context, content ?? '', win.x, win.y, style)
 			if (closable) {
 				const cell = cellStyle(style)
-				write(context, '[ ]', win.rect.x + 2, win.rect.y, cell)
-				write(context, '■', win.rect.x + 3, win.rect.y, variant(cell, style.closeStyle))
+				write(context, '┤ ├', win.rect.x + 1, win.rect.y, cell)
+				write(context, '●', win.rect.x + 2, win.rect.y, variant(cell, style.closeStyle))
 			}
 		}
 	}
