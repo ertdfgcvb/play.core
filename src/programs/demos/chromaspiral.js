@@ -49,12 +49,3 @@ export function main(coord, context) {
 		color : colors[color]
 	}
 }
-
-import { Desktop } from '@ertdfgcvb/play/window.js'
-
-const desk = new Desktop()
-desk.info()
-
-export function post(context) {
-	desk.update(context)
-}

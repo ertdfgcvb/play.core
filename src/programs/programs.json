@@ -162,6 +162,12 @@
 		"author": "ertdfgcvb"
 	},
 	{
+		"path": "demos/desktop",
+		"title": "Desktop",
+		"desc": "Examples running in windows",
+		"author": "ertdfgcvb"
+	},
+	{
 		"path": "demos/donut",
 		"title": "Donut",
 		"desc": "Ported from a1k0n’s donut demo.",

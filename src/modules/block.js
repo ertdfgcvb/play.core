@@ -59,11 +59,22 @@ export function write(target, source, x = 0, y = 0, style = null) {
 		for (let i=0; i<g.width; i++) {
 			const v = d[i + j * g.width]
 			if (v === null || v === undefined) continue
-			if (cellStyle) buffer.set(x + i, y + j, cellStyle)
-			buffer.set(x + i, y + j, v)
+			if (cellStyle) {
+				buffer.set(x + i, y + j, cellStyle)
+				// Undefined fields of a cell (a program's default colors) keep the style under it
+				buffer.set(x + i, y + j, typeof v == 'object' ? defined(v) : v)
+			} else {
+				buffer.set(x + i, y + j, v)
+			}
 		}
 	}
 	return { x, y, width : g.width, height : g.height }
+}
+
+function defined(cell) {
+	const out = {}
+	for (const k in cell) if (cell[k] !== undefined) out[k] = cell[k]
+	return out
 }
 
 // A Grid or a Buffer (the cells of a run): width, height and a flat data array
