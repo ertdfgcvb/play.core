@@ -16,7 +16,7 @@ export function main(coord, { cursor }) {
 	return (coord.x + coord.y) % 2 ? '·' : ' '
 }
 
-// The info box as a window: drag it by the title bar, close it with ┤●├
+// The info box as a window: drag it by the title bar, close it with ╴●╶
 import { Desktop } from '@ertdfgcvb/play/window.js'
 
 const desk = new Desktop()

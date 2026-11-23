@@ -19,21 +19,22 @@ export const BORDERS = {
 	none         : '        ',
 }
 
-// The ends of the title and the close button (left, close, right), joined to the top line of a border
+// The ends of the title (left, right) and the close button (left, close, right, close under the pointer),
+// joined to the top line of a border
 const ENDS = {
-	single       : '┤●├',
-	double       : '╡●╞',
-	round        : '┤●├',
-	bold         : '┫●┣',
-	singleDouble : '┤●├',
-	ascii        : '|•|',
+	single       : '┤├╴●╶○',
+	double       : '╡╞╡●╞○',
+	round        : '┤├╴●╶○',
+	bold         : '┫┣╸●╺○',
+	singleDouble : '┤├╴●╶○',
+	ascii        : '|||•|×',
 }
 
 // A border without ends of its own (fat, none, custom): spaces
 function ends(border) {
 	const e = ENDS[border ?? 'round']
 	if (e) return [...e]
-	return typeof border == 'string' && (BORDERS[border] || length(border) == 8) ? [' ', '●', ' '] : [...ENDS.round]
+	return typeof border == 'string' && (BORDERS[border] || length(border) == 8) ? [' ', ' ', ' ', '●', ' ', '○'] : [...ENDS.round]
 }
 
 const PANEL = {
@@ -130,7 +131,7 @@ export function panel(target, content = '', x = 0, y = 0, style = {}) {
 
 	if (s.title && w >= s.titleX + 4) {
 		const e = ends(s.border)
-		const t = e[0] + truncate(s.title, w - s.titleX - 4) + e[2]
+		const t = e[0] + truncate(s.title, w - s.titleX - 4) + e[1]
 		const tx = s.titleAlign == 'left' ? s.titleX : Math.max(s.titleX, Math.floor((w - length(t)) / 2))
 		write(buffer, t, x + tx, y, variant(cell, s.titleStyle))
 	}
@@ -159,6 +160,7 @@ const INFO = {
 	color           : 'white',
 	backgroundColor : 'royalblue',
 	shadow          : 0.2,
+	resizable       : false,
 }
 
 // Frame, time, size and cursor info, for debugging: write(context, infoText(context), 0, 0)
@@ -176,8 +178,9 @@ export function infoText(context) {
 
 // -- Desktop: a simple window manager -----------------------------------------
 
-// Windows on top of the output: click to bring to front, drag by the title bar,
-// close with ┤●├ in the title bar (closeStyle: style of the ●). Call update(context) in post().
+// Windows on top of the output: click to bring to front, drag by the title bar, resize by the corners,
+// close with ╴●╶ in the title bar, ○ under the pointer (closeStyle: style of the button, closeHoverStyle: under the pointer).
+// Call update(context) in post().
 // style: the default panel style of the windows, each window style overrides it
 export class Desktop {
 	constructor(style = {}) {
@@ -186,14 +189,14 @@ export class Desktop {
 		this.drag = null
 	}
 
-	// opts: x, y, width, height (0: fit), title, content, closable,
+	// opts: x, y, width, height (0: fit), title, content, closable, resizable,
 	// and any panel style (color, border, shadow, ...) overriding the Desktop style.
 	// content: a string, a block (Grid), a function context => string or block (called each frame),
 	// or a program (a module, or a URL object: a separate copy) running inside the window.
 	// Returns the window: its fields can be changed, close() removes it
 	open(opts = {}) {
-		const { x = 0, y = 0, width = 0, height = 0, title = '', content = '', closable = true, ...style } = opts
-		const win = { x, y, width, height, title, content, closable, style, rect : null, program : null }
+		const { x = 0, y = 0, width = 0, height = 0, title = '', content = '', closable = true, resizable = true, ...style } = opts
+		const win = { x, y, width, height, title, content, closable, resizable, style, rect : null, program : null }
 		if (isProgram(content)) {
 			// A program needs a size: it does not fit its content
 			win.width = width || 32
@@ -248,8 +251,13 @@ export class Desktop {
 			if (win) {
 				this.front(win)
 				const r = win.rect
-				if (cy == r.y) {
-					if (win.closable && cx >= r.x + 1 && cx <= r.x + 3) {
+				const left = cx == r.x
+				const top = cy == r.y
+				if (win.resizable && (left || cx == r.x + r.width - 1) && (top || cy == r.y + r.height - 1)) {
+					// The opposite corner stays
+					this.drag = { win, resize : true, left, top, x1 : r.x + r.width, y1 : r.y + r.height }
+				} else if (top) {
+					if (onClose(win, cx, cy)) {
 						win.close()
 					} else {
 						this.drag = { win, dx : cx - win.x, dy : cy - win.y }
@@ -260,14 +268,32 @@ export class Desktop {
 
 		if (this.drag) {
 			if (c.pressed) {
-				const w = this.drag.win
-				// The title bar stays reachable
-				w.x = Math.max(4 - w.rect.width, Math.min(context.cols - 4, cx - this.drag.dx))
-				w.y = Math.max(0, Math.min(context.rows - 1, cy - this.drag.dy))
+				const d = this.drag
+				const w = d.win
+				if (d.resize) {
+					if (d.left) {
+						w.x = Math.min(cx, d.x1 - MIN_WIDTH)
+						w.width = d.x1 - w.x
+					} else {
+						w.width = Math.max(MIN_WIDTH, cx - w.rect.x + 1)
+					}
+					if (d.top) {
+						w.y = Math.max(0, Math.min(cy, d.y1 - MIN_HEIGHT))
+						w.height = d.y1 - w.y
+					} else {
+						w.height = Math.max(MIN_HEIGHT, cy - w.rect.y + 1)
+					}
+				} else {
+					// The title bar stays reachable
+					w.x = Math.max(4 - w.rect.width, Math.min(context.cols - 4, cx - d.dx))
+					w.y = Math.max(0, Math.min(context.rows - 1, cy - d.dy))
+				}
 			} else {
 				this.drag = null
 			}
 		}
+
+		const over = this.drag ? null : this.hit(cx, cy)
 
 		const top = this.windows[this.windows.length - 1]
 		for (const win of this.windows) {
@@ -287,18 +313,27 @@ export class Desktop {
 			} else {
 				content = typeof win.content == 'function' ? win.content(context) : win.content
 			}
-			// Turbo Vision: the close button ┤●├ at the left of the title bar, the title after it
+			// Turbo Vision: the close button ╴●╶ at the left of the title bar, the title after it
 			const closable = win.closable && (win.width || 8) >= 8
 			if (closable) style.titleX = 5
 			win.rect = panel(context, content ?? '', win.x, win.y, style)
 			if (closable) {
 				const cell = cellStyle(style)
 				const e = ends(style.border)
-				write(context, e[0] + ' ' + e[2], win.rect.x + 1, win.rect.y, cell)
-				write(context, e[1], win.rect.x + 2, win.rect.y, variant(cell, style.closeStyle))
+				write(context, e[2] + ' ' + e[4], win.rect.x + 1, win.rect.y, cell)
+				const hover = win == over && onClose(win, cx, cy)
+				write(context, hover ? e[5] : e[3], win.rect.x + 2, win.rect.y, variant(cell, hover ? style.closeHoverStyle : style.closeStyle))
 			}
 		}
 	}
+}
+
+const MIN_WIDTH  = 8
+const MIN_HEIGHT = 3
+
+function onClose(win, x, y) {
+	const r = win.rect
+	return win.closable && y == r.y && x >= r.x + 1 && x <= r.x + 3
 }
 
 // A cell style, 'invert' or null (unchanged)

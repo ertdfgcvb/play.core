@@ -84,6 +84,39 @@ test('desktop: draw, drag, front, close', async () => {
 	h.stop()
 })
 
+test('desktop: resize by the corners, close hover, info not resizable', async () => {
+	const { Desktop } = await import('../src/modules/window.js')
+	const desk = new Desktop({ border : 'ascii', paddingX : 0, paddingY : 0, color : 'white', backgroundColor : 'black' })
+	const a = desk.open({ x : 2, y : 1, width : 8, height : 4, content : 'A' })
+	let cursor = { x : 0, y : 0, pressed : false }
+	let prev = cursor
+	const h = await run({ main : () => '.', post : context => desk.update({ ...context, cursor : { ...cursor, prev } }) }, { renderer : null, cols : 20, rows : 10, autoStart : false })
+	const step = c => { prev = cursor; cursor = c; h.step() }
+
+	step({ x : 0, y : 0, pressed : false })
+	step({ x : 9, y : 4, pressed : true })
+	step({ x : 12, y : 6, pressed : true })
+	step({ x : 12, y : 6, pressed : false })
+	assert.deepEqual([a.x, a.y, a.width, a.height], [2, 1, 11, 6], 'bottom right corner')
+
+	step({ x : 2, y : 1, pressed : true })
+	step({ x : 0, y : 3, pressed : true })
+	step({ x : 0, y : 3, pressed : false })
+	assert.deepEqual([a.x, a.y, a.width, a.height], [0, 3, 13, 4], 'top left corner, the opposite one stays')
+
+	step({ x : 0, y : 6, pressed : true })
+	step({ x : 0, y : 0, pressed : true })
+	step({ x : 0, y : 0, pressed : false })
+	assert.deepEqual([a.x, a.y, a.height], [0, 3, 3], 'bottom left corner, minimum height')
+
+	step({ x : 2, y : 3, pressed : false })
+	assert.equal(h.buffer.get(2, 3).char, '×', 'close button under the pointer')
+
+	const info = desk.info()
+	assert.equal(info.resizable, false)
+	h.stop()
+})
+
 test('desktop: style cascades, window style overrides, invert title', async () => {
 	const { Desktop } = await import('../src/modules/window.js')
 	const desk = new Desktop({ color : 'white', backgroundColor : 'royalblue', titleStyle : 'invert' })
@@ -110,7 +143,7 @@ test('desktop: info window with the info style', async () => {
 	const desk = new Desktop()
 	const w = desk.info({ x : 0, y : 0 })
 	const h = await frame(context => desk.update(context), 30, 10)
-	assert.match(h.text(), /┤●├─+┤info├─/)
+	assert.match(h.text(), /╴●╶─+┤info├─/)
 	assert.equal(h.buffer.get(2, 2).backgroundColor, 'royalblue')
 	w.style.backgroundColor = 'crimson'
 	h.step()
