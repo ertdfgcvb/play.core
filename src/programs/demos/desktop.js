@@ -18,7 +18,7 @@ const windows = [
 	['sdf/balls',                     { color : 'white', backgroundColor : 'seagreen' }],
 ]
 windows.forEach(([name, style], i) => {
-	desk.open({ x : 4 + i * 6, y : 2 + i * 3, width : 58, height : 24, title : name.split('/')[1], content : example(name), ...style })
+	desk.open({ x : 4 + i * 6, y : 2 + i * 3, width : 68, height : 24, title : name.split('/')[1], content : example(name), ...style })
 })
 
 export function main(coord) {
