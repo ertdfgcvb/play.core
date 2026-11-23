@@ -1,66 +1,49 @@
 /**
 @author ertdfgcvb
 @title  Box fun
-@desc   Think inside of the box
+@desc   Jenny Holzer, Truisms (1977–79)
 */
 
-import { clamp, map } from '@ertdfgcvb/play/num.js'
+import { panel } from '@ertdfgcvb/play/window.js'
 
-const {sin, cos, floor} = Math
+const { sin, cos, floor } = Math
 
-export function main(coord, context) {
-	// Basic background pattern
+const quote = 'REPETITION IS THE BEST WAY TO LEARN'
+const w = 17
+const h = 5
+const gapX = 4
+const gapY = 2
+
+const style = {
+	width           : w,
+	height          : h,
+	paddingX        : 2,
+	paddingY        : 1,
+	color           : 'black',
+	backgroundColor : 'white',
+	border          : 'double',
+	shadow          : 0.2,
+}
+
+export function main(coord) {
 	return (coord.x + coord.y) % 2 ? '·' : ' '
 }
 
-// Boxes recomputed each frame: panels, not windows
-import { panel } from '@ertdfgcvb/play/window.js'
+// Panels drawn each frame over the output
 export function post(context) {
-	const { rows, cols } =  context
-	const t = context.time * 0.002
-	const baseW = 15
-	const baseH = 5
-	const spacingX = 4
-	const spacingY = 2
-
-	let marginX = 3
-	let marginY = 2
-
-	const numX = floor((cols - marginX*2) / (baseW+spacingX))
-	const numY = floor((rows - marginY*2) / (baseH+spacingY))
-
-	marginX = floor((cols - numX * baseW - (numX-1) * spacingX)/2)
-	marginY = floor((rows - numY * baseH - (numY-1) * spacingY)/2)
-
-	const q = 'THINK INSIDE OF THE BOX'
-
-	const baseStyle = {
-		paddingX        : 2,
-		paddingY        : 1,
-		color           : 'black',
-		backgroundColor : 'white',
-		border          : 'double',
-		shadow          : 0.2,
-	}
+	const { cols, rows } = context
+	const t = context.time * 0.006
+	const numX = floor((cols - 6) / (w + gapX))
+	const numY = floor((rows - 4) / (h + gapY))
+	const marginX = floor((cols - numX * (w + gapX) + gapX) / 2)
+	const marginY = floor((rows - numY * (h + gapY) + gapY) / 2)
 
 	for (let j=0; j<numY; j++) {
 		for (let i=0; i<numX; i++) {
-			const ox = floor(sin((i + j) * 0.6 + t*3) * spacingX)
-			const oy = floor(cos((i + j) * 0.6 + t*3) * spacingY)
-			const ow = 0//floor(sin((i + j) * 0.4 + t*2) * 5) + 5
-			const oh = 0//floor(cos((i + j) * 0.4 + t*2) * 2) + 2
-			const style = {
-				x      : marginX + i * (baseW + spacingX) + ox,
-				y      : marginY + j * (baseH + spacingY) + oy,
-				width  : baseW + ow,
-				height : baseH + oh,
-				...baseStyle
-			}
-			let txt = ''
-			txt += `*${q[(i + j * numX) % q.length]}*\n`
-			txt += `pos: ${style.x}×${style.y}\n`
-
-			panel(context, txt.trimEnd(), style.x, style.y, style)
+			const x = marginX + i * (w + gapX) + floor(sin((i + j) * 0.6 + t) * gapX)
+			const y = marginY + j * (h + gapY) + floor(cos((i + j) * 0.6 + t) * gapY)
+			const title = quote[(i + j * numX) % quote.length]
+			panel(context, 'pos: ' + x + '×' + y, x, y, { ...style, title })
 		}
 	}
 }
