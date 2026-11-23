@@ -11,7 +11,7 @@ import { sort } from '@ertdfgcvb/play/sort.js'
 
 export const settings = { fps : 60 }
 
-const { sin, cos, floor, PI, atan, sqrt, pow } = Math
+const { sin, floor, PI, atan, pow } = Math
 const TAU = PI * 2
 
 const density = await sort('▅▃▁?ab012:. ', 'Simple Console')

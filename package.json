@@ -1,6 +1,6 @@
 {
 	"name": "@ertdfgcvb/play",
-	"version": "2.0.0-alpha.1",
+	"version": "2.0.0",
 	"description": "ASCII Playground core: run programs that output text grids, in the browser or headless in Node",
 	"keywords": [
 		"ascii",
