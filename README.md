@@ -6,7 +6,7 @@ Core of the live-code [ASCII Playground](https://play.ertdfgcvb.xyz): the progra
 > v1 is archived on the [`v1`](https://github.com/ertdfgcvb/play.core/tree/v1) branch (tag `v1.1`).\
 > Programs saved on the playground with v1 keep running with the v1 runner.\
 > \
-> Published on npm as [`@ertdfgcvb/play`](https://www.npmjs.com/package/@ertdfgcvb/play) (see [Install](#install)).
+> Published on **npm** as [`@ertdfgcvb/play`](https://www.npmjs.com/package/@ertdfgcvb/play) (see [Install](#install)).
 
 ## About
 
