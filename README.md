@@ -1,10 +1,12 @@
 # play.core
 
-Core of the [ASCII Playground](https://play.ertdfgcvb.xyz): the program runner, the renderers and the modules.
+Core of the live-code [ASCII Playground](https://play.ertdfgcvb.xyz): the program runner, the renderers and the modules.
 
-> **v2** is a rewrite of the runner, with breaking changes in the API (see [Changes](#changes)).
-> v1 is archived on the [`v1`](https://github.com/ertdfgcvb/play.core/tree/v1) branch (tag `v1.1`).
-> Programs saved on the playground with v1 keep running with the v1 runner.
+> **v2** is a rewrite of the runner, with breaking changes in the API (see [Changes](#changes)).\
+> v1 is archived on the [`v1`](https://github.com/ertdfgcvb/play.core/tree/v1) branch (tag `v1.1`).\
+> Programs saved on the playground with v1 keep running with the v1 runner.\
+> \
+> Published on npm as [`@ertdfgcvb/play`](https://www.npmjs.com/package/@ertdfgcvb/play) (see [Install](#install)).
 
 ## About
 
