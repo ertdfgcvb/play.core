@@ -4,6 +4,7 @@ import { Grid } from './grid.js'
 import { write, isGridLike } from './block.js'
 import { run } from '../run.js'
 import { wrap, measure, truncate, length, align } from './text.js'
+import { parseColor, mixColor, rgb2css, rgb2hex } from './color.js'
 
 // Clockwise from the top left corner: ┌ ─ ┐ │ ┘ ─ └ │
 // A custom border is any string of 8 chars
@@ -18,16 +19,21 @@ export const BORDERS = {
 	none         : '        ',
 }
 
-// Merged into the cells under the shadow: a char, a color, or both.
-// A custom shadow is any partial cell
-export const SHADOWS = {
-	light   : { char : '░' },
-	medium  : { char : '▒' },
-	dark    : { char : '▓' },
-	solid   : { char : '█' },
-	checker : { char : '▚' },
-	x       : { char : '╳' },
-	gray    : { color : 'dimgray', backgroundColor : 'lightgray' },
+// The ends of the title and the close button (left, close, right), joined to the top line of a border
+const ENDS = {
+	single       : '┤●├',
+	double       : '╡●╞',
+	round        : '┤●├',
+	bold         : '┫●┣',
+	singleDouble : '┤●├',
+	ascii        : '|•|',
+}
+
+// A border without ends of its own (fat, none, custom): spaces
+function ends(border) {
+	const e = ENDS[border ?? 'round']
+	if (e) return [...e]
+	return typeof border == 'string' && (BORDERS[border] || length(border) == 8) ? [' ', '●', ' '] : [...ENDS.round]
 }
 
 const PANEL = {
@@ -42,19 +48,20 @@ const PANEL = {
 	align      : null, // 'center': x, y is the center
 }
 
-// Border, fill and shadow, into the buffer (or context.buffer). style: { border, shadow, shadowX, shadowY, color, backgroundColor, fontWeight }.
+// Border, fill and shadow, into the buffer (or context.buffer). style: { border, shadow, shadowX, shadowY, shadowColor, color, backgroundColor, fontWeight }.
+// shadow: 0..1, how much the cells under it are tinted toward shadowColor (true: 0.2); their chars stay.
 // Colors left undefined are the output defaults: the box is opaque.
 // Returns the rect and its inner area
 export function box(target, x, y, w, h, style = {}) {
 	const buffer = target.buffer || target
-	const s = { border : 'round', shadow : null, shadowX : 2, shadowY : 1, ...style }
+	const s = { border : 'round', shadow : 0, shadowX : 2, shadowY : 1, shadowColor : 'black', ...style }
 	const cell = cellStyle(s)
 	const b = [...(BORDERS[s.border] || (typeof s.border == 'string' && length(s.border) == 8 ? s.border : BORDERS.round))]
 
-	const sh = typeof s.shadow == 'string' ? SHADOWS[s.shadow] : s.shadow
-	if (sh) {
-		buffer.fillRect(x + s.shadowX, y + h, w, s.shadowY, sh)
-		buffer.fillRect(x + w, y + s.shadowY, s.shadowX, h - s.shadowY, sh)
+	const k = s.shadow === true ? 0.2 : +s.shadow || 0
+	if (k > 0) {
+		shade(buffer, x + s.shadowX, y + h, w, s.shadowY, k, s.shadowColor)
+		shade(buffer, x + w, y + s.shadowY, s.shadowX, h - s.shadowY, k, s.shadowColor)
 	}
 
 	for (let j=0; j<h; j++) {
@@ -69,6 +76,24 @@ export function box(target, x, y, w, h, style = {}) {
 		}
 	}
 	return { x, y, width : w, height : h, inner : { x : x + 1, y : y + 1, width : w - 2, height : h - 2 } }
+}
+
+// Tints the cells of a rect toward a color, keeping their chars
+function shade(buffer, x, y, w, h, k, tint) {
+	const t = parseColor(tint) || { r : 0, g : 0, b : 0 }
+	// An undefined background is the page's: a translucent tint over it
+	const over = rgb2css({ r : t.r, g : t.g, b : t.b, a : k })
+	const mix = css => {
+		const c = parseColor(css)
+		return c ? rgb2hex(mixColor(c, { ...t, a : c.a }, k)) : css
+	}
+	for (let j=y; j<y+h; j++) {
+		for (let i=x; i<x+w; i++) {
+			const c = buffer.get(i, j)
+			if (!c || typeof c != 'object') continue
+			buffer.set(i, j, { color : mix(c.color), backgroundColor : c.backgroundColor ? mix(c.backgroundColor) : over })
+		}
+	}
 }
 
 // A box with a title and content: a string (wrapped to width if set, clipped)
@@ -104,7 +129,8 @@ export function panel(target, content = '', x = 0, y = 0, style = {}) {
 	const cell = cellStyle(s)
 
 	if (s.title && w >= s.titleX + 4) {
-		const t = '┤' + truncate(s.title, w - s.titleX - 4) + '├'
+		const e = ends(s.border)
+		const t = e[0] + truncate(s.title, w - s.titleX - 4) + e[2]
 		const tx = s.titleAlign == 'left' ? s.titleX : Math.max(s.titleX, Math.floor((w - length(t)) / 2))
 		write(buffer, t, x + tx, y, variant(cell, s.titleStyle))
 	}
@@ -132,7 +158,7 @@ const INFO = {
 	paddingY        : 0,
 	color           : 'white',
 	backgroundColor : 'royalblue',
-	shadow          : 'gray',
+	shadow          : 0.2,
 }
 
 // Frame, time, size and cursor info, for debugging: write(context, infoText(context), 0, 0)
@@ -267,8 +293,9 @@ export class Desktop {
 			win.rect = panel(context, content ?? '', win.x, win.y, style)
 			if (closable) {
 				const cell = cellStyle(style)
-				write(context, '┤ ├', win.rect.x + 1, win.rect.y, cell)
-				write(context, '●', win.rect.x + 2, win.rect.y, variant(cell, style.closeStyle))
+				const e = ends(style.border)
+				write(context, e[0] + ' ' + e[2], win.rect.x + 1, win.rect.y, cell)
+				write(context, e[1], win.rect.x + 2, win.rect.y, variant(cell, style.closeStyle))
 			}
 		}
 	}

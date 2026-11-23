@@ -41,7 +41,7 @@
 		import { Desktop } from '@ertdfgcvb/play/window.js'
 
 		const example = name => new URL('../src/programs/' + name + '.js', import.meta.url)
-		const desk = new Desktop({ shadow : 'gray', paddingX : 0, paddingY : 0 })
+		const desk = new Desktop({ shadow : 0.2, paddingX : 0, paddingY : 0 })
 
 		desk.open({ x : 2,  y : 1,  width : 40, height : 14, title : 'coordinates_xy', content : example('basics/coordinates_xy') })
 		desk.open({ x : 46, y : 3,  width : 34, height : 12, title : 'coordinates_index', content : example('basics/coordinates_index') })

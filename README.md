@@ -416,7 +416,7 @@ Windows (`window.js`): draggable, closable, with a style of their own. The conte
 ```js
 import { Desktop } from '@ertdfgcvb/play/window.js'
 
-const desk = new Desktop({ shadow : 'gray' })
+const desk = new Desktop({ shadow : 0.2 })
 desk.info()
 desk.open({ x : 30, y : 4, title : 'note', backgroundColor : 'tomato', content : 'Drag me' })
 desk.open({ x : 4, y : 12, width : 40, height : 12, title : 'flame', content : new URL('./flame.js', import.meta.url) })

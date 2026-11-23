@@ -129,7 +129,7 @@ desk.open({
 	backgroundColor : 'tomato',
 	color           : 'black',
 	border          : 'double',
-	shadow          : 'gray',
+	shadow          : 0.2,
 	content         : context => {
 		const buff = data[(context.frame + 1) % 2]
 		const numCells = buff.reduce((a, b) => a + b, 0)

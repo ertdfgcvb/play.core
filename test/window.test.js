@@ -12,9 +12,13 @@ async function frame(post, cols = 12, rows = 6) {
 
 test('box: borders and shadow', async () => {
 	const h = await frame(({ buffer }) => {
-		box(buffer, 0, 0, 4, 3, { border : 'single', shadow : 'light', shadowX : 1, shadowY : 1 })
+		buffer.set(1, 3, { color : 'white', backgroundColor : 'royalblue' })
+		box(buffer, 0, 0, 4, 3, { border : 'single', shadow : 0.5, shadowX : 1, shadowY : 1 })
 	}, 6, 4)
-	assert.equal(h.text(), '┌──┐..\n│  │░.\n└──┘░.\n.░░░░.\n')
+	assert.equal(h.text(), '┌──┐..\n│  │..\n└──┘..\n......\n', 'the chars under the shadow stay')
+	assert.deepEqual([h.buffer.get(1, 3).color, h.buffer.get(1, 3).backgroundColor], ['#808080', '#213571'], 'colors tinted toward black')
+	assert.equal(h.buffer.get(4, 1).backgroundColor, 'rgba(0,0,0,0.5)', 'the page background: a translucent tint')
+	assert.equal(h.buffer.get(5, 1).backgroundColor, undefined, 'outside the shadow')
 })
 
 test('panel: auto size, title, padding', async () => {
@@ -22,7 +26,7 @@ test('panel: auto size, title, padding', async () => {
 		const r = panel(buffer, 'hi', 0, 0, { title : 'T', paddingX : 1, paddingY : 0 })
 		assert.deepEqual(r.inner, { x : 2, y : 1, width : 3, height : 1 })
 	}, 8, 4)
-	assert.equal(h.text(), '╭─ T ─╮.\n│ hi  │.\n╰─────╯.\n........\n')
+	assert.equal(h.text(), '╭─┤T├─╮.\n│ hi  │.\n╰─────╯.\n........\n')
 })
 
 test('panel: wrap and clip to fixed size', async () => {
@@ -63,7 +67,7 @@ test('desktop: draw, drag, front, close', async () => {
 	const step = c => { prev = cursor; cursor = c; h.step() }
 
 	step({ x : 0, y : 0, pressed : false })
-	assert.equal(h.text(), '+-[■]--+......\n|A+-[■]--+....\n+-|Bxxxx…|....\n..+------+....\n..............\n..............\n', 'b on top of a, content clipped')
+	assert.equal(h.text(), '+|•|---+......\n|A+|•|---+....\n+-|Bxxxx…|....\n..+------+....\n..............\n..............\n', 'b on top of a, content clipped')
 
 	step({ x : 1, y : 1, pressed : true })
 	assert.equal(desk.windows[1], a, 'click brings a to front')
@@ -75,7 +79,7 @@ test('desktop: draw, drag, front, close', async () => {
 	assert.deepEqual([a.x, a.y], [3, 2], 'dragged by the title bar')
 
 	step({ x : a.x + 3, y : a.y, pressed : true })
-	assert.equal(desk.windows.length, 1, 'closed with ×')
+	assert.equal(desk.windows.length, 1, 'closed with the button')
 	assert.equal(desk.hit(3, 2), b)
 	h.stop()
 })
@@ -106,7 +110,7 @@ test('desktop: info window with the info style', async () => {
 	const desk = new Desktop()
 	const w = desk.info({ x : 0, y : 0 })
 	const h = await frame(context => desk.update(context), 30, 10)
-	assert.match(h.text(), /\[■\]─+ info ─/)
+	assert.match(h.text(), /┤●├─+┤info├─/)
 	assert.equal(h.buffer.get(2, 2).backgroundColor, 'royalblue')
 	w.style.backgroundColor = 'crimson'
 	h.step()

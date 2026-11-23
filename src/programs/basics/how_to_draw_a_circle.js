@@ -37,7 +37,7 @@ desk.open({
 	title           : 'aspect',
 	backgroundColor : 'tomato',
 	border          : 'double',
-	shadow          : 'gray',
+	shadow          : 0.2,
 	content         : ({ cursor, metrics }) => {
 		// Apply some rounding to the aspect for better output
 		const ar = cursor.pressed ? 1 : String(metrics.aspect).slice(0, 8)

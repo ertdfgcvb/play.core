@@ -40,7 +40,7 @@ export function post(context) {
 		color           : 'black',
 		backgroundColor : 'white',
 		border          : 'double',
-		shadow          : 'light',
+		shadow          : 0.2,
 	}
 
 	for (let j=0; j<numY; j++) {
