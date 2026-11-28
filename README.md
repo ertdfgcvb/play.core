@@ -8,6 +8,8 @@ Core of the live-code [ASCII Playground](https://play.ertdfgcvb.xyz): the progra
 > \
 > Published on **npm** as [`@ertdfgcvb/play`](https://www.npmjs.com/package/@ertdfgcvb/play) (see [Install](#install)).
 
+![Text, grid, live, code, love, play: letters in generated box-drawing frames](text_grid_live_code_love_play.gif)
+
 ## About
 
 [This playground](https://play.ertdfgcvb.xyz) is an attempt of a browser-based live-code environment with text-only output.\
